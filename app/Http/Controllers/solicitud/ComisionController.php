@@ -55,8 +55,16 @@ class ComisionController extends Controller
     {
         //iniciamos cargando los datos para hacer un guardado previo en la tabla temporal
         try {
+            /**
+             * obtener la id de pre_comision
+             */
+            $id_preComision = base64_decode($request->get('pre_comision_id'));
             //code...
             $temporal_id = $this->save_temporal($request);
+            /**
+             * modificacar la pre_comision - actualizar registros de la precomisión con id
+             */
+            $this->updatePreComision($id_preComision);
             /**
              * trabajamos con el primer bucle
              */

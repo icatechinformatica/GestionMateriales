@@ -14,7 +14,7 @@ class CatalogoVehiculo extends Model
 
     protected $fillable = [
         'id', 'color', 'numero_motor', 'marca', 'modelo', 'tipo', '	placas',
-        'numero_serie', 'resguardante_id', 'numero_economico'
+        'numero_serie', 'resguardante_id', 'numero_economico', 'km_final'
     ];
 
     protected $hidden = ['created_at', 'updated_at'];

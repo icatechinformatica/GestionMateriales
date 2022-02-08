@@ -244,6 +244,21 @@
                                     </div>
                                 </div>
                             </div>
+                           {{-- kilometros recorridos --}}
+                            <div class="form-row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="km_recorrido_editar">Kilometros Recorridos</label>
+                                    <div class="custom-file">
+                                        <input type="text" class="@error('km_recorrido_editar') is-invalid @enderror typeahead form-control" id="km_recorrido_editar" name="km_recorrido_editar" autocomplete="off" onkeypress="return valideKey(event);" value="{{ $getvehiculo->km_final }}">
+                                        @error('km_recorrido_editar')
+                                            <div class="alert alert-danger mt-1 mb-1">
+                                                {{ $message }}
+                                            </div>
+                                        @enderror
+                                    </div>
+                                </div> 
+                            </div>
+                           {{-- kilomentros recorridos END --}}
                             <hr>
 
                             <button class="btn btn-warning" type="submit">
@@ -265,6 +280,20 @@
 @endsection
 
 @section('contenidoJavaScript')
+<script type="text/javascript">
+    function valideKey(evt){
 
+        // code is the decimal ASCII representation of the pressed key.
+        var code = (evt.which) ? evt.which : evt.keyCode;
+        
+        if(code==8) { // backspace.
+            return true;
+        } else if(code>=48 && code<=57) { // is a number.
+            return true;
+        } else{ // other keys.
+            return false;
+        }
+    }
+</script>
 @endsection
 {{-- DISEÑADO Y DESARROLLADO POR MIS. DANIEL MÉNDEZ CRUZ --}}

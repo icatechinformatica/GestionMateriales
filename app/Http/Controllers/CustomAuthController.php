@@ -38,17 +38,17 @@ class CustomAuthController extends Controller
              */
             $fecha = Carbon::now()->format('Y-m-d');
             $hora = Carbon::now()->format('H:i:s');
-            $MAC = exec('getmac');
-            $MAC = strtok($MAC, ' ');
+            // $MAC = exec('getmac');
+            // $MAC = strtok($MAC, ' ');
             $tipo_peticion = 'POST';
             $path = '/login';
-            $peticion = ['operacion' => 'Inicio de Sesion', 'usuario' => Auth::user()->name, 'ip_request' => $request->ip(), 'mac_request' => $MAC, 'sistem_path' => $path, 'fecha_ejecucion' => $fecha, 'hoarario_ejecucion' => $hora , 'tipo_interaccion' => 1, 'tipo_peticion' => $tipo_peticion];
+            $peticion = ['operacion' => 'Inicio de Sesion', 'usuario' => Auth::user()->name, 'ip_request' => $request->ip(), 'sistem_path' => $path, 'fecha_ejecucion' => $fecha, 'hoarario_ejecucion' => $hora , 'tipo_interaccion' => 1, 'tipo_peticion' => $tipo_peticion];
             $this->storeLog($peticion);
             return redirect()->route('dashboard')
-                        ->withSuccess('Signed in');
+                        ->withSuccess('Sesión Iniciada.');
         }
   
-        return redirect("login")->withSuccess('Login details are not valid');
+        return redirect("login")->withSuccess('Los datos de inicio de sesión no son válidos');
     }
 
     public function signOut() {
@@ -67,7 +67,7 @@ class CustomAuthController extends Controller
             return view('theme.dashboard.layouts.index');
         }
 
-        return redirect("login")->withSuccess('You are not allowed to access');
+        return redirect("login")->withSuccess('No tienes permiso para acceder');
     }
 
     public function singout(Request $request)
@@ -77,15 +77,47 @@ class CustomAuthController extends Controller
          */
         $fecha = Carbon::now()->format('Y-m-d');
         $hora = Carbon::now()->format('H:i:s');
-        $MAC = exec('getmac');
-        $MAC = strtok($MAC, ' ');
+        // $MAC = exec('getmac');
+        // $MAC = strtok($MAC, ' ');
         $tipo_peticion = 'GET';
         $path = '/logout';
-        $peticion = ['operacion' => 'Cerrar sesión', 'usuario' => Auth::user()->name, 'ip_request' => $request->ip(), 'mac_request' => $MAC, 'sistem_path' => $path, 'fecha_ejecucion' => $fecha, 'hoarario_ejecucion' => $hora , 'tipo_interaccion' => 5, 'tipo_peticion' => $tipo_peticion];
+        $peticion = ['operacion' => 'Cerrar sesión', 'usuario' => Auth::user()->name, 'ip_request' => $request->ip(), 'sistem_path' => $path, 'fecha_ejecucion' => $fecha, 'hoarario_ejecucion' => $hora , 'tipo_interaccion' => 5, 'tipo_peticion' => $tipo_peticion];
         $this->storeLog($peticion);
         Session::flush();
         Auth::logout();
   
         return Redirect('login');
+    }
+
+
+    protected function register()
+    {
+        return view('auth._register');
+    }
+
+    protected function customRegister(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => 'required',
+        ],[
+            'name.required' => 'El nombre es requerido',
+            'email.required' => 'Correo electrónico es requerido',
+            'email.unique' => 'Correo electrónico debe de ser único, ya se encuentra registrado',
+            'password.required' => 'la contraseña es requerida'
+        ]);
+
+        /**
+         * se crea el usuario
+         */
+
+        User::create([
+            'name' => $request->get('name'),
+            'email' => $request->get('email'),
+            'password' => Hash::make($request->get('password')),
+        ]);
+
+        return redirect("login")->withSuccess('El Usuario se ha creado correctamente');
     }
 }

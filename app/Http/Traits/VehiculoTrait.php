@@ -28,7 +28,8 @@ trait VehiculoTrait {
             $vehiculo->placas = $index->get('placas');
             $vehiculo->numero_serie = $index->get('numero_serie');
             $vehiculo->resguardante_id = $index->get('resguardante');
-            $vehiculo->numero_economico = Str::upper(index->get('numero_economico'));
+            $vehiculo->numero_economico = Str::upper($index->get('numero_economico'));
+            $vehiculo->km_final = $index->get('km_recorrido');
             $vehiculo->save();
             return 'VALIDO';
         }
@@ -43,7 +44,7 @@ trait VehiculoTrait {
     public function editVehiculo($id)
     {
         return CatalogoVehiculo::select('catalogo_vehiculo.id', 'catalogo_vehiculo.color', 'catalogo_vehiculo.numero_motor', 'catalogo_vehiculo.marca', 'catalogo_vehiculo.modelo',
-        'catalogo_vehiculo.tipo', 'catalogo_vehiculo.placas', 'catalogo_vehiculo.numero_serie', 'catalogo_vehiculo.linea', 'resguardante.resguardante_unidad', 'catalogo_vehiculo.resguardante_id', 'catalogo_vehiculo.numero_economico')->where('catalogo_vehiculo.id', '=', $id)->join('resguardante', 'catalogo_vehiculo.resguardante_id', '=', 'resguardante.id')->first();
+        'catalogo_vehiculo.tipo', 'catalogo_vehiculo.placas', 'catalogo_vehiculo.numero_serie', 'catalogo_vehiculo.linea', 'resguardante.resguardante_unidad', 'catalogo_vehiculo.resguardante_id', 'catalogo_vehiculo.numero_economico', 'catalogo_vehiculo.km_final')->where('catalogo_vehiculo.id', '=', $id)->join('resguardante', 'catalogo_vehiculo.resguardante_id', '=', 'resguardante.id')->first();
     }
 
     protected function updateVehiculo($id, $request){
@@ -56,6 +57,7 @@ trait VehiculoTrait {
         $cat_vehiculo->resguardante_id = $request->get('resguardante_editar');
         $cat_vehiculo->modelo = Str::upper($request->get('modelo_editar'));
         $car_vehiculo->numero_economico = Str::upper($request->get('numero_economico_editar'));
+        $car_vehiculo->km_final = $request->get('km_recorrido_editar');
         $cat_vehiculo->save();
 
         return true;

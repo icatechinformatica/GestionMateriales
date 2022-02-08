@@ -60,9 +60,13 @@
                 </a>
               @endcan
 
+             {{-- solo rol de capturista deberá ver este apartado --}}
+              @role('capturista')
                 <a class="collapse-item" href="{{ route('solicitud.bitacora.index') }}">
                     <i class="far fa-paper-plane"></i> Bitácoras Enviadas
                 </a>
+              @endrole
+             {{-- solo rol de capturista deberá ver este apartado END --}}
               @can('revisar bitacora')
                 <a href="{{ route('solicitud.bitacora.revision') }}" class="collapse-item">
                     <i class="fas fa-eye"></i> Revisión de la Bitácora

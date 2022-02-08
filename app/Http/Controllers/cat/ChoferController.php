@@ -26,11 +26,11 @@ class ChoferController extends Controller
          */
         $fecha = Carbon::now()->format('Y-m-d');
         $hora = Carbon::now()->format('H:i:s');
-        $MAC = exec('getmac');
-        $MAC = strtok($MAC, ' ');
+        // $MAC = exec('getmac');
+        // $MAC = strtok($MAC, ' ');
         $tipo_peticion = 'GET';
         $path = '/solicitud/catalogo/chofer/index';
-        $peticion = ['operacion' => 'Inicio del indice del catálogo del chofer', 'usuario' => Auth::user()->name, 'ip_request' => $request->ip(), 'mac_request' => $MAC, 'sistem_path' => $path, 'fecha_ejecucion' => $fecha, 'hoarario_ejecucion' => $hora , 'tipo_interaccion' => 2, 'tipo_peticion' => $tipo_peticion];
+        $peticion = ['operacion' => 'Inicio del indice del catálogo del chofer', 'usuario' => Auth::user()->name, 'ip_request' => $request->ip(), 'sistem_path' => $path, 'fecha_ejecucion' => $fecha, 'hoarario_ejecucion' => $hora , 'tipo_interaccion' => 2, 'tipo_peticion' => $tipo_peticion];
         $this->storeLog($peticion);
 
         $getAllChoferes = $this->getChofer();
@@ -50,11 +50,11 @@ class ChoferController extends Controller
          */
         $fecha = Carbon::now()->format('Y-m-d');
         $hora = Carbon::now()->format('H:i:s');
-        $MAC = exec('getmac');
-        $MAC = strtok($MAC, ' ');
+        // $MAC = exec('getmac');
+        // $MAC = strtok($MAC, ' ');
         $tipo_peticion = 'GET';
         $path = '/solicitud/catalogo/chofer/create';
-        $peticion = ['operacion' => 'Agregar una nueva solicitud de Choferes', 'usuario' => Auth::user()->name, 'ip_request' => $request->ip(), 'mac_request' => $MAC, 'sistem_path' => $path, 'fecha_ejecucion' => $fecha, 'hoarario_ejecucion' => $hora , 'tipo_interaccion' => 3, 'tipo_peticion' => $tipo_peticion];
+        $peticion = ['operacion' => 'Agregar una nueva solicitud de Choferes', 'usuario' => Auth::user()->name, 'ip_request' => $request->ip(), 'sistem_path' => $path, 'fecha_ejecucion' => $fecha, 'hoarario_ejecucion' => $hora , 'tipo_interaccion' => 3, 'tipo_peticion' => $tipo_peticion];
         $this->storeLog($peticion);
 
         return view('theme.dashboard.forms.form_choferes');
@@ -80,13 +80,13 @@ class ChoferController extends Controller
              */
             $fecha = Carbon::now()->format('Y-m-d');
             $hora = Carbon::now()->format('H:i:s');
-            $MAC = exec('getmac');
-            $MAC = strtok($MAC, ' ');
+            // $MAC = exec('getmac');
+            // $MAC = strtok($MAC, ' ');
             $tipo_peticion = 'POST';
             $path = '/solicitud/store';
             $peticion_parcial =  (array)$request->all();
             $solicitud_total = json_encode($peticion_parcial);
-            $peticion = ['operacion' => 'Agregar Un nuevo Chofer', 'usuario' => Auth::user()->name, 'ip_request' => $request->ip(), 'mac_request' => $MAC, 'sistem_path' => $path, 'fecha_ejecucion' => $fecha, 'hoarario_ejecucion' => $hora , 'tipo_interaccion' => 4, 'tipo_peticion' => $tipo_peticion, 'httpRequest' => $solicitud_total];
+            $peticion = ['operacion' => 'Agregar Un nuevo Chofer', 'usuario' => Auth::user()->name, 'ip_request' => $request->ip(), 'sistem_path' => $path, 'fecha_ejecucion' => $fecha, 'hoarario_ejecucion' => $hora , 'tipo_interaccion' => 4, 'tipo_peticion' => $tipo_peticion, 'httpRequest' => $solicitud_total];
             $this->storeLog($peticion);
             // llamamos al método que nos ejecutará la operación de guardado en el modulo
             $insertar_chofer = $this->savechofer($request);

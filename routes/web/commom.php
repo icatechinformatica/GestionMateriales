@@ -23,6 +23,9 @@ Route::get('login', [CustomAuthController::class, 'index'])->name('login');
 Route::post('custom-login', [CustomAuthController::class, 'customLogin'])->name('login.custom');
 Route::get('signout', [CustomAuthController::class, 'singout'])->name('signout');
 Route::get('/', [CustomAuthController::class, 'dashboard'])->name('dashboard');
+Route::get('register', [CustomAuthController::class, 'register'])->name('register');
+Route::post('custom-register', [CustomAuthController::class, 'customRegister'])->name('register.custom');
+
 
 Route::middleware(['auth', 'role:revisor|capturista', 'permission:crear catalogo vehiculo|leer catalogo vehiculo|
 editar catalogo vehiculo|eliminar catalogo vehiculo|leer catalogo choferes|editar catalogo choferes|crear catalogo choferes|eliminar catalogo choferes|leer catalogo resguardante|crear catalogo resguardante|

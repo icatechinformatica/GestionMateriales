@@ -31,8 +31,22 @@ class SolicitudBitacoraController extends Controller
      */
     public function index()
     {
+        
         //
         $userId = auth()->id();
+        $usuario = auth()->user();
+        if ($usuario->hasRole('revisor') === true) {
+            # parte de la consulta con role de revisor
+            $query = [
+                ['seguimiento_solicitud.status_seguimiento_id', '!=', 5]
+            ];
+        } elseif ($usuario->hasRole('capturista') === true) {
+            # parte de la consulta con el rol de capturista
+            $query = [
+                ['solicitud.users_id', '=', $userId],
+                ['seguimiento_solicitud.status_seguimiento_id', '!=', 5]
+            ];
+        }
         $solicitud = Solicitud::select('solicitud.fecha', 'solicitud.periodo', 
         'solicitud.numero_factura_compra', 'solicitud.id',
         'solicitud.status_proceso', 'catalogo_vehiculo.marca', 'catalogo_vehiculo.modelo',
@@ -40,10 +54,7 @@ class SolicitudBitacoraController extends Controller
                 ->leftjoin('catalogo_vehiculo', 'solicitud.catalogo_vehiculo_id', '=', 'catalogo_vehiculo.id')
                 ->leftjoin('seguimiento_solicitud', 'solicitud.id', '=', 'seguimiento_solicitud.solicitud_id')
                 ->leftjoin('seguimiento_status', 'seguimiento_solicitud.status_seguimiento_id', '=', 'seguimiento_status.id')
-                ->where([
-                    ['solicitud.users_id', '=', $userId],
-                    ['seguimiento_solicitud.status_seguimiento_id', '!=', 5]
-                ])->get();
+                ->where($query)->get();
         return view('theme.dashboard.layouts.solicitud_bitacora_index', compact('solicitud'));
     }
 
@@ -59,11 +70,11 @@ class SolicitudBitacoraController extends Controller
          */
         $fecha = Carbon::now()->format('Y-m-d');
         $hora = Carbon::now()->format('H:i:s');
-        $MAC = exec('getmac');
-        $MAC = strtok($MAC, ' ');
+        // $MAC = exec('getmac');
+        // $MAC = strtok($MAC, ' ');
         $tipo_peticion = 'GET';
         $path = '/solicitud/create';
-        $peticion = ['operacion' => 'Agregar una nueva solicitud de bitácora de rendimiento', 'usuario' => Auth::user()->name, 'ip_request' => $request->ip(), 'mac_request' => $MAC, 'sistem_path' => $path, 'fecha_ejecucion' => $fecha, 'hoarario_ejecucion' => $hora , 'tipo_interaccion' => 3, 'tipo_peticion' => $tipo_peticion];
+        $peticion = ['operacion' => 'Agregar una nueva solicitud de bitácora de rendimiento', 'usuario' => Auth::user()->name, 'ip_request' => $request->ip(), 'sistem_path' => $path, 'fecha_ejecucion' => $fecha, 'hoarario_ejecucion' => $hora , 'tipo_interaccion' => 3, 'tipo_peticion' => $tipo_peticion];
         $this->storeLog($peticion);
         /**
          * programar el mes actual - del periodo
@@ -103,13 +114,13 @@ class SolicitudBitacoraController extends Controller
              */
             $fecha = Carbon::now()->format('Y-m-d');
             $hora = Carbon::now()->format('H:i:s');
-            $MAC = exec('getmac');
-            $MAC = strtok($MAC, ' ');
+            // $MAC = exec('getmac');
+            // $MAC = strtok($MAC, ' ');
             $tipo_peticion = 'POST';
             $path = '/solicitud/store';
             $peticion_parcial =  (array)$request->all();
             $solicitud_total = json_encode($peticion_parcial);
-            $peticion = ['operacion' => 'Agregar una bitácora de rendimiento nueva', 'usuario' => Auth::user()->name, 'ip_request' => $request->ip(), 'mac_request' => $MAC, 'sistem_path' => $path, 'fecha_ejecucion' => $fecha, 'hoarario_ejecucion' => $hora , 'tipo_interaccion' => 4, 'tipo_peticion' => $tipo_peticion, 'httpRequest' => $solicitud_total];
+            $peticion = ['operacion' => 'Agregar una bitácora de rendimiento nueva', 'usuario' => Auth::user()->name, 'ip_request' => $request->ip(), 'sistem_path' => $path, 'fecha_ejecucion' => $fecha, 'hoarario_ejecucion' => $hora , 'tipo_interaccion' => 4, 'tipo_peticion' => $tipo_peticion, 'httpRequest' => $solicitud_total];
             $this->storeLog($peticion);
             /**
              * obtenemos la fecha actual con el método carbon
@@ -280,11 +291,11 @@ class SolicitudBitacoraController extends Controller
          */
         $fecha = Carbon::now()->format('Y-m-d');
         $hora = Carbon::now()->format('H:i:s');
-        $MAC = exec('getmac');
-        $MAC = strtok($MAC, ' ');
+        // $MAC = exec('getmac');
+        // $MAC = strtok($MAC, ' ');
         $tipo_peticion = 'GET';
         $path = '/solicitud/bitacora/revision/index';
-        $peticion = ['operacion' => 'Revisión de Bitácora indice', 'usuario' => Auth::user()->name, 'ip_request' => $request->ip(), 'mac_request' => $MAC, 'sistem_path' => $path, 'fecha_ejecucion' => $fecha, 'hoarario_ejecucion' => $hora , 'tipo_interaccion' => 2, 'tipo_peticion' => $tipo_peticion];
+        $peticion = ['operacion' => 'Revisión de Bitácora indice', 'usuario' => Auth::user()->name, 'ip_request' => $request->ip(), 'sistem_path' => $path, 'fecha_ejecucion' => $fecha, 'hoarario_ejecucion' => $hora , 'tipo_interaccion' => 2, 'tipo_peticion' => $tipo_peticion];
         $this->storeLog($peticion);
         /**
          * programar el mes actual - del periodo
@@ -317,11 +328,11 @@ class SolicitudBitacoraController extends Controller
          */
         $fecha = Carbon::now()->format('Y-m-d');
         $hora = Carbon::now()->format('H:i:s');
-        $MAC = exec('getmac');
-        $MAC = strtok($MAC, ' ');
+        // $MAC = exec('getmac');
+        // $MAC = strtok($MAC, ' ');
         $tipo_peticion = 'GET';
         $path = '/solicitud/revision/detail/'.$id;
-        $peticion = ['operacion' => 'Revisión de Bitácora de Recorrido final', 'usuario' => Auth::user()->name, 'ip_request' => $request->ip(), 'mac_request' => $MAC, 'sistem_path' => $path, 'fecha_ejecucion' => $fecha, 'hoarario_ejecucion' => $hora , 'tipo_interaccion' => 2, 'tipo_peticion' => $tipo_peticion];
+        $peticion = ['operacion' => 'Revisión de Bitácora de Recorrido final', 'usuario' => Auth::user()->name, 'ip_request' => $request->ip(), 'sistem_path' => $path, 'fecha_ejecucion' => $fecha, 'hoarario_ejecucion' => $hora , 'tipo_interaccion' => 2, 'tipo_peticion' => $tipo_peticion];
         $this->storeLog($peticion);
         /**
          * 
@@ -363,26 +374,28 @@ class SolicitudBitacoraController extends Controller
          */
         $fecha = Carbon::now()->format('Y-m-d');
         $hora = Carbon::now()->format('H:i:s');
-        $MAC = exec('getmac');
-        $MAC = strtok($MAC, ' ');
+        // $MAC = exec('getmac');
+        // $MAC = strtok($MAC, ' ');
         $tipo_peticion = 'GET';
         $path = '/solicitud/previo/index';
-        $peticion = ['operacion' => 'solicitudes de bitácora guardadas previamente indice', 'usuario' => Auth::user()->name, 'ip_request' => $request->ip(), 'mac_request' => $MAC, 'sistem_path' => $path, 'fecha_ejecucion' => $fecha, 'hoarario_ejecucion' => $hora , 'tipo_interaccion' => 2, 'tipo_peticion' => $tipo_peticion];
+        $peticion = ['operacion' => 'solicitudes de bitácora guardadas previamente indice', 'usuario' => Auth::user()->name, 'ip_request' => $request->ip(), 'sistem_path' => $path, 'fecha_ejecucion' => $fecha, 'hoarario_ejecucion' => $hora , 'tipo_interaccion' => 2, 'tipo_peticion' => $tipo_peticion];
         $this->storeLog($peticion);
         /**
          * registro normal
          */
         $userId = auth()->id();
+        $nombre_usuario = auth()->user()->name;
         $solicitud = Temporal::select('temporal.fecha', 'temporal.periodo', 
         'temporal.numero_factura_compra', 'temporal.id',
         'temporal.status_proceso', 'catalogo_vehiculo.marca', 'catalogo_vehiculo.modelo',
-        'catalogo_vehiculo.tipo', 'catalogo_vehiculo.placas')
+        'catalogo_vehiculo.tipo', 'catalogo_vehiculo.placas', 'temporal.nombre_elabora')
                 ->leftjoin('catalogo_vehiculo', 'temporal.catalogo_vehiculo_id', '=', 'catalogo_vehiculo.id')
                 ->where([
                     ['temporal.users_id', '=', $userId],
                     ['temporal.enviado', '=', false]
                 ])->get();
-        return view('theme.dashboard.layouts.bitacora_pre_guardadas', compact('solicitud'));
+
+        return view('theme.dashboard.layouts.bitacora_pre_guardadas', compact('solicitud', 'nombre_usuario'));
     }
 
     /**
@@ -395,11 +408,11 @@ class SolicitudBitacoraController extends Controller
          */
         $fecha = Carbon::now()->format('Y-m-d');
         $hora = Carbon::now()->format('H:i:s');
-        $MAC = exec('getmac');
-        $MAC = strtok($MAC, ' ');
+        // $MAC = exec('getmac');
+        // $MAC = strtok($MAC, ' ');
         $tipo_peticion = 'GET';
         $path = '/solicitud/detalle/pre-guardado/'.$id;
-        $peticion = ['operacion' => 'Detalle de la solicitud pre-guardada', 'usuario' => Auth::user()->name, 'ip_request' => $request->ip(), 'mac_request' => $MAC, 'sistem_path' => $path, 'fecha_ejecucion' => $fecha, 'hoarario_ejecucion' => $hora , 'tipo_interaccion' => 3, 'tipo_peticion' => $tipo_peticion];
+        $peticion = ['operacion' => 'Detalle de la solicitud pre-guardada', 'usuario' => Auth::user()->name, 'ip_request' => $request->ip(), 'sistem_path' => $path, 'fecha_ejecucion' => $fecha, 'hoarario_ejecucion' => $hora , 'tipo_interaccion' => 3, 'tipo_peticion' => $tipo_peticion];
         $this->storeLog($peticion);
 
         $idSolPre = base64_decode($id);
@@ -467,13 +480,13 @@ class SolicitudBitacoraController extends Controller
                         */
                         $fecha = Carbon::now()->format('Y-m-d');
                         $hora = Carbon::now()->format('H:i:s');
-                        $MAC = exec('getmac');
-                        $MAC = strtok($MAC, ' ');
+                        // $MAC = exec('getmac');
+                        // $MAC = strtok($MAC, ' ');
                         $tipo_peticion = 'POST';
                         $path = '/solicitud/pre/store';
                         $peticion_parcial =  (array)$request->all();
                         $solicitud_total = json_encode($peticion_parcial);
-                        $peticion = ['operacion' => 'Actualizar el registro de la bitácora temporal', 'usuario' => Auth::user()->name, 'ip_request' => $request->ip(), 'mac_request' => $MAC, 'sistem_path' => $path, 'fecha_ejecucion' => $fecha, 'hoarario_ejecucion' => $hora , 'tipo_interaccion' => 6, 'tipo_peticion' => $tipo_peticion, 'httpRequest' => $solicitud_total];
+                        $peticion = ['operacion' => 'Actualizar el registro de la bitácora temporal', 'usuario' => Auth::user()->name, 'ip_request' => $request->ip(), 'sistem_path' => $path, 'fecha_ejecucion' => $fecha, 'hoarario_ejecucion' => $hora , 'tipo_interaccion' => 6, 'tipo_peticion' => $tipo_peticion, 'httpRequest' => $solicitud_total];
                         $this->storeLog($peticion);
                         /**
                          * se trabajará en la actualización de la tabla temporal ya que aún no se enviará hacía 
@@ -535,13 +548,13 @@ class SolicitudBitacoraController extends Controller
                         */
                         $fecha = Carbon::now()->format('Y-m-d');
                         $hora = Carbon::now()->format('H:i:s');
-                        $MAC = exec('getmac');
-                        $MAC = strtok($MAC, ' ');
+                        // $MAC = exec('getmac');
+                        // $MAC = strtok($MAC, ' ');
                         $tipo_peticion = 'POST';
                         $path = '/solicitud/pre/store';
                         $peticion_parcial =  (array)$request->all();
                         $solicitud_total = json_encode($peticion_parcial);
-                        $peticion = ['operacion' => 'Enviar registro de la bitacora de recorrido hacia la tabla solicitud', 'usuario' => Auth::user()->name, 'ip_request' => $request->ip(), 'mac_request' => $MAC, 'sistem_path' => $path, 'fecha_ejecucion' => $fecha, 'hoarario_ejecucion' => $hora , 'tipo_interaccion' => 4, 'tipo_peticion' => $tipo_peticion, 'httpRequest' => $solicitud_total];
+                        $peticion = ['operacion' => 'Enviar registro de la bitacora de recorrido hacia la tabla solicitud', 'usuario' => Auth::user()->name, 'ip_request' => $request->ip(), 'sistem_path' => $path, 'fecha_ejecucion' => $fecha, 'hoarario_ejecucion' => $hora , 'tipo_interaccion' => 4, 'tipo_peticion' => $tipo_peticion, 'httpRequest' => $solicitud_total];
                         $this->storeLog($peticion);
                         /**
                          * obtenemos la fecha actual con el método carbon
@@ -593,7 +606,7 @@ class SolicitudBitacoraController extends Controller
                         */
                         $seguimientoSolicitud = new SeguimientoSolicitud;
                         $seguimientoSolicitud->solicitud_id = $lastId;
-                        $seguimientoSolicitud->status_seguimiento_id = 1;
+                        $seguimientoSolicitud->status_seguimiento_id = 2;
                         $seguimientoSolicitud->fecha_inicio = Carbon::now();
                         $seguimientoSolicitud->save();
                         /**
@@ -668,11 +681,11 @@ class SolicitudBitacoraController extends Controller
              */
             $fecha = Carbon::now()->format('Y-m-d');
             $hora = Carbon::now()->format('H:i:s');
-            $MAC = exec('getmac');
-            $MAC = strtok($MAC, ' ');
+            // $MAC = exec('getmac');
+            // $MAC = strtok($MAC, ' ');
             $tipo_peticion = 'GET';
             $path = '/solicitud/bitacora/revision/'.$review;
-            $peticion = ['operacion' => 'Activar Revisión de la Bitácora', 'usuario' => Auth::user()->name, 'ip_request' => $request->ip(), 'mac_request' => $MAC, 'sistem_path' => $path, 'fecha_ejecucion' => $fecha, 'hoarario_ejecucion' => $hora , 'tipo_interaccion' => 5, 'tipo_peticion' => $tipo_peticion];
+            $peticion = ['operacion' => 'Activar Revisión de la Bitácora', 'usuario' => Auth::user()->name, 'ip_request' => $request->ip(), 'sistem_path' => $path, 'fecha_ejecucion' => $fecha, 'hoarario_ejecucion' => $hora , 'tipo_interaccion' => 5, 'tipo_peticion' => $tipo_peticion];
             $this->storeLog($peticion);
             //hacemos un update a la tabla Solicitud
             Solicitud::where('id', $idrevision)->update(['status_proceso' => 3]);
@@ -696,13 +709,13 @@ class SolicitudBitacoraController extends Controller
              */
             $fecha = Carbon::now()->format('Y-m-d');
             $hora = Carbon::now()->format('H:i:s');
-            $MAC = exec('getmac');
-            $MAC = strtok($MAC, ' ');
+            // $MAC = exec('getmac');
+            // $MAC = strtok($MAC, ' ');
             $tipo_peticion = 'POST';
             $path = '/solicitud/bitacora/terminar';
             $peticion_parcial =  (array)$request->all();
             $solicitud_total = json_encode($peticion_parcial);
-            $peticion = ['operacion' => 'Terminar Bitácora de recorrido y enviar a firma', 'usuario' => Auth::user()->name, 'ip_request' => $request->ip(), 'mac_request' => $MAC, 'sistem_path' => $path, 'fecha_ejecucion' => $fecha, 'hoarario_ejecucion' => $hora , 'tipo_interaccion' => 4, 'tipo_peticion' => $tipo_peticion, 'httpRequest' => $solicitud_total];
+            $peticion = ['operacion' => 'Terminar Bitácora de recorrido y enviar a firma', 'usuario' => Auth::user()->name, 'ip_request' => $request->ip(), 'sistem_path' => $path, 'fecha_ejecucion' => $fecha, 'hoarario_ejecucion' => $hora , 'tipo_interaccion' => 4, 'tipo_peticion' => $tipo_peticion, 'httpRequest' => $solicitud_total];
             $this->storeLog($peticion);
             // hacemos un update en la tabla solicitud con el estado del proceso
              /**
@@ -791,11 +804,11 @@ class SolicitudBitacoraController extends Controller
          */
         $fecha = Carbon::now()->format('Y-m-d');
         $hora = Carbon::now()->format('H:i:s');
-        $MAC = exec('getmac');
-        $MAC = strtok($MAC, ' ');
+        // $MAC = exec('getmac');
+        // $MAC = strtok($MAC, ' ');
         $tipo_peticion = 'GET';
         $path = '/solicitud/bitacora/generar/documento';
-        $peticion = ['operacion' => 'Indice Bitácoras terminadas', 'usuario' => Auth::user()->name, 'ip_request' => $request->ip(), 'mac_request' => $MAC, 'sistem_path' => $path, 'fecha_ejecucion' => $fecha, 'hoarario_ejecucion' => $hora , 'tipo_interaccion' => 2, 'tipo_peticion' => $tipo_peticion];
+        $peticion = ['operacion' => 'Indice Bitácoras terminadas', 'usuario' => Auth::user()->name, 'ip_request' => $request->ip(), 'sistem_path' => $path, 'fecha_ejecucion' => $fecha, 'hoarario_ejecucion' => $hora , 'tipo_interaccion' => 2, 'tipo_peticion' => $tipo_peticion];
         $this->storeLog($peticion);
 
         $meses = array("Enero" => 1, "Febrero" => 2, "Marzo" => 3,"Abril" => 4, "Mayo" => 5, "Junio" => 6, "Julio" => 7, "Agosto" => 8, "Septiembre" => 9, "Octubre" => 10 , "Noviembre" => 11, "Diciembre" => 12);

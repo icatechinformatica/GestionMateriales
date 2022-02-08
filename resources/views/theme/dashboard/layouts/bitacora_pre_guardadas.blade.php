@@ -143,6 +143,7 @@
                               <tr>
                                 <th scope="col">Periodo</th>
                                 <th scope="col">Placas</th>
+                                <th scope="col">Elaboró</th>
                                 <th scope="col">Seguir Escribiendo</th>
                               </tr>
                             </thead>
@@ -152,6 +153,7 @@
                                         <tr>
                                             <td data-label="periodo">{{ $v->periodo }}</td>
                                             <td data-label="Placas">{{ $v->placas }}</td>
+                                            <td data-label="elaboro">{{ $v->nombre_elabora }}</td>
                                             <td data-label="Seguir Escribiendo">
                                                 <a href="{{ route('bitacora.detalle.pre.guardado', base64_encode($v->id)) }}" class="btn btn-warning btn-circle btn-sm">
                                                     <i class="fas fa-pen"></i>

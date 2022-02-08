@@ -10,7 +10,7 @@ trait LogTrait {
         $log->operacion = $request['operacion'];
         $log->usuario = $request['usuario'];
         $log->ip_request = $request['ip_request'];
-        $log->mac_request = $request['mac_request'];
+        $log->mac_request = '';
         $log->sistem_path = $request['sistem_path'];
         $log->fecha_ejecucion = $request['fecha_ejecucion'];
         $log->hoarario_ejecucion = $request['hoarario_ejecucion'];

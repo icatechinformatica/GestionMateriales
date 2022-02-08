@@ -452,6 +452,12 @@
                                     Enviar
                                 </button>
                             @endrole
+                            @role('revisor')
+                                <button class="btn btn-success" type="submit" name="ejecutar" value="enviar">
+                                    <i class="far fa-paper-plane"></i>
+                                    Terminar
+                                </button>
+                            @endrole
                             <input type="hidden" name="periodo_comision_actual" id="periodo_comision_actual" value="{{ $temporal->periodo_actual }}"/>
                             <input type="hidden" name="pre_comision_id" id="pre_comision_id" value="{{ base64_encode($id_precomision) }}">
                         </form>

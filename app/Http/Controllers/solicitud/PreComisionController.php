@@ -290,7 +290,6 @@ class PreComisionController extends Controller
                     $solicitudComision->total_km_recorridos = $request->get('km_totales');
                     $solicitudComision->importe_total = $request->get('importe_total');
                     $solicitudComision->status_proceso = true;
-                    $solicitudComision->users_id = Auth::user()->id;
                     $solicitudComision->tipo_solicitud = 2;
                     // guardar registros y obteneer el último id
                     $solicitudComision->observacion = Str::upper($request->get('observaciones'));
@@ -309,7 +308,7 @@ class PreComisionController extends Controller
                      */
                     $segSolicitud = new SeguimientoSolicitud;
                     $segSolicitud->solicitud_id = $lastId;
-                    $segSolicitud->status_seguimiento_id = 1;
+                    $segSolicitud->status_seguimiento_id = 2;
                     $segSolicitud->fecha_inicio = Carbon::now();
                     $segSolicitud->save();
                     /**

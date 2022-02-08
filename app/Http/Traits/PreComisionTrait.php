@@ -43,4 +43,13 @@ trait PreComisionTrait {
             ['seguimiento_solicitud.status_seguimiento_id', '<>', 5]
         ])->orderBy('pre_comision.id', 'DESC')->get();
     }
+
+    protected function updatePreComision($id)
+    {
+        $update_pre_comision = PreComision::findOrFail($id);
+        $update_pre_comision->comisionado = true;
+        $update_pre_comision->save();
+
+        return 'DONE';
+    }
 }
