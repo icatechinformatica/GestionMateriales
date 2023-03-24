@@ -15,6 +15,8 @@ class CreateFolioTable extends Migration
     {
         Schema::create('folio', function (Blueprint $table) {
             $table->id();
+            $table->string();
+            $table->year('anio');
             $table->timestamps();
         });
     }
