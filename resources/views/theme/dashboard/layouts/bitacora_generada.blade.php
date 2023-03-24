@@ -141,33 +141,56 @@
                                 </div>
                             </div>
                         </div>
-                        {{--  --}}
+{{-- contenido de la tabla de Bitácora terminada --}}
                         <div class="form-row">
-                            @if (count($bitacoraTerminada) > 0)
-                                @foreach ($bitacoraTerminada as $itemSolicitud => $v)
-                                    <div class="col-md-4">
-                                        <div class="card text-black bg-light bg-gradient mb-3" style="max-width: 18rem;">
-                                            <div class="card-body">
-                                                <h4 class="card-title">PLACAS: {{ $v->placas }}</h4>
-                                                <p class="card-text">PERIODO: {{ $v->periodo }}</p>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Placas</th>
+                                        <th scope="col">Periodo</th>
+                                        <th scope="col">Detalle</th>
+                                        <th scope="col">Imprimir</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                   @if (count($bitacoraTerminada) > 0)
+                                      @foreach ($bitacoraTerminada as $itemSolicitud => $v)
+                                          <tr>
+                                            <td data-label="Placas">
+                                                <b>{{ $v->placas }}</b>
+                                            </td>
+                                            <td data-label="Periodo">
+                                                {{ $v->periodo }}
+                                            </td>
+                                            <td data-label="Detalle">
                                                 @can('revisar bitacora')
                                                     <a href="{{ route('solicitud.bitacora.terminado', base64_encode($v->id)) }}" class="btn {{ $v->estado == 'FINALIZADO' ? 'btn-success' : 'btn-danger'}}  btn-circle btn-md" data-toggle="tooltip" data-placement="top" title="CHECAR DETALLE DE LA SOLICITUD">
                                                         <i class="fas fa-traffic-light"></i>
                                                     </a>
                                                 @endcan
+                                            </td>
+                                            <td data-label="Imprimir">
                                                 <a href="{{ route('generar.reporte.bitacora.pdf', base64_encode($v->id)) }}" target="_blank" class="btn btn-primary  btn-circle btn-md" data-toggle="tooltip" data-placement="top" title="CHECAR DETALLE DE LA SOLICITUD">
                                                     <i class="fas fa-print"></i>
                                                 </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            @else
-                                <tr>
-                                    <td colspan="4"><h3> <b>NO HAY REGISTROS PARA MOSTRAR</b> </h3></td>
-                                </tr>
-                            @endif
+                                            </td>
+                                          </tr>
+                                      @endforeach
+                                   @else
+                                        <tr>
+                                            <td colspan="4">
+                                                <center>
+                                                    <h3>
+                                                        <b>NO HAY REGISTROS PARA MOSTRAR</b>
+                                                    </h3>
+                                                </center>
+                                            </td>
+                                        </tr>
+                                   @endif
+                                </tbody>
+                            </table>
                         </div>
+{{-- contenido de la tabla de bitácora terminada END --}}
                     </div>
                 </div>
 

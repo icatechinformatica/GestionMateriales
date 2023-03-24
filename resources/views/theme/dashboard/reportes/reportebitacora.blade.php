@@ -49,6 +49,7 @@
             <div id="wrappertop">
                 <div align=center><br>
                     <font size=1><b>INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLOGICA DEL ESTADO DE CHIAPAS</b></font><br/> 
+                    <font size=1><b>"2022, Año de Ricardo Flores Magón, Precursor de la Revolución Mexicana"</b></font><br/>
                     <font size=1><b>UNIDAD DE APOYO ADMINISTRATIVO</b> <br/>
                     <font size=1><b>ÁREA DE RECURSOS MATERIALES Y SERVICIOS</b></font><br/>
                     <br><font size=1><b>BITÁCORA DE RECORRIDO</b></font>                       
@@ -71,7 +72,7 @@
                         <td style="width: 20%">&nbsp;</td>
                     </tr> 
                     <tr>
-                        <td style="width: 20%">MEMORANDUM DE COMISION No.</td>
+                        <td style="width: 20%"><b>MEMORANDUM DE COMISION No. {{ $solicitud->memorandum_comision }}</b></td>
                         <td style="width: 20%"><b>No. DE MOTOR: {{ $solicitud->numero_motor }}</b></td>
                         <td style="width: 20%"><b>COLOR: {{ $solicitud->color }}</b></td>
                         <td style="width: 20%"><b>FECHA: {{ $solicitud->fecha }}</b></td>
@@ -99,7 +100,7 @@
                         <table class="tablas">
                             <thead>
                                 <tr>
-                                    <th colspan="4"><b>RECORRIDO DE COMISIÓN</b></th>
+                                    <th colspan="5"><b>RECORRIDO DE COMISIÓN</b></th>
                                     <th colspan="5"><b>GASOLINA</b></th>
                                 </tr>  
                                 <tr>
@@ -107,6 +108,7 @@
                                     <th>KM inicial</th>
                                     <th>De:</th>
                                     <th>A:</th>
+                                    <th>Tipo Recorrido:</th>
                                     <th>KM final</th>
                                     <th>Factura</th>
                                     <th>Litros</th>
@@ -136,18 +138,21 @@
                                         <td data-label="A:">
                                             {{ $v->a_comision }}
                                         </td>
+                                        <td data-label="Tipo Recorrido:">
+                                            {{ $v->tipo }}
+                                        </td>
                                         <td data-label="KM final">
                                         @if ($j == 1)
                                                 {{ $solicitud->km_final_antes_cargar_combustible }}
                                         @endif
                                         </td>
                                         @if ($contador <= count($bitacoraComision))
-                                                @foreach ($bitacoraComision as $l => $k)
-                                                    <td>{{ $k->factura_comision }}</td>
-                                                    <td>{{ $k->litros_comision }}</td>
-                                                    <td>{{ $k->precio_unitario_comision }}</td>
-                                                    <td>{{ $k->importe_comision }}</td> 
-                                                @endforeach 
+                                            @foreach ($bitacoraComision as $l => $k)
+                                                <td>{{ $k->factura_comision }}</td>
+                                                <td>{{ $k->litros_comision }}</td>
+                                                <td>{{ $k->precio_unitario_comision }}</td>
+                                                <td>{{ $k->importe_comision }}</td> 
+                                            @endforeach
                                         @else
                                             <td></td>
                                             <td></td>
@@ -157,13 +162,13 @@
                                     </tr>
                                 @endforeach
                                 <tr>
-                                    <td colspan="3">&nbsp;</td>
+                                    <td colspan="4">&nbsp;</td>
                                     <td>KILOMETROS TOTALES:</td>
-                                    <td>{{ $solicitud->total_km_recorridos }} KMS</td>
-                                    <td>LITROS</td>
-                                    <td>{{ $solicitud->litros_totales }}</td>
+                                    <td><b>{{ $solicitud->total_km_recorridos }} KMS</b></td>
                                     <td>&nbsp;</td>
-                                    <td>$ {{ $solicitud->importe_total }}</td>
+                                    <td>LITROS:</td>
+                                    <td><b>{{ $solicitud->litros_totales }}</b></td>
+                                    <td><b>$ {{ $solicitud->importe_total }}</b></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -294,6 +299,10 @@
                     <tr>
                         <td>LTS. DE GASOLINA: {{ $solicitud->litros_totales }}</td>
                         <td>OBSERVACIONES: {{ $solicitud->observacion }}</td>
+                    </tr>
+                    <tr>
+                        <td>RENDIMIENTO: {{ $solicitud->rendimiento_mixto }} KM / LTS</td>
+                        <td>MONTO TOTAL DE RENDIMIENTO: {{ $solicitud->monto_total_rendimiento }}</td>
                     </tr>
                     <tr>
                         <td>

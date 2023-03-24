@@ -79,16 +79,19 @@ class ReporteBitacoraController extends Controller
                 'solicitud.litros_totales', 'solicitud.importe_total',
                 'solicitud.total_km_recorridos', 'solicitud.status_proceso', 'solicitud.id', 'solicitud.catalogo_vehiculo_id', 'solicitud.observacion',
                 'solicitud.nombre_elabora', 'solicitud.puesto_elabora',
-                'solicitud.km_final_antes_cargar_combustible', 'solicitud.es_comision', 'solicitud.km_final_antes_cargar_combustible')
+                'solicitud.km_final_antes_cargar_combustible', 'solicitud.es_comision', 'solicitud.km_final_antes_cargar_combustible',
+                'solicitud.memorandum_comision', 'pre_comision.monto_total_rendimiento',
+                'catalogo_vehiculo.rendimiento_ciudad', 'catalogo_vehiculo.rendimiento_carretera', 'catalogo_vehiculo.rendimiento_mixto',
+                'catalogo_vehiculo.rendimiento_carga')
                 ->leftjoin('seguimiento_solicitud', 'solicitud.id', '=', 'seguimiento_solicitud.solicitud_id')
                 ->leftjoin('seguimiento_status', 'seguimiento_solicitud.status_seguimiento_id', '=', 'seguimiento_status.id')
                 ->leftjoin('catalogo_vehiculo', 'solicitud.catalogo_vehiculo_id', '=', 'catalogo_vehiculo.id')
                 ->leftjoin('resguardante', 'catalogo_vehiculo.resguardante_id', '=', 'resguardante.id')
+                ->leftjoin('pre_comision', 'solicitud.pre_comision_id', '=', 'pre_comision.id')
                 ->where([
                     ['solicitud.id', '=', $idSol],
                     ['seguimiento_solicitud.status_seguimiento_id', '=', 5]
                 ])->first();
-
             /**
              * se obtiene la comisión de la solicitud para que se pueda utilizar un switch
              */

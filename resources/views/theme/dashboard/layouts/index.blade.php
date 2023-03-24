@@ -25,10 +25,12 @@
                             <img class="img-fluid px-3 px-sm-4 mt-3 mb-4" style="width: 25rem;"
                                 src="{{ asset('assets/img/images/undraw_posting_photo.svg') }}" alt="...">
                         </div>
-                        <p>Add some quality, svg illustrations to your project courtesy of <a
-                                target="_blank" rel="nofollow" href="https://undraw.co/">unDraw</a>, a
-                            constantly updated collection of beautiful svg images that you can use
-                            completely free and without attribution!</p>
+                        <p>
+                           Impartir capacitación para y en el trabajo a la población, contribuyendo al mejoramiento de su calidad de vida mediante programas estratégicos con enfoque sustentable y sostenible, impulsando el desarrollo del estado.
+                        </p>
+                        <p>
+                            Ser una Institución líder e innovadora, a través de capacitación acorde a las necesidades reales del entorno socieconómico del estado, reconocida por la calidad de sus egresados, en un ambiente de unidad, respeto y equidad.
+                        </p>
                     </div>
                 </div>
 
@@ -39,7 +41,7 @@
 {{-- Content Row END --}}
 
 {{-- Content Row --}}
-    <div class="row">
+    {{-- <div class="row">
 
         <!-- Earnings (Monthly) Card Example -->
         <div class="col-xl-4 col-md-6 mb-4">
@@ -106,7 +108,7 @@
             </div>
         </div>
 
-    </div>
+    </div> --}}
 {{-- Content Row END --}}
 
 

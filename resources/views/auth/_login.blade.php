@@ -6,7 +6,13 @@
     <span class="login100-form-title">
         SISTEMA INTEGRAL DE RECURSOS MATERIALES
     </span>
-
+   {{-- mensaje del sistema --}}
+    @if ($message = Session::get('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>Error!</strong> {{ $message }}
+        </div>
+    @endif
+   {{-- mensaje del sistema END --}}
     <div class="wrap-input100 validate-input" data-validate = "correo válido requerido: ex@abc.xyz">
         <input class="input100" type="text" name="email" placeholder="Correo electrónico" autocomplete="off">
         <span class="focus-input100"></span>

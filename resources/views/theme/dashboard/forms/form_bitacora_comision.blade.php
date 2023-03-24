@@ -72,7 +72,7 @@
         z-index: 1000;
         float: left;
         display: none;
-        min-width: 160px;   
+        min-width: 160px;
         padding: 4px 0;
         margin: 0 0 10px 25px;
         list-style: none;
@@ -124,7 +124,7 @@
         table caption {
                 font-size: 1.3em;
         }
-            
+
         table thead {
             border: none;
             clip: rect(0 0 0 0);
@@ -135,20 +135,20 @@
             position: absolute;
             width: 1px;
         }
-            
+
         table tr {
             border-bottom: 3px solid #ddd;
             display: block;
             margin-bottom: .625em;
         }
-            
+
         table td {
             border-bottom: 1px solid #ddd;
             display: block;
             font-size: .8em;
             text-align: right;
         }
-            
+
         table td::before {
             /*
             * aria-label has no advantage, it won't be read inside a table
@@ -159,10 +159,13 @@
             font-weight: bold;
             text-transform: uppercase;
         }
-            
+
         table td:last-child {
             border-bottom: 0;
         }
+    }
+    .error{
+	    color: red;
     }
  </style>
 @endsection
@@ -186,7 +189,7 @@
                         <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-route"></i> Bitacora de Comisión para el vehiculo {{ $preComision->marca_vehiculo }}</h6>
                     </div>
                     <div class="card-body">
-                        <form method="POST" action="{{ route('comision.pre.send.to.request') }}">
+                        <form id="form_bitacora_comision" method="POST" action="{{ route('comision.pre.send.to.request') }}">
                             @csrf
                             <div class="form-row">
                                 <div class="col-md-8 mb-3">
@@ -206,7 +209,7 @@
                                             </div>
                                         @enderror
                                     </div>
-                                </div> 
+                                </div>
                             </div>
                             <div class="form-row">
                                 <div class="col-md-4 mb-3">
@@ -229,7 +232,7 @@
                                 <div class="col-md-4 mb-3">
                                     <label for="placas_comision">Placas de Vehiculo</label>
                                     <div class="custom-file">
-                                        <input type="text" class="@error('placas_comision') is-invalid @enderror typeahead form-control" id="placas_comision" name="placas_comision" placeholder="Placas de Vehiculo" autocomplete="off" value="{{ $catAutomovil->placas }}">
+                                        <input type="text" class="@error('placas_comision') is-invalid @enderror typeahead form-control" id="placas_comision" name="placas_comision" placeholder="Placas de Vehiculo" autocomplete="off" value="{{ $catAutomovil->placas }}" readonly />
                                         @error('placas_comision')
                                             <div class="alert alert-danger mt-1 mb-1">
                                                 {{ $message }}
@@ -288,13 +291,13 @@
                                     <label for="placas">Responsable de la Unidad</label>
                                     <div class="custom-file">
                                         <input type="text" class="form-control" id="responsableUnidad" name="responsableUnidad" readonly value="{{ $catAutomovil->resguardante_unidad }}">
-                                    </div> 
+                                    </div>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="placas">Puesto del responsable de la unidad</label>
                                     <div class="custom-file">
                                         <input type="text" class="form-control" id="puestoResponsableUnidad" readonly name="puestoResponsableUnidad" readonly value="{{ $catAutomovil->puesto_resguardante_unidad }}">
-                                    </div> 
+                                    </div>
                                 </div>
                             </div>
                             <hr>
@@ -303,7 +306,7 @@
                                     <label for="placas">Nombre del Conductor</label>
                                     <div class="custom-file">
                                         <input type="text" class="form-control" id="nombreConductor" name="nombreConductor" autocomplete="off">
-                                    </div> 
+                                    </div>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -311,14 +314,14 @@
                                     <label for="kmInicial">Kilometro Inicial</label>
                                     <div class="custom-file">
                                         <input type="text" class="form-control" id="kmInicial" name="kmInicial" autocomplete="off">
-                                    </div> 
+                                    </div>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="kmFinal">Kilometro Final</label>
                                     <div class="custom-file">
                                         <input type="text" class="form-control" id="kmFinal" name="kmFinal" autocomplete="off">
-                                    </div> 
-                                </div> 
+                                    </div>
+                                </div>
                             </div>
                             <input type="hidden" class="form-control" name="idcatvehiculo" id="idcatvehiculo" readonly value="{{ $catAutomovil->vehiculoId }}">
                             <hr>
@@ -335,6 +338,7 @@
                                         <th  style="width: 11%;">Fecha</th>
                                         <th  style="width: 13%;">De:</th>
                                         <th  style="width: 13%;">a: </th>
+                                        <th style="width: 13%">Tipo:</th>
                                         <th style="width: 7%;">...</th>
                                       </tr>
                                     </thead>
@@ -350,20 +354,32 @@
                                             <td>
                                                 <textarea name="addcomision[{{ $i->id }}][a_comision]" class="form-control">{{ $i->_a }}</textarea>
                                             </td>
+                                            <td>
+                                                <select name="addcomision[{{ $i->id }}][tipo]" class="form-control">
+                                                    <option value="">-- SELECCIONAR --</option>
+                                                    <option value="RECORRIDO" {{ ($i->tipo == 'RECORRIDO') ? 'selected' : ''}}>RECORRIDO</option>
+                                                    <option value="PUNTO_A_PUNTO" {{ ($i->tipo == 'PUNTO_A_PUNTO') ? 'selected' : '' }}>PUNTO A PUNTO</option>
+                                                </select>
+                                            </td>
                                             <td data-label="...">
                                                 <button type="button" class="btn btn-danger btn-circle btn-sm remove-tr">
                                                     <i class="fas fa-minus-circle"></i>
                                                 </button>
                                             </td>
                                         <tr>
-                                      @endforeach 
+                                      @endforeach
                                     </tbody>
                                 </table>
                             </div>
                             <hr>
                             {{-- botón de agregar elemento de la bitacora --}}
                             <button type="button" name="addItemcomision" id="addItemcomision" class="btn btn-secondary btn-md">
-                                <i class="fas fa-file-invoice"></i> <b>Agregar Comisión</b>
+                                <i class="fas fa-file-invoice"></i>
+                                <b>Agregar Comisión</b>
+                            </button>
+                            <button type="button" name="calcularComision" id="calcularComision" class="btn btn-warning btn-md">
+                                <i class="fas fa-calculator"></i>
+                                Calcular Comisión
                             </button>
                             <br><br>
                             {{-- botón de agregar elemento de la bitacora END --}}
@@ -417,7 +433,7 @@
                                     <label for="placas">OBSERVACIONES</label>
                                     <div class="custom-file">
                                         <textarea name="observaciones" id="observaciones" cols="30" rows="5" class="form-control"></textarea>
-                                    </div> 
+                                    </div>
                                 </div>
                             </div>
                             {{-- comentarios END --}}
@@ -428,6 +444,30 @@
                             </button>
                             <input type="hidden" name="periodo_comision_actual" id="periodo_comision_actual"/>
                             <input type="hidden" name="pre_comision_id" id="pre_comision_id" value="{{ base64_encode($preComision->id) }}">
+                           @switch($preComision->rendimiento)
+                               @case('RENDIMIENTO_MIXTO')
+                                 @php
+                                  $rend = $catAutomovil->rendimiento_mixto;
+                                 @endphp
+                                @break
+                               @case('RENDIMIENTO_CIUDAD')
+                                 @php
+                                  $rend = $catAutomovil->rendimiento_ciudad;
+                                 @endphp
+                                @break
+                                @case('RENDIMIENTO_CARRETERA')
+                                 @php
+                                    $rend = $catAutomovil->rendimiento_carretera;
+                                 @endphp
+                                @break
+                                @case('RENDIMIENTO_CARGA')
+                                 @php
+                                    $rend = $catAutomovil->rendimiento_carga;
+                                 @endphp
+                                @break
+                               @default
+                           @endswitch
+                           <input type="hidden" name="rendimiento_final" id="rendimiento_final" value="{{ $rend }}">
                         </form>
                     </div>
                 </div>
@@ -447,7 +487,7 @@
                 <div class="modal-body">
                     <div class="row"></div>
                     <div class="col-lg-12 modal-content-dialog">
-                        
+
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -468,42 +508,43 @@
                     <div class="modal-body">
                        {{-- contenido --}}
                         <div class="form-row">
-                            <div class="col-md-4 mb-3">
+                            <div class="col-md-3 mb-3">
                                 <label for="placas">Placas Vehículos</label>
                                 <div class="custom-file">
                                     <label for=""><h5>{{ $preComision->placas_vehiculo }}</h5></label>
-                                </div> 
+                                </div>
                             </div>
-                            <div class="col-md-4 mb-3">
+                            <div class="col-md-3 mb-3">
                                 <label for="placas">Marca Vehículo</label>
                                 <div class="custom-file">
                                     <label for=""><h5>{{ $preComision->marca_vehiculo }}</h5></label>
-                                </div> 
+                                </div>
                             </div>
-                            <div class="col-md-4 mb-3">
+                            <div class="col-md-3 mb-3">
                                 <label for="placas">Rendimiento</label>
                                 <div class="custom-file">
                                     <label for="">
                                         <h5>
                                            @switch($preComision->rendimiento)
-                                               @case('rendimiento_mixto')
+                                               @case('RENDIMIENTO_MIXTO')
                                                     Rendimiento Mixto
-                                                   @break
-                                               @case('rendimiento_ciudad')
+                                                @break
+                                               @case('RENDIMIENTO_CIUDAD')
                                                    Rendimiento de Ciudad
-                                                   @break
-                                                @case('rendimiento_carretera')
+                                                @break
+                                                @case('RENDIMIENTO_CARRETERA')
                                                     Rendimiento de Carretera
-                                                    @break
-                                                @case('rendimiento_carga')
+                                                @break
+                                                @case('RENDIMIENTO_CARGA')
                                                     Rendimiento de Carga
-                                                    @break
-                                               @default
-                                                   
+                                                @break
+
+                                                @default
+
                                            @endswitch
                                         </h5>
                                     </label>
-                                </div> 
+                                </div>
                             </div>
                         </div>
                        {{-- contenido END --}}
@@ -512,28 +553,43 @@
                                 <label for="placas">Costo del Combustible por Litro</label>
                                 <div class="custom-file">
                                     <label for=""><h5>{{ $preComision->costo_combustible }} Lts</h5></label>
-                                </div> 
+                                </div>
                             </div>
                             <div class="col-md-3 mb-3">
                                 <label for="placas">Kilometros totales</label>
                                 <div class="custom-file">
                                     <label for=""><h5>{{ $preComision->km_totales }} Kms</h5></label>
-                                </div> 
+                                </div>
                             </div>
                             <div class="col-md-3 mb-3">
                                 <label for="placas">Pejae Total</label>
                                 <div class="custom-file">
                                     <label for=""><h5>${{ $preComision->peaje }}.00</h5></label>
-                                </div> 
+                                </div>
                             </div>
                             <div class="col-md-3 mb-3">
                                 <label for="placas">Monto Total de Combustible</label>
                                 <div class="custom-file">
                                     <label for=""><h5>${{ $preComision->monto_total }}</h5></label>
-                                </div> 
+                                </div>
                             </div>
                        </div>
-                       <div class="table_wrapper">
+                       <div class="form-row">
+                          {{-- rendimiento --}}
+                            <div class="col-md-4 mb-3">
+                                <label for="monto_total_rendimiento">Rendimiento del Vehículo</label>
+                                <div class="custom-file">
+                                    <label for=""><h5>{{ $preComision->rendimiento }}</h5></label>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="monto_total_rendimiento">Monto Total de Rendimiento</label>
+                                <div class="custom-file">
+                                    <label for=""><h5>${{ $preComision->monto_total_rendimiento }}</h5></label>
+                                </div>
+                            </div>
+                       </div>
+                        <div class="table_wrapper">
                             <table class="table table-bordered" id="totalesDinamicos">
                                 <thead>
                                     <tr>
@@ -572,6 +628,14 @@
 @section('contenidoJavaScript')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <script src="{{ asset('assets/js_/typehead.min.js') }}"></script>
+{{-- agregar assets de javascript --}}
+    <script src="{{ asset('assets/jqueryvalidate/jquery.validate.min.js') }}"></script>
+    <script src="{{ asset('assets/jqueryvalidate/additional-methods.min.js') }}"></script>
+    <script src="{{ asset('assets/jqueryvalidate/metodos/validate_comision.js') }}"></script>
+{{-- agregar assets de javascritp END --}}
+{{-- agregar un método js --}}
+    <script type="module" src="{{ asset('assets/jqueryvalidate/metodos/calcular_comision.js') }}"></script>
+{{-- agregar un método js END --}}
     <script type="text/javascript">
         $.ajaxSetup({
             headers: {
@@ -581,8 +645,8 @@
         $(document).ready(function(){
             // código utilizado
             const month_array = [    "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-                                        "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
-                                    ];
+                                     "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+                                ];
             var d = new Date();
             var month = d.getMonth();
             var day = d.getDate();
@@ -598,6 +662,12 @@
                         '<i class="fas fa-calendar fa-4x"></i>'+
                         '<br />'+
                         '<span class="text">2° Quincena de '+ month_array[month] +' del '+ year +'</span>'+
+                    '</button>' +
+                    '&nbsp;&nbsp;' +
+                    '<button class="btn btn-squared-default btn-primary" value="Mes de '+ month_array[month] +' del '+ year +'">'+
+                        '<i class="fas fa-calendar fa-4x"></i>'+
+                        '<br />'+
+                        '<span class="text">Mes de '+ month_array[month] +' del '+ year +'</span>'+
                     '</button>'
             );
 
@@ -616,7 +686,7 @@
                 if (j < max_fields) {
                     j++;
                     $("#recorridotable").append(
-                        '<tr>'+ 
+                        '<tr>'+
                             '<td>' +
                                 '<input type="date" name="addcomision['+ j +'][fecha_comision]" class="form-control"/>' +
                             '</td>' +
@@ -626,6 +696,13 @@
                             '<td>' +
                                 '<textarea name="addcomision['+ j +'][a_comision]" class="form-control"></textarea>' +
                             '</td>' +
+                            '<td>' +
+                                '<select name="addcomision['+ j +'][tipo]" id="tipo[]" class="form-control" onfocus="this.selectedIndex = 0;">'+
+                                    '<option value="">-- SELECCIONAR --</option>'+
+                                    '<option value="RECORRIDO">RECORRIDO</option>' +
+                                    '<option value="PUNTO_A_PUNTO">PUNTO A PUNTO</option>' +
+                                '</select>' +
+                            '</td>'+
                             '<td data-label="...">'+
                                 '<button type="button" class="btn btn-danger btn-circle btn-sm remove-tr">'+
                                     '<i class="fas fa-minus-circle"></i>'+
@@ -645,13 +722,13 @@
                                 '<input type="text" class="form-control" name="addcomisiones['+ i +'][factura]" id="facturas[]"/>' +
                             '</td>' +
                             '<td>' +
-                                '<input type="text" name="addcomisiones[' + i +'][litros]" id="litros[]" onchange="calcularLitrosTotales(this);" class="form-control lts_comision" autocomplete="off"/>' +
+                                '<input type="text" name="addcomisiones[' + i +'][litros]" id="litros[]" class="form-control lts_comision" autocomplete="off"/>' +
                             '</td>' +
                             '<td>' +
-                                '<input type="text" class="form-control unitario_precio" name="addcomisiones[' + i +'][pu]" id="precioUnitario[]" onchange="calcularPrecioUnitario(this);" autocomplete="off"/>' +
+                                '<input type="text" class="form-control unitario_precio" name="addcomisiones[' + i +'][pu]" id="precioUnitario[]" autocomplete="off"/>' +
                             '</td>' +
                             '<td>' +
-                                '<input type="text" class="form-control importe" name="addcomisiones[' + i +'][importe]" id="totalImporte[]" onchange="calcularImporteTotal(this);" autocomplete="off"/>' +
+                                '<input type="text" class="form-control importe_unitario" name="addcomisiones[' + i +'][importe]" id="totalImporte[]" autocomplete="off"/>' +
                             '</td>' +
                             '<td data-label="...">'+
                                 '<button type="button" class="btn btn-danger btn-circle btn-sm remove-tr-comision">'+
@@ -673,7 +750,7 @@
             });
 
             /**
-            *@argument - creacion de funcion para eliminar elemento de la comisión
+            *@argument - creacion de función para eliminar elemento de la comisión
             */
             $(document).on('click', '.remove-tr-comision', function(e){
                 e.preventDefault();
@@ -763,14 +840,26 @@
                     arreglo.sort(function (a,b) {
                         return b-a;
                     });
-                    
+
                     var sumatoria = calculo(arreglo);
-                    
+
                     var importe = sumatoria * denominacionVales;
                     $(this).closest('tr').find('.importe').val(importe);
                 }
             });
 
+            /**@author
+             * función Javascript para hacer el calculo directo entre los litros del item
+             * y el precio del litro que maneja cada apartado
+            */
+           $(document).on('keyup', '.unitario_precio', '.lts_comision', function() {
+                var ltsComision = $(this).closest('tr').find('.lts_comision').val();
+                var unitarioPrecio = $(this).closest('tr').find('.unitario_precio').val();
+                if (ltsComision.length > 0 && unitarioPrecio.length > 0) {
+                    let importeTotal = ltsComision * unitarioPrecio;
+                    $(this).closest('tr').find('.importe_unitario').val(importeTotal);
+                }
+           });
             /*
             * funcion para checar caracteres especiales
             */
@@ -800,25 +889,25 @@
                 }
             }
 
-            $("#kmFinal").blur(function(){
-               var kmInicial =  $('#kmInicial').val();
-               var kmFinal =  $(this).val();
-               if (kmInicial != '' && kmFinal != '') {
-                    var ki = parseFloat(kmInicial,10);
-                    var kf = parseFloat(kmFinal,10);
-                   if (ki < kf) {
-                        var dk = kf - ki;
-                        var km_totales = document.getElementById("km_totales");
-                        if (km_totales.value == 'NaN') {
-                            km_totales.value = 0;
-                        }
-                        km_totales.value = dk;
-                   }
-               } else {
-                    var km_totales = document.getElementById("km_totales");
-                    km_totales.value = 'NaN';
-               }
-	        });
+            // $("#kmFinal").blur(function(){
+            //    var kmInicial =  $('#kmInicial').val();
+            //    var kmFinal =  $(this).val();
+            //    if (kmInicial != '' && kmFinal != '') {
+            //         var ki = parseFloat(kmInicial,10);
+            //         var kf = parseFloat(kmFinal,10);
+            //        if (ki < kf) {
+            //             var dk = kf - ki;
+            //             var km_totales = document.getElementById("km_totales");
+            //             if (km_totales.value == 'NaN') {
+            //                 km_totales.value = 0;
+            //             }
+            //             km_totales.value = dk;
+            //        }
+            //    } else {
+            //         var km_totales = document.getElementById("km_totales");
+            //         km_totales.value = 'NaN';
+            //    }
+	        // });
 
             $('input#_kilometroInicial').on('input', function() {
                 this.value = this.value.replace(/[^0-9.,]/g, '').replace(/(\..*?)\..*/g, '$1');
@@ -858,12 +947,12 @@
                         }
                     });
                 } else {
-                    
+
                 }
             });
 
             $('#periodo_comision').click(function () {
-                $('#exampleModal').modal('show'); 
+                $('#exampleModal').modal('show');
             });
 
             /** @argument - arg
@@ -899,6 +988,12 @@
                             '<i class="fas fa-calendar fa-4x"></i>'+
                             '<br />'+
                             '<span class="text">2° Quincena de '+ nombre_mes[mes_actual] +' del '+ anio_actual +'</span>'+
+                        '</button>' +
+                        '&nbsp;&nbsp;' +
+                        '<button class="btn btn-squared-default btn-primary" onclick="cargarPeriodo(\''+ 'Mes de '+ nombre_mes[mes_actual] +' del '+ anio_actual + '\')" >'+
+                            '<i class="fas fa-calendar fa-4x"></i>'+
+                            '<br />'+
+                            '<span class="text">Mes de '+ nombre_mes[mes_actual] +' del '+ anio_actual +'</span>'+
                         '</button>'
                 );
             });
@@ -937,7 +1032,7 @@
                 }
             });
         });
-        /** 
+        /**
         * funciones javascripts puras
         */
 
@@ -958,7 +1053,7 @@
             if (ltsTotales.value == 'NaN') {
                 ltsTotales.value = 0;
             }
-            var litrosTotales = parseFloat(ltsTotales.value) + litrosTotales; 
+            var litrosTotales = parseFloat(ltsTotales.value) + litrosTotales;
             ltsTotales.value = roundToTwo(litrosTotales);
         }
 
@@ -1020,11 +1115,19 @@
             var periodo = argumento;
             // obtener el primer carácter del periodo
             var primerCaracter = periodo.charAt(0);
-            $('#periodo_comision').val(periodo);
-            $('#periodo_comision_actual').val(primerCaracter);
+            if (isNaN(primerCaracter)) {
+                //es verdadero para un valor NaN
+                $('#periodo_comision').val(periodo);
+                $('#periodo_comision_actual').val(0);
+            } else {
+                // es falso para un valor numérico válido
+                $('#periodo_comision').val(periodo);
+                $('#periodo_comision_actual').val(primerCaracter);
+            }
+
         }
 
-        function roundToTwo(num) {    
+        function roundToTwo(num) {
             return +(Math.round(num + "e+2")  + "e-2");
         }
 
@@ -1051,7 +1154,7 @@
                 pu.value = round(parseFloat(pu.value).toFixed(2) - element);
             }
         }
-        
+
         function restarimporte(arg){
             var element = 0;
             element = parseFloat(arg, 2);
@@ -1062,6 +1165,7 @@
                 importes.value = round(parseFloat(importes.value).toFixed(2) - element);
             }
         }
+
     </script>
 @endsection
 {{-- DISEÑADO Y DESARROLLADO POR MIS. DANIEL MÉNDEZ CRUZ --}}

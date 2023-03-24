@@ -12,7 +12,7 @@ class PuntoAPunto extends Model
     public $timestamps = true;
 
     protected $fillable = [
-        'id', '_de', '_a', 'peaje', 'pre_comision_id'
+        'id', '_de', '_a', 'peaje', 'pre_comision_id', 'tipo'
     ];
 
     protected $hidden = ['created_at', 'updated_at'];

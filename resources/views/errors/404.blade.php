@@ -1,7 +1,5 @@
 {{-- DISEÑADO Y DESARROLLADO POR MIS. DANIEL MÉNDEZ CRUZ --}}
-@extends('theme.dashboard.main')
-
-@section('title', 'Página no encontrada | ICATECH')
+@extends('errors.error_layout')
 
 @section('contenidoCss')
  <style>
@@ -15,16 +13,12 @@
 
 {{-- Content Row --}}
     <!-- Begin Page Content -->
-    <div class="container-fluid">
-
-        <!-- 404 Error Text -->
-        <div class="text-center">
-            <div class="error mx-auto" data-text="404">404</div>
-            <p class="lead text-gray-800 mb-5">Página no encontrada</p>
-            <p class="text-gray-500 mb-0">Parece que la página que buscas no se encuentra en el sistema ...</p>
-            <a href="index.html">&larr; Regresar al Inicio</a>
-        </div>
-
+    <h1>404</h1>
+    <div>
+        <p>> <span>CODIGO DE ERROR</span>: "<i>HTTP 404 Página no encontrada</i>"</p>
+        <p>> <span>DESCRIPCIÓN DEL ERROR</span>: "<i> No se ha encontrado esta página en el sitio</i>"</p>
+        <p>> <span>POSIBLE ERROR CAUSADO POR</span>: [<b>No se ha encontrado la página que se busca o hace referencia en el sistema.</b>...]</p>
+        <p>> <span>REGRESO AL TABLERO PRINCIPAL DEL SISTEMA</span>: [<a href="{{ route('dashboard') }}">Página de Inicio</a> ...]</p>
     </div>
     <!-- /.container-fluid -->
 {{-- Content Row END --}}

@@ -1,7 +1,7 @@
 {{-- DISEÑADO Y DESARROLLADO POR MIS. DANIEL MÉNDEZ CRUZ --}}
 @extends('theme.dashboard.main')
 
-@section('title', 'SOLICITUD BITÁCORA DE COMISIÓN - GUARDADO | SISCOM by ICATECH')
+@section('title', 'SOLICITUD BITÁCORA DE COMISIÓN - GUARDADO | SIRMAT by ICATECH')
 
 @section('contenidoCss')
  <style>
@@ -72,7 +72,7 @@
         z-index: 1000;
         float: left;
         display: none;
-        min-width: 160px;   
+        min-width: 160px;
         padding: 4px 0;
         margin: 0 0 10px 25px;
         list-style: none;
@@ -124,7 +124,7 @@
         table caption {
                 font-size: 1.3em;
         }
-            
+
         table thead {
             border: none;
             clip: rect(0 0 0 0);
@@ -135,20 +135,20 @@
             position: absolute;
             width: 1px;
         }
-            
+
         table tr {
             border-bottom: 3px solid #ddd;
             display: block;
             margin-bottom: .625em;
         }
-            
+
         table td {
             border-bottom: 1px solid #ddd;
             display: block;
             font-size: .8em;
             text-align: right;
         }
-            
+
         table td::before {
             /*
             * aria-label has no advantage, it won't be read inside a table
@@ -159,7 +159,7 @@
             font-weight: bold;
             text-transform: uppercase;
         }
-            
+
         table td:last-child {
             border-bottom: 0;
         }
@@ -178,39 +178,23 @@
                 @if ($message = Session::get('error'))
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
                         <strong>Error!</strong> {{ $message }}
-                    </div> 
+                    </div>
                 @elseif ($message = Session::get('success'))
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
                         <strong>Bien Hecho!</strong> {{ $message }}
                     </div>
                 @endif
-                <!-- Illustrations -->
+               {{-- contenido principal --}}
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-route"></i>&nbsp; TRABAJO DE COMISIONES BITÁCORA</h6>
+                        <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-route"></i>&nbsp;  COMISIONES PRE-BITÁCORA</h6>
                     </div>
                     <div class="card-body">
                         <form method="POST" action="{{ route('solicitud.pre.comision.store') }}">
                             @csrf
                             <div class="form-row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="placas_comision">Rendimiento</label>
-                                    <select name="rendimiento_vehiculo" id="rendimiento_vehiculo" class="form-control">
-                                        <option value="">--SELECCIONAR--</option>
-                                        @foreach ($array_rendimiento as $k => $v)
-                                            <option value="{{ $k }}" {{ $k == 'rendimiento_mixto' ? 'selected': '' }}>{{ $v }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="placas_comision">Costo de Combustible</label>
-                                    <input type="text" class="form-control" id="costo_combustible" placeholder="costo de combustible" name="costo_combustible" autocomplete="off">
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="col-md-6 mb-3">
+                               {{-- placas de vehiculo --}}
+                               <div class="col-md-6 mb-3">
                                     <label for="placas_comision">Placas de Vehiculo</label>
                                     <div class="custom-file">
                                         <input type="text" class="@error('placas_comision') is-invalid @enderror typeahead form-control" id="placas_comision" name="placas_comision" placeholder="Placas de Vehiculo" autocomplete="off">
@@ -221,6 +205,18 @@
                                         @enderror
                                     </div>
                                 </div>
+                               {{-- placas de vehiculo END --}}
+                            </div>
+                            <div class="form-row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="placas_comision">Rendimiento</label>
+                                    <select name="rendimiento_vehiculo" id="rendimiento_vehiculo" class="form-control">
+                                        <option value="">--SELECCIONAR--</option>
+                                        @foreach ($array_rendimiento as $k => $v)
+                                            <option value="{{ $k }}" {{ $k == 'rendimiento_mixto' ? 'selected': '' }}>{{ $v }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="marca_vehiculo">Marca del Vehiculo</label>
                                     <div class="custom-file">
@@ -228,7 +224,27 @@
                                     </div>
                                 </div>
                             </div>
-
+                            <hr>
+                            <div class="form-row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="placas_comision">Rendimiento del Vehículo</label>
+                                    <input type="text" class="form-control" id="rendimiento_valor" placeholder="Rendimiento Vehículo" name="rendimiento_valor" autocomplete="off" readonly>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="placas_comision">Costo de Combustible</label>
+                                    <input type="text" class="form-control" id="costo_combustible" placeholder="costo de combustible" name="costo_combustible" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="placas_comision">Kilometraje Total</label>
+                                    <input type="text" class="form-control" id="km_total" placeholder="Kilometraje Total" name="km_total" autocomplete="off">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="placas_comision">Monto Total de Combustible (Aproximado)</label>
+                                    <input type="text" class="form-control" id="monto_total_rendimiento" placeholder="Monto Total de Combustible" name="monto_total_rendimiento" autocomplete="off" readonly>
+                                </div>
+                            </div>
                             <input type="hidden" class="form-control" name="idcatvehiculo" id="idcatvehiculo">
                             <input type="hidden" name="rendimiento_ciudad" id="rendimiento_ciudad">
                             <input type="hidden" name="rendimiento_carretera" id="rendimiento_carretera">
@@ -239,7 +255,7 @@
                                 <div class="col-md-2 mb-1">
                                     {{-- botón de agregar elemento de la bitacora --}}
                                     <button type="button" name="addpuntoapunto" id="addpuntoapunto" class="btn btn-secondary btn-md">
-                                        <i class="fas fa-route"></i> <b>Agregar Punto a Punto</b>
+                                        <i class="fas fa-route"></i> <b>Agregar Recorrido</b>
                                     </button>
                                 </div>
                                 <div class="col-md-2 mb-1">
@@ -261,11 +277,12 @@
                                 <table class="table table-bordered" id="puntoapunto">
                                     <thead>
                                         <tr>
-                                          <th  style="width: 20%;">DE</th>
-                                          <th  style="width: 20%;">A</th>
-                                          <th  style="width: 20%;">KMS</th>
-                                          <th style="width: 20%;">PEAJE</th>
-                                          <th style="width: 20%;">...</th>
+                                          <th  style="width: 16.5%;">DE</th>
+                                          <th  style="width: 16.5%;">A</th>
+                                          <th  style="width: 16.5%;">KMS</th>
+                                          <th style="width: 16.5%;">PEAJE</th>
+                                          <th style="width: 16.5%">TIPO</th>
+                                          <th style="width: 16.5%;">...</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -318,7 +335,9 @@
 @section('contenidoJavaScript')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <script src="{{ asset('assets/js_/typehead.min.js') }}"></script>
+    <script type="module" src="{{ asset('assets/jqueryvalidate/metodos/CalcularMonto.js') }}"></script>
     <script type="text/javascript">
+        // import { getRendimiento } from "{{ asset('assets/jqueryvalidate/metodos/CalcularMonto.js') }}";
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': "{{ csrf_token() }}"
@@ -326,7 +345,7 @@
         });
         $(document).ready(function(){
             // código utilizado
-            
+
             var j = -1; //elemento inicial contador
             var i = -1;
             var max_fields = 200; //maximo elementos permitidos
@@ -339,7 +358,7 @@
                 if (j < max_fields) {
                     j++;
                     $("#puntoapunto").append(
-                        '<tr>'+ 
+                        '<tr>'+
                             '<td>' +
                                 '<textarea name="puntoapunto['+ j +'][de]" id="de[]" class="form-control"></textarea>' +
                             '</td>' +
@@ -347,12 +366,18 @@
                                 '<textarea name="puntoapunto['+ j +'][a]" id="a[]" class="form-control"></textarea>' +
                             '</td>' +
                             '<td>' +
-                                '<input type="text" name="puntoapunto['+ j +'][kms]" id="kms[]" onchange="calculoKmTotal(this);" class="form-control kmsitems"/>' +
+                                '<input type="text" name="puntoapunto['+ j +'][kms]" id="kms[]" onchange="calculoKmTotal(this);" autocomplete="off" class="form-control kmsitems"/>' +
                             '</td>' +
                             '<td>' +
-                                '<input type="text" name="puntoapunto['+ j +'][peaje]" id="peaje[]" onchange="calcularPeaje(this);" class="form-control importes_item"/>' +
+                                '<input type="text" name="puntoapunto['+ j +'][peaje]" id="peaje[]" onchange="calcularPeaje(this);" autocomplete="off"  class="form-control importes_item"/>' +
                             '</td>' +
-                            
+                            '<td>' +
+                                '<select name="puntoapunto['+ j +'][tipo]" id="tipo[]" class="form-control" onfocus="this.selectedIndex = 0;">'+
+                                    '<option value="">-- SELECCIONAR --</option>' +
+                                    '<option value="RECORRIDO">RECORRIDO</option>' +
+                                    '<option value="PUNTO_A_PUNTO">PUNTO A PUNTO</option>' +
+                                '</select>' +
+                            '</td>' +
                             '<td data-label="...">'+
                                 '<button type="button" class="btn btn-danger btn-circle btn-sm remove-tr">'+
                                     '<i class="fas fa-minus-circle"></i>'+
@@ -369,7 +394,9 @@
                 var importes = $(this).closest('tr').find('.importes_item').val();
                 var kms = $(this).closest('tr').find('.kmsitems').val();
                 restarimporte(importes);
-                restarKmTotales(kms);
+                let resultadorkmTotales = restarKmTotales(kms);
+                // obtener los datos para restar el monto
+                montoTotalFunction(resultadorkmTotales);
                 // se remueve la parte de la tabla
                 $(this).parents('tr').remove();
                 j--; //Decrement field counter
@@ -475,6 +502,11 @@
                 }
             });
 
+            /**@argument
+             *
+             * función para autocompletar el campo placa de vehículo con la información
+             * que está filtrando en el campo
+            */
             $("input.typeahead").focus(function(){
                 if ($('input.typeahead').val().length != 0) {
                     var url = "{{ route('softload') }}";
@@ -495,15 +527,36 @@
                             $('#rendimiento_carretera').val(response[0]['rendimiento_carretera']);
                             $('#rendimiento_mixto').val(response[0]['rendimiento_mixto']);
                             $('#rendimiento_carga').val(response[0]['rendimiento_carga']);
+
+                            /*
+                            * vamos a utilizar un switch para hacer un cambio con el rendimiento
+                            */
+                           let valor_rendimiento_vehiculo = $('#rendimiento_vehiculo').val();
+                           switch (valor_rendimiento_vehiculo) {
+                                case 'rendimiento_carretera':
+                                    $('#rendimiento_valor').val(response[0]['rendimiento_carretera']);
+                                break;
+                                case 'rendimiento_ciudad':
+                                    $('#rendimiento_valor').val(response[0]['rendimiento_ciudad']);
+                                break;
+                                case 'rendimiento_mixto':
+                                    $('#rendimiento_valor').val(response[0]['rendimiento_mixto']);
+                                break;
+                                case 'rendimiento_carga':
+                                    $('#rendimiento_valor').val(response[0]['rendimiento_carga']);
+                                break;
+                               default:
+                                break;
+                           }
                         }
                     });
                 } else {
-                    
+
                 }
             });
 
             $('#periodo_comision').click(function () {
-                $('#exampleModal').modal('show'); 
+                $('#exampleModal').modal('show');
             });
 
             /** @argument - arg
@@ -577,7 +630,7 @@
                 }
             });
         });
-        /** 
+        /**
         * funciones javascripts puras
         */
 
@@ -598,7 +651,7 @@
             if (ltsTotales.value == 'NaN') {
                 ltsTotales.value = 0;
             }
-            var litrosTotales = parseFloat(ltsTotales.value) + litrosTotales; 
+            var litrosTotales = parseFloat(ltsTotales.value) + litrosTotales;
             ltsTotales.value = roundToTwo(litrosTotales);
             calcularrendimiento(ltsTotales.value);
         }
@@ -682,6 +735,9 @@
         }
 
         function calculoKmTotal(argumento){
+            /**
+             *  pasamos los argumentos para calcular el km total y obtener el km de ese nodo en el momento.
+            */
             var km_actual = 0, kmsanterior = 0;
             var montoTotal = 0, rendimiento = 0;
             var t = argumento.parentNode.parentNode;
@@ -712,9 +768,10 @@
             if (km_totales.value == 'NaN') {
                 km_totales.value = 0;
             }
+            // checamos si está vacio o es nullo tanto el costo_combustible como km_total
             km_totales.value = parseFloat(km_actual) + parseFloat(km_totales.value);
             montoTotal = parseFloat(km_totales.value) / parseFloat(rendimiento) * parseFloat(costo_combustible.value);
-            
+
             var monto_total = document.getElementById("monto_total");
             if (monto_total.value == 'NaN') {
                 monto_total.value = 0;
@@ -743,7 +800,7 @@
             importe_total.value = parseFloat(peaje) + parseFloat(importe_total.value);
         }
 
-        function roundToTwo(num) {    
+        function roundToTwo(num) {
             return +(Math.round(num + "e+2")  + "e-2");
         }
 
@@ -772,7 +829,7 @@
                     importes.value = 0;
                 } else {
                     importes.value = round(parseFloat(importes.value).toFixed(2) - element);
-                }   
+                }
             }
         }
         /*
@@ -786,9 +843,46 @@
                 if (kmTotales.value == 'NaN' || kmTotales.value == 0) {
                     kmTotales.value = 0;
                 } else {
-                    kmTotales.value = round(parseFloat(kmTotales.value).toFixed(2) - element);
-                }   
+                    let kmTotal = round(parseFloat(kmTotales.value).toFixed(2) - element); // asignación de un resultado a la variable
+                    kmTotales.value = kmTotal; // asignación de la variable que contiene el resultado de la operación al valor de un input
+                    return kmTotal; // retorno de una variable
+                }
             }
+        }
+        /*
+        * restar importe o monto_total
+        */
+        const montoTotalFunction = (resultadoRestaKmT) => {
+            // declaración de variables
+            let  performance = 0, montoTotal = 0;
+            //obtener el rendimiento del vehiculo
+            let rendimientoVehiculo = document.getElementById("rendimiento_vehiculo");
+            switch (rendimientoVehiculo.value) {
+                case 'rendimiento_mixto':
+                    let rmixto = document.getElementById("rendimiento_mixto");
+                    performance = rmixto.value;
+                    break;
+                case 'rendimiento_carga':
+                    let rcarga = document.getElementById("rendimiento_carga");
+                    performance = rcarga.value;
+                    break;
+                default:
+                    break;
+            }
+
+            // obtener el costo combustible
+            let costoCombustible = document.getElementById("costo_combustible");
+            // checar si el kilometro total está vacio o no
+            if (resultadoRestaKmT === 'NaN' || resultadoRestaKmT === "") {
+                resultadoRestaKmT = 0
+            }
+            montoTotal = parseFloat(resultadoRestaKmT) / parseFloat(performance) * parseFloat(costoCombustible.value);
+            //llamar a monto total input
+            let montoTotalInput = document.getElementById("monto_total");
+            if (montoTotalInput.value === 'NaN') {
+                montoTotalInput.value = 0;
+            }
+            montoTotalInput.value = parseFloat(montoTotal).toFixed(2);
         }
     </script>
 @endsection

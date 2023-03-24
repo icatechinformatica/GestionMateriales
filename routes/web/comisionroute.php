@@ -15,7 +15,7 @@ Route::middleware(['auth', 'role:revisor|capturista', 'permission:anular publica
     Route::get('/solicitud/pre/comision/continue/{id}', [PrecomisionController::class, 'edit'])->name('solicitud.pre.comision.continue');
     Route::post('/solicitud/pre/comision/enviar/registro', [PrecomisionController::class, 'saveandupdate'])->name('solicitud.pre.comision.enviar.registro');
     Route::get('/solicitud/pre/comision/revision', [PrecomisionController::class, 'getRevision'])->name('solicitud.pre.comision.revision')->middleware('can:revisar comision');
-    Route::get('/solicitud/pre/comision/revision/precomision/{id}', [PreComisionController::class, 'preComisionGetRevision'])->name('solicitud.pre.comision.revision.detalle')->middleware('can:revisar comision');
+    Route::get('/solicitud/pre/comision/revision/precomision/{id}/{status}', [PreComisionController::class, 'preComisionGetRevision'])->name('solicitud.pre.comision.revision.detalle')->middleware('can:revisar comision');
     Route::put('/solicitud/comision/validar/bitacora/{id}', [preComisionController::class, 'update'])->name('solicitud.comision.validar.bitacora');
- 
+    Route::get('/solicitud/pre/comision/getrendimiento', [ComisionController::class, 'get_rendimiento'])->name('solicitud.pre.comision.get.rendimiento');
 });

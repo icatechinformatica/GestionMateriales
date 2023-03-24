@@ -5,7 +5,7 @@
       <div class="sidebar-brand-icon rotate-n-15">
           <i class="fas fa-gas-pump"></i>
       </div>
-      <div class="sidebar-brand-text mx-3">siscom</div>
+      <div class="sidebar-brand-text mx-3">SIRMAT</div>
   </a>
 
   <!-- Divider -->
@@ -15,7 +15,8 @@
   <li class="nav-item active">
       <a class="nav-link" href="{{ route('dashboard') }}">
           <i class="fas fa-fw fa-tachometer-alt"></i>
-          <span>Tablero</span></a>
+          <span>Tablero</span>
+      </a>
   </li>
 
   <!-- Divider -->
@@ -23,7 +24,7 @@
 
   <!-- Heading -->
   <div class="sidebar-heading">
-      Interface
+      Menú
   </div>
 
   <!-- Nav Item - Pages Collapse Menu -->
@@ -39,6 +40,13 @@
               {{-- <a class="collapse-item" href="{{ route('solicitd.validacion_presupuestal.index') }}">
                 <i class="fas fa-plus-circle"></i> Agregar
               </a> --}}
+              @can('ver comision')
+                <a href="{{ route('pre.comision.index') }}" rel="noopener noreferrer" class="collapse-item">
+                  <i class="fas fa-keyboard"></i> Pre - Bitácora de Recorrido
+                </a>
+              @endcan
+
+
               @can('indice bitacora recorrido')
                 <a class="collapse-item" href="{{ route('solicitud.bitacora.previo.guardado') }}">
                     <i class="fas fa-map-marked-alt"></i> Bitácora de Recorrido
@@ -47,12 +55,6 @@
                 {{-- <a class="collapse-item" href="{{ route('solicitud.bitacora.comision.index') }}">
                   <i class="fas fa-file-invoice"></i> Bitácora de Comisión
                 </a> --}}
-
-              @can('ver comision')
-                <a href="{{ route('pre.comision.index') }}" rel="noopener noreferrer" class="collapse-item">
-                  <i class="fas fa-keyboard"></i> Comisión
-                </a>
-              @endcan
 
               @can('revisar comision')
                 <a href="{{ route('solicitud.pre.comision.revision') }}"  class="collapse-item">
@@ -98,27 +100,68 @@
                     Catálogo de Vehiculos
                   </a>
                 @endcan
-  
+
                 @can('leer catalogo choferes')
                   <a class="collapse-item" href="{{ route('solicitud.cat.chofer') }}">
                     <i class="fas fa-address-card"></i>
                     Catálogo Choferes
                   </a>
                 @endcan
-                
+
                 @can('leer catalogo resguardante')
                   <a class="collapse-item" href="{{ route('solicitud.resguardante.indice') }}">
                     <i class="fas fa-user-shield"></i>
                     Resguardantes
-                  </a> 
+                  </a>
                 @endcan
-                
+
+               @can('leer catalogo vehiculo')
+                  <a class="collapse-item" href="{{ route('solicitud.cat.directorio.indice') }}">
+                    {{-- checar el cambio de permiso --}}
+                    <i class="fas fa-sitemap"></i>
+                    Directorio
+                  </a>
+               @endcan
             </div>
         </div>
       </li>
     @endcan
 
-  
+  {{-- Nav Item - Requisiciones --}}
+  <li class="nav-item">
+    <a class="nav-link" href="{{ route('requisicion.index') }}">
+      <i class="fas fa-boxes fa-2x"></i>
+      <span>Requisición</span>
+    </a>
+  </li>
+  {{-- Nav Item - Requisiciones END --}}
+
+  {{-- Nav Item - Revisión Requisiciones MODIFICACIONES EN SISTEMA 2023--}}
+  <li class="nav-item">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseRequisicionesRevision"
+            aria-expanded="true" aria-controls="collapseTwo">
+            <i class="fas fa-clipboard"></i>
+            <span>Revisión de Requisiciones</span>
+    </a>
+    <div id="collapseRequisicionesRevision" class="collapse" aria-labelledby="headingUtilities"
+      data-parent="#accordionSidebar">
+      <div class="bg-white py-2 collapse-inner rounded">
+        <h6 class="collapse-header">Revisión:</h6>
+
+        <a class="collapse-item" href="{{ route('requisicion.revision.index') }}">
+          <i class="fas fa-search"></i>
+          <span>Revisión de Requisiciones</span>
+        </a>
+        {{-- comment --}}
+        <a class="collapse-item" href="{{ route('requisiciones.revision.existencia') }}">
+          <i class="fas fa-clipboard-check"></i>
+          Existencias
+        </a>
+      </div>
+    </div>
+  </li>
+  {{-- Nav Item - Revisión Requisiciones END --}}
+
 
   <!-- Divider -->
   <hr class="sidebar-divider">

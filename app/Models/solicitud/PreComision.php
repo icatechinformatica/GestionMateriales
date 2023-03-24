@@ -14,7 +14,7 @@ class PreComision extends Model
 
     protected $fillable = [
         'id', 'rendimiento', 'costo_combustible', 'placas_vehiculo', 'marca_vehiculo', 'km_totales', 'peaje',
-        'monto_total', 'vehiculo_id', 'comisionado'
+        'monto_total', 'vehiculo_id', 'comisionado', 'monto_total_rendimiento', 'enviado'
     ];
 
     protected $hidden = ['created_at', 'updated_at'];

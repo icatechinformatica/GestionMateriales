@@ -5,6 +5,7 @@ use App\Http\Controllers\CustomAuthController;
 use App\Http\Controllers\AutomovilController;
 use App\Http\Controllers\solicitud\ResguardanteController;
 use App\Http\Controllers\cat\ChoferController;
+use App\Http\Controllers\cat\DirectorioController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -63,7 +64,10 @@ editar catalogo resguardante|eliminar catalogo resguardante|ver comision'])->gro
     Route::get('/solicitud/catalogo/chofer/edit/{id}', [ChoferController::class, 'edit'])->name('solicitud.cat.chofer.edit')->middleware('can:editar catalogo choferes');
 
     Route::put('/solicitud/catalogo/chofer/{id}/actualizar', [ChoferController::class, 'update'])->name('cat.choferes.update')->middleware('can:editar catalogo choferes');
+
+    /**
+     * rutas de catalogo directorio
+     */
+    Route::get('/solicitud/catalogo/directorio/index', [DirectorioController::class, 'index'])->name('solicitud.cat.directorio.indice')->middleware('can:leer catalogo vehiculo');
+    Route::get('/solicitud/catalogo/directorio/create', [DirectorioController::class, 'create'])->name('cat.directorio.create');
 });
-
-
-

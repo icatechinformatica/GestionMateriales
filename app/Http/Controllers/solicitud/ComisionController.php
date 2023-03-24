@@ -74,6 +74,7 @@ class ComisionController extends Controller
                 $recorrido->fecha_comision = $value['fecha_comision'];
                 $recorrido->de_comision = $value['de_comision'];
                 $recorrido->a_comision = $value['a_comision'];
+                $recorrido->tipo = $value['tipo'];
                 $recorrido->temporal_id = $temporal_id;
                 // guardar el registro
                 $recorrido->save();
@@ -360,5 +361,17 @@ class ComisionController extends Controller
             'rendimiento_carga' => 'CARGA',
         );
         return view('theme.dashboard.forms.form_pre_comision', compact('array_rendimiento'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+
+    public function get_rendimiento(Request $request){
+        return response()->json($request->parametro);
     }
 }

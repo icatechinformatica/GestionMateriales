@@ -143,53 +143,66 @@
                         </div>
                         {{--  --}}
                         <div class="form-row">
-                            @if (count($solicitudRevision) > 0)
-                                @foreach ($solicitudRevision as $itemSolicitud => $v)
-                                    <div class="col-md-4">
-                                        <div class="card text-black bg-light bg-gradient mb-3" style="max-width: 18rem;">
-                                            <div class="card-body">
-                                                <h4 class="card-title">PLACAS: {{ $v->placas }}</h4>
-                                                <p class="card-text">PERIODO: {{ $v->periodo }}</p>
-                                               @switch($v->es_comision)
-                                                   @case(1)
-                                                        <p class="card-text">TIPO: BITÁCORA DE <b>COMISIONADO</b></p>
+{{-- tabla de chequeo de bitácora de recorrido --}}
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Placas</th>
+                                        <th scope="col">Periodo</th>
+                                        <th scope="col">Tipo</th>
+                                        <th scope="col">...</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                   @if (count($solicitudRevision) > 0)
+                                      @foreach ($solicitudRevision as $itemSolicitud => $v)
+                                        <tr>
+                                          <td data-label="Placas">{{ $v->placas }}</td>
+                                          <td data-label="Periodo">{{ $v->periodo }}</td>
+                                          <td data-label="Tipo">
+                                            @switch($v->es_comision)
+                                                @case(1)
+                                                    BITÁCORA DE <b>COMISIONADO</b>
+                                                @break
+                                                @default
+                                                    BITÁCORA DE <b>RECORRIDO</b>
+                                            @endswitch
+                                          </td>
+                                          <td data-label="...">
+                                            @can('revisar bitacora')
+                                                @switch($v->estado)
+                                                    @case('ENVIADO')
+                                                        {{-- btn-danger --}}
+                                                        <a href="{{ route('revision.bitacora.detalle', base64_encode($v->id)) }}" class="btn btn-danger btn-circle btn-md" data-toggle="tooltip" data-placement="top" title="CHECAR DETALLE DE LA SOLICITUD">
                                                     @break
-                                                   @default
-                                                        <p class="card-text">TIPO: BITÁCORA DE <b>RECORRIDO</b></p> 
-                                               @endswitch
-                                                
-                                                @can('revisar bitacora')
-                                                    @switch($v->estado)
-                                                        @case('ENVIADO')
-                                                            {{-- btn-danger --}}
-                                                            <a href="{{ route('revision.bitacora.detalle', base64_encode($v->id)) }}" class="btn btn-danger btn-circle btn-md" data-toggle="tooltip" data-placement="top" title="CHECAR DETALLE DE LA SOLICITUD">
+                                                    @case('REVISION')
+                                                        {{-- btn-warning --}}
+                                                        <a href="{{ route('revision.bitacora.detalle', base64_encode($v->id)) }}" class="btn btn-warning btn-circle btn-md" data-toggle="tooltip" data-placement="top" title="CHECAR DETALLE DE LA SOLICITUD">
                                                         @break
-                                                        @case('REVISION')
-                                                            {{-- btn-warning --}}
-                                                            <a href="{{ route('revision.bitacora.detalle', base64_encode($v->id)) }}" class="btn btn-warning btn-circle btn-md" data-toggle="tooltip" data-placement="top" title="CHECAR DETALLE DE LA SOLICITUD">
-                                                            @break
-                                                        @case('REVISADO')
-                                                            {{-- btn-warning --}}
-                                                            <a href="{{ route('revision.bitacora.detalle', base64_encode($v->id)) }}" class="btn btn-warning btn-circle btn-md" data-toggle="tooltip" data-placement="top" title="CHECAR DETALLE DE LA SOLICITUD">
-                                                            @break
-                                                        @case('FINALIZADO')
-                                                            {{-- btn-success --}}    
-                                                            <a href="{{ route('revision.bitacora.detalle', base64_encode($v->id)) }}" class="btn btn-success btn-circle btn-md" data-toggle="tooltip" data-placement="top" title="CHECAR DETALLE DE LA SOLICITUD">
+                                                    @case('REVISADO')
+                                                        {{-- btn-warning --}}
+                                                        <a href="{{ route('revision.bitacora.detalle', base64_encode($v->id)) }}" class="btn btn-warning btn-circle btn-md" data-toggle="tooltip" data-placement="top" title="CHECAR DETALLE DE LA SOLICITUD">
                                                         @break
-                                                            
-                                                    @endswitch
-                                                                <i class="fas fa-traffic-light"></i>
-                                                            </a>
-                                                @endcan
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            @else
-                                <tr>
-                                    <td colspan="4"><h3> <b>NO HAY REGISTROS PARA MOSTRAR</b> </h3></td>
-                                </tr>
-                            @endif
+                                                    @case('FINALIZADO')
+                                                        {{-- btn-success --}}    
+                                                        <a href="{{ route('revision.bitacora.detalle', base64_encode($v->id)) }}" class="btn btn-success btn-circle btn-md" data-toggle="tooltip" data-placement="top" title="CHECAR DETALLE DE LA SOLICITUD">
+                                                    @break
+                                                        
+                                                @endswitch
+                                                        <i class="fas fa-traffic-light"></i>
+                                                    </a>
+                                            @endcan
+                                          </td>  
+                                        </tr>
+                                      @endforeach
+                                   @else
+                                    <tr>
+                                        <td colspan="4"><center><h3> <b>NO HAY REGISTROS PARA MOSTRAR</b> </h3></center></td>
+                                    </tr>  
+                                   @endif
+                                </tbody>
+                            </table>
+{{-- tabla de chequeo de bitácora de recorrido END --}}
                         </div>
                     </div>
                 </div>

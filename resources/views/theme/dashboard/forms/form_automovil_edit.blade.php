@@ -259,6 +259,43 @@
                                 </div> 
                             </div>
                            {{-- kilomentros recorridos END --}}
+                            <span class="d-block g-mb-3 g-font-size-22 g-color-gray-dark-v1 g-font-secondary">
+                                <b>RENDIMIENTOS</b>
+                            </span>
+                            <hr class="g-brd-gray-light-v4">
+                            <div class="form-row">
+                                <div class="col-md-3 mb-3">
+                                    <label for="rendimiento_ciudad">Rendimiento de la ciudad</label>
+                                    <div class="custom-file">
+                                        <input type="text" name="rendimiento_ciudad" id="rendimiento_ciudad" class="form-control" autocomplete="off" onkeypress="return valideKey(event);">
+
+                                    </div>
+                                </div>
+                            {{-- rendimiento en carretera --}}
+                                <div class="col-md-3 mb-3">
+                                    <label for="rendimiento_carretera">Rendimiento en Carretera</label>
+                                    <div class="custom-file">
+                                        <input type="text" name="rendimiento_carretera" id="rendimiento_carretera" class="form-control" autocomplete="off" onkeypress="return valideKey(event);" value="{{ $getvehiculo->rendimiento_carretera }}">
+                                    </div>
+                                </div>
+                                {{-- rendimiento en carretera END --}}
+                                {{--  rendimiento Mixto--}}
+                                <div class="col-md-3 mb-3">
+                                    <label for="rendimiento_mixto">Rendimiento en Mixto</label>
+                                    <div class="custom-file">
+                                        <input type="text" name="rendimiento_mixto" id="rendimiento_mixto" class="form-control" autocomplete="off" onkeypress="return valideKey(event);" value="{{ $getvehiculo->rendimiento_mixto }}">
+                                    </div>
+                                </div>
+                                {{-- rendimiento Mixto END --}}
+                                {{-- rendimiento carga--}}
+                                <div class="col-md-3 mb-3">
+                                    <label for="rendimiento_carga">Rendimiento de Carga</label>
+                                    <div class="custom-file">
+                                        <input type="text" name="rendimiento_carga" id="rendimiento_carga" class="form-control" autocomplete="off" onkeypress="return valideKey(event);" value="{{ $getvehiculo->rendimiento_carga }}">
+                                    </div>
+                                </div>
+                                {{-- rendimiento carga END --}}
+                            </div>
                             <hr>
 
                             <button class="btn btn-warning" type="submit">

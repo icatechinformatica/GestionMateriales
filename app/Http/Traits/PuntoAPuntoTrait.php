@@ -15,6 +15,7 @@ trait PuntoAPuntoTrait {
             $insert_punto_punto->kms = $value['kms'];
             $insert_punto_punto->peaje = $value['peaje'];
             $insert_punto_punto->pre_comision_id  = $precomision;
+            $insert_punto_punto->tipo = Str::upper($value['tipo']);
             /**
              * guardar registro
              */

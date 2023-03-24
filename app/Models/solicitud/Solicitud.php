@@ -22,7 +22,8 @@ class Solicitud extends Model
         'numero_factura_compra', 'conductor', 'nombre_elabora', 'puesto_elabora', 'titular_departamento', 
         'km_final_antes_cargar_combustible',
         'km_inicial_cargar_combustible', 'total_km_recorridos', 'numero_economico', 'status_proceso', 'periodo_actual', 
-        'anio_actual', 'litros_totales', 'importe_total', 'observacion', 'anio_solicitud', 'tipo_solicitud', 'es_comision'
+        'anio_actual', 'litros_totales', 'importe_total', 'observacion', 'anio_solicitud', 'tipo_solicitud', 'es_comision',
+        'pre_comision_id'
     ];
 
     protected $hidden = ['created_at', 'updated_at'];

@@ -13,7 +13,7 @@ class RecorridoComision extends Model
     public $timestamps = true;
 
     protected $fillable = [
-        'id', 'fecha_comision', 'de_comision', 'a_comision', 'solicitud_id'
+        'id', 'fecha_comision', 'de_comision', 'a_comision', 'solicitud_id', 'tipo'
     ];
 
     protected $hidden = ['created_at', 'updated_at'];

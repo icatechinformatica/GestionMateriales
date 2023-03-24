@@ -21,6 +21,8 @@ use Illuminate\Support\Str;
 use App\Models\solicitud\SeguimientoSolicitud;
 use App\Models\solicitud\RecorridoComision;
 use App\Models\solicitud\BitacoraComision;
+use App\Models\solicitud\UserHasRole;
+use App\Models\User;
 
 class PreComisionController extends Controller
 {
@@ -90,7 +92,8 @@ class PreComisionController extends Controller
         $catAutomovil = CatalogoVehiculo::select('catalogo_vehiculo.marca', 'catalogo_vehiculo.modelo',
         'catalogo_vehiculo.numero_serie', 'catalogo_vehiculo.numero_motor', 'catalogo_vehiculo.placas', 
         'catalogo_vehiculo.color', 'catalogo_vehiculo.tipo', 'resguardante.resguardante_unidad', 
-        'resguardante.puesto_resguardante_unidad', 'catalogo_vehiculo.id as vehiculoId')
+        'resguardante.puesto_resguardante_unidad', 'catalogo_vehiculo.id as vehiculoId', 'catalogo_vehiculo.rendimiento_ciudad',
+        'catalogo_vehiculo.rendimiento_carretera', 'catalogo_vehiculo.rendimiento_mixto', 'catalogo_vehiculo.rendimiento_carga')
                         ->leftjoin('resguardante', 'catalogo_vehiculo.resguardante_id', '=', 'resguardante.id')
                         ->where('placas', $preComision->placas_vehiculo)->first();
         return view('theme.dashboard.forms.form_bitacora_comision', compact('preComision', 'punto_a_punto', 'catAutomovil'));
@@ -105,6 +108,29 @@ class PreComisionController extends Controller
     public function edit($id)
     {
         $id_precomision = base64_decode($id);
+        /**
+         * tenemos una modificación de código - rol del usuario
+         */
+        $user_has_role = UserHasRole::where('model_id', Auth::user()->id)->first();
+        switch ($user_has_role->role_id) {
+            case 10:
+                # clave de revisor
+                $Qry = [
+                    ['temporal.enviado', '=', false],
+                    ['temporal.es_comision', '=', true],
+                    ['temporal.pre_comision_id', '=', $id_precomision]
+                ];
+            break;
+            case 11:
+                # clave de capturista
+                $Qry = [
+                    ['temporal.users_id', '=', Auth::user()->id],
+                    ['temporal.enviado', '=', false],
+                    ['temporal.es_comision', '=', true],
+                    ['temporal.pre_comision_id', '=', $id_precomision]
+                ];
+            break;
+        }
         //
         $preComision = PreComision::findOrFail($id_precomision)->first();
         $punto_a_punto = PuntoAPunto::where('pre_comision_id', $id_precomision)->get();
@@ -115,16 +141,15 @@ class PreComisionController extends Controller
        'temporal.km_inicial', 'temporal.km_final_antes_cargar_combustible',
        'temporal.total_km_recorridos', 'temporal.litros_totales', 'temporal.importe_total', 'temporal.observacion',
        'catalogo_vehiculo.tipo', 'temporal.periodo_actual',
-       'catalogo_vehiculo.id as vehiculoId', 'catalogo_vehiculo.placas', 'catalogo_vehiculo.color', 'resguardante.resguardante_unidad', 'resguardante.puesto_resguardante_unidad')
+       'catalogo_vehiculo.id as vehiculoId', 'catalogo_vehiculo.placas', 'catalogo_vehiculo.color', 'resguardante.resguardante_unidad', 'resguardante.puesto_resguardante_unidad',
+       'catalogo_vehiculo.rendimiento_ciudad',
+       'catalogo_vehiculo.rendimiento_carretera',
+       'catalogo_vehiculo.rendimiento_mixto',
+       'catalogo_vehiculo.rendimiento_carga'
+       )
        ->leftjoin('catalogo_vehiculo', 'temporal.catalogo_vehiculo_id', '=', 'catalogo_vehiculo.id')
-       ->leftjoin('resguardante', 'catalogo_vehiculo.resguardante_id', '=', 'resguardante.id')
-       ->where([
-           ['temporal.users_id', '=', Auth::user()->id],
-           ['temporal.enviado', '=', false],
-           ['temporal.es_comision', '=', true],
-           ['pre_comision_id', '=', $id_precomision]
-       ])->first();
-       
+       ->leftjoin('resguardante', 'catalogo_vehiculo.resguardante_id', '=', 'resguardante.id')->where($Qry)->first();
+
        $recorrido_comision_temp = RecorridoComisionTemporal::where('temporal_id', $temporal->temporalid)->get();
        $bitacora_comision_temp = BitacoraComisionTemporal::where('temporal_id', $temporal->temporalid)->get();
 
@@ -190,7 +215,7 @@ class PreComisionController extends Controller
                 case 'update':
                     # actualización del registro
                     $preComisionId = base64_decode($request->get('pre_comision_id'));
-                    Temporal::where('id', $preComisionId)->update([
+                    Temporal::where('pre_comision_id', $preComisionId)->update([
                         'catalogo_vehiculo_id' => $request->get('idcatvehiculo'),
                         'memorandum_comision' => $request->get('memo_comision'),
                         'fecha' => $request->get('fecha_comision'),
@@ -208,42 +233,45 @@ class PreComisionController extends Controller
                     /**
                      * eliminar las bitacoras temporales - para cargar nuevamente en bucle
                      */
+                    $getIdTemp = Temporal::where('pre_comision_id', $preComisionId)->first();
                     /**
                      * trabajaremos en un bucle para guardar información en otra tabla
                      */
-                    BitacoraComisionTemporal::where('temporal_id', $preComisionId)->delete();
+                    BitacoraComisionTemporal::where('temporal_id', $getIdTemp->id)->delete();
                     /**
                      * actualizamos vía bucle
                      */
                     if (!empty($request->addcomisiones)) {
-                        # checamos si el arreglo está vacio o no
+                        # checamos si el arreglo está vacio o no      
                         foreach ($request->addcomisiones as $key => $value) {
                             # guardamos los registros
                             $comisiones = new BitacoraComisionTemporal;
                             $comisiones->factura_comision = $value['factura'];
-                            $comision->litros_comision = $value['litros'];
-                            $comision->precio_unitario_comision = $value['pu'];
-                            $comision->importe_comision = $value['importe'];
-                            $comision->temporal_id = $preComisionId;
+                            $comisiones->litros_comision = $value['litros'];
+                            $comisiones->precio_unitario_comision = $value['pu'];
+                            $comisiones->importe_comision = $value['importe'];
+                            $comisiones->temporal_id = $getIdTemp->id;
                             /**
                              * guardando el registro dentro del bucle
                              */
-                            $comision->save();
+                            $comisiones->save();
                         }
                     }
                     /**
                      * borrar registros
                      */
-                    RecorridoComisionTemporal::where('temporal_id', $preComisionId)->delete();
+                    RecorridoComisionTemporal::where('temporal_id', $getIdTemp->id)->delete();
                     if (!empty($request->addcomision)) {
                         # comisiones
+                        #asignamos la info de la clase a una variable local
                         foreach ($request->addcomision as $k => $v) {
-                            # guardamos el registro desde el bucle recorrido
                             $recorrido = new RecorridoComisionTemporal;
+                            # guardamos el registro desde el bucle recorrido
                             $recorrido->fecha_comision = $v['fecha_comision'];
                             $recorrido->de_comision = $v['de_comision'];
                             $recorrido->a_comision = $v['a_comision'];
-                            $recorrido->temporal_id = $preComisionId;
+                            $recorrido->tipo = $v['tipo'];
+                            $recorrido->temporal_id = $getIdTemp->id;
                             /**
                              * guardar el registro dentro del bucle den recorrido
                              */
@@ -294,13 +322,20 @@ class PreComisionController extends Controller
                     // guardar registros y obteneer el último id
                     $solicitudComision->observacion = Str::upper($request->get('observaciones'));
                     $solicitudComision->es_comision = true;
+                    $solicitudComision->pre_comision_id = $comisionId;
                     $solicitudComision->save();
                     $lastId = $solicitudComision->id;
 
                     /**
                      * actualizamos el registro en el sistema por generación de los temporales
                      */
-                    Temporal::where('id', $comisionId)
+                    Temporal::where('pre_comision_id', $comisionId)
+                        ->update(['enviado' => true]);
+
+                    /**
+                     * actualizar registro de pre_comision a enviado
+                     */
+                    PreComision::where('id', $comisionId)
                         ->update(['enviado' => true]);
 
                     /**
@@ -320,8 +355,9 @@ class PreComisionController extends Controller
                             # se entra en el bucle para cargar los datos en la tabla
                             $comisionRecorrido = new RecorridoComision();
                             $comisionRecorrido->fecha_comision = $value['fecha_comision'];
-                            $comisionRecorrido->de_comision = $value['de_comision'];
-                            $comisionRecorrido->a_comision = $value['a_comision'];
+                            $comisionRecorrido->de_comision =  Str::upper($value['de_comision']); 
+                            $comisionRecorrido->a_comision = Str::upper($value['a_comision']);
+                            $comisionRecorrido->tipo = $value['tipo'];
                             $comisionRecorrido->solicitud_id = $lastId;
 
                             // guardar registros
@@ -383,7 +419,7 @@ class PreComisionController extends Controller
             }
         } catch (QueryException $th) {
             //envíar excepcion de consulta
-            return back()->with('error', $e->getMessage());
+            return back()->with('error', $th->getMessage());
         }
     }
 
@@ -396,11 +432,11 @@ class PreComisionController extends Controller
         return view('theme.dashboard.layouts.bitacora_pre_comision_revision', compact('revisarPreComision'));
     }
 
-    protected function preComisionGetRevision($id)
+    protected function preComisionGetRevision($id, $status)
     {
 
         $idPreComision = base64_decode($id);
-        
+        $status = base64_decode($status);
         /**
          * vamos a generar la consulta para la revisión
          */
@@ -421,20 +457,24 @@ class PreComisionController extends Controller
         ])
         ->first();
 
-        /**
-         * se actualiza el seguimiento_solicitud se cambia el seguimiento
-         */
-        $fechaInicio = SeguimientoSolicitud::where('solicitud_id', $sqlComisionGetRevision->solicitudId)->first();
-        /**
-         * calcular el tiempo transcurrido de la solicitud fechaFin - fechaInicio
-         */
-        $fechaFin = Carbon::now()->format('Y-m-d');
-        $tiempoSolicitud = Carbon::createFromDate($fechaInicio->fecha_inicio)->diffInDays($fechaFin);
-        SeguimientoSolicitud::where('solicitud_id', $sqlComisionGetRevision->solicitudId)->update([
-            'status_seguimiento_id' => 3, 
-            'fecha_fin' => $fechaFin,
-            'tiempo_solicitud' => $tiempoSolicitud
-        ]);
+
+        if ($status < 5) {
+            
+            /**
+             * se actualiza el seguimiento_solicitud se cambia el seguimiento
+             */
+            $fechaInicio = SeguimientoSolicitud::where('solicitud_id', $sqlComisionGetRevision->solicitudId)->first();
+            /**
+             * calcular el tiempo transcurrido de la solicitud fechaFin - fechaInicio
+             */
+            $fechaFin = Carbon::now()->format('Y-m-d');
+            $tiempoSolicitud = Carbon::createFromDate($fechaInicio->fecha_inicio)->diffInDays($fechaFin);
+            SeguimientoSolicitud::where('solicitud_id', $sqlComisionGetRevision->solicitudId)->update([
+                'status_seguimiento_id' => 3, 
+                'fecha_fin' => $fechaFin,
+                'tiempo_solicitud' => $tiempoSolicitud
+            ]);
+        }
 
         /**
          * bitacora y recorrido
@@ -443,7 +483,7 @@ class PreComisionController extends Controller
         $recorrido_comision = RecorridoComision::where('solicitud_id', $sqlComisionGetRevision->solicitudId)->get();
         $bitacora_comision = BitacoraComision::where('solicitud_id', $sqlComisionGetRevision->solicitudId)->get();
 
-        return view('theme.dashboard.layouts.comision_bitacora_revision', compact('sqlComisionGetRevision', 'recorrido_comision', 'bitacora_comision'));
+        return view('theme.dashboard.layouts.comision_bitacora_revision', compact('sqlComisionGetRevision', 'recorrido_comision', 'bitacora_comision', 'status'));
     }
 
     protected function validarBitacoraComision(Request $request)

@@ -164,6 +164,10 @@
             border-bottom: 0;
         }
     }
+    .error{
+	        color: red;
+        }
+    input.error{border: 1px solid red;}
  </style>
 @endsection
 
@@ -186,7 +190,7 @@
                         <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-route"></i> Bitacora de Recorrido</h6>
                     </div>
                     <div class="card-body">
-                        <form method="POST" action="{{ route('solicitud.bitacora.pre.store.send') }}">
+                        <form method="POST" action="{{ route('solicitud.bitacora.pre.store.send') }}" id="form_bitacora_pre_save" name="form_bitacora_pre_save">
                             @csrf
                             <div class="form-row">
                                 <div class="col-md-4 mb-3">
@@ -311,6 +315,11 @@
                             <button type="button" name="addBitacora" id="addBitacora" class="btn btn-success btn-md">
                                 <i class="fas fa-plus-circle"></i> <b>Agregar Recorrido</b>
                             </button>
+                            {{-- botón para calcular --}}
+                            <button type="button" class="btn btn-warning btn-md" onclick="calculoTotal()">
+                                <i class="fas fa-calculator"></i> <b>Calcular</b>
+                            </button>
+                            {{-- botón para calcular --}}
                             <br><br>
                             {{-- botón de agregar elemento de la bitacora END --}}
                             <div class="field_wrapper">
@@ -345,16 +354,16 @@
                                                     <textarea name="agregarItem[{{ $v->id }}][a]"   class="form-control">{{ $v->actividad_final }}</textarea>
                                                 </td>
                                                 <td data-label="KM final">
-                                                    <input type="text" name="agregarItem[{{ $v->id }}][kmfinal]" id="kmFinal[]" onchange="calcularKmTotales(this);" class="form-control kmFinal" value="{{ $v->kilometraje_final }}"/>
+                                                    <input type="text" name="agregarItem[{{ $v->id }}][kmfinal]" id="kmFinal[]" class="form-control kmFinal" value="{{ $v->kilometraje_final }}"/>
                                                 </td>
                                                 <td data-label="Vales">
                                                     <textarea name="agregarItem[{{ $v->id }}][vales]" id="vales[]" class="form-control numbersOnly vales_tag">{{ $v->vales }}</textarea>
                                                 </td>
                                                 <td data-label="Litros">
-                                                    <input type="text" name="agregarItem[{{ $v->id }}][litros]" id="litros[]" onchange="calcularLitrosTotales(this);"  class="form-control inst_litros" value="{{ $v->litros }}"/>
+                                                    <input type="text" name="agregarItem[{{ $v->id }}][litros]" id="litros[]"  class="form-control inst_litros" value="{{ $v->litros }}"/>
                                                 </td>
                                                 <td data-label="DV">
-                                                    <input type="text" name="agregarItem[{{ $v->id }}][dv]" id="dv[]" onchange="calcularImporte(this);" class="form-control denominacion_vales" value="{{ $v->division_vale }}"/>
+                                                    <input type="text" name="agregarItem[{{ $v->id }}][dv]" id="dv[]" class="form-control denominacion_vales" value="{{ $v->division_vale }}"/>
                                                 </td>
                                                 <td data-label="Importe">
                                                     <input type="text" name="agregarItem[{{ $v->id }}][importe]" id="importes[]"  class="form-control importe" readonly value="{{ $v->importe }}"/>
@@ -391,7 +400,7 @@
                                             &nbsp;
                                         </td>
                                         <td data-label="Importe" colspan="2" style="width: 16%;">
-                                            <input type="text" name="importe_total" id="importe_total" value="{{ $solicitud_pre_id->importe_total }}"  class="form-control importe" readonly/>
+                                            <input type="text" name="importe_total" id="importe_total" value="{{ $solicitud_pre_id->importe_total }}"  class="form-control importe_total" readonly/>
                                         </td>
                                       </tr>
                                     </tbody>
@@ -457,6 +466,11 @@
 @section('contenidoJavaScript')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <script src="{{ asset('assets/js_/typehead.min.js') }}"></script>
+{{-- agregar assets de javascript para la validación --}}
+    <script src="{{ asset('assets/jqueryvalidate/jquery.validate.min.js') }}"></script>
+    <script src="{{ asset('assets/jqueryvalidate/additional-methods.min.js') }}"></script>
+    <script src="{{ asset('assets/jqueryvalidate/metodos/validate_bitacora_recorrido.js') }}"></script>
+{{-- agregar assets de javascript para la validación END --}}
     <script type="text/javascript">
         $.ajaxSetup({
             headers: {
@@ -517,16 +531,16 @@
                                         '<textarea name="agregarItem[' + j + '][a]"   class="form-control"></textarea>'+
                                     '</td>'+
                                     '<td data-label="KM final">'+
-                                        '<input type="text" name="agregarItem[' + j + '][kmfinal]" id="kmFinal[]" onchange="calcularKmTotales(this);" class="form-control kmFinal" autocomplete="off" />'+
+                                        '<input type="text" name="agregarItem[' + j + '][kmfinal]" id="kmFinal[]" class="form-control kmFinal" autocomplete="off" />'+
                                     '</td>'+
                                     '<td data-label="Vales">'+
                                         '<textarea name="agregarItem[' + j + '][vales]" id="vales[]" class="form-control numbersOnly vales_tag"></textarea>'+
                                     '</td>'+
                                     '<td data-label="Litros">'+
-                                        '<input type="text" name="agregarItem[' + j + '][litros]" id="litros[]" onchange="calcularLitrosTotales(this);"  class="form-control inst_litros" autocomplete="off" />'+
+                                        '<input type="text" name="agregarItem[' + j + '][litros]" id="litros[]"  class="form-control inst_litros" autocomplete="off" />'+
                                     '</td>'+
                                     '<td data-label="DV">'+
-                                        '<input type="text" name="agregarItem[' + j + '][dv]" id="dv[]" onchange="calcularImporte(this);" class="form-control denominacion_vales" autocomplete="off"/>'+
+                                        '<input type="text" name="agregarItem[' + j + '][dv]" id="dv[]" class="form-control denominacion_vales" autocomplete="off"/>'+
                                     '</td>'+
                                     '<td data-label="Importe">'+
                                         '<input type="text" name="agregarItem[' + j + '][importe]" id="importes[]"  class="form-control importe" readonly />'+
@@ -567,16 +581,16 @@
                                         '<textarea name="agregarItem[' + j + '][a]"   class="form-control"></textarea>'+
                                     '</td>'+
                                     '<td data-label="KM final">'+
-                                        '<input type="text" name="agregarItem[' + j + '][kmfinal]" id="kmFinal[]" onchange="calcularKmTotales(this);" class="form-control kmFinal" autocomplete="off" />'+
+                                        '<input type="text" name="agregarItem[' + j + '][kmfinal]" id="kmFinal[]" class="form-control kmFinal" autocomplete="off" />'+
                                     '</td>'+
                                     '<td data-label="Vales">'+
                                         '<textarea name="agregarItem[' + j + '][vales]" id="vales[]" class="form-control numbersOnly vales_tag"></textarea>'+
                                     '</td>'+
                                     '<td data-label="Litros">'+
-                                        '<input type="text" name="agregarItem[' + j + '][litros]" id="litros[]" onchange="calcularLitrosTotales(this);"  class="form-control inst_litros" autocomplete="off"/>'+
+                                        '<input type="text" name="agregarItem[' + j + '][litros]" id="litros[]"  class="form-control inst_litros" autocomplete="off"/>'+
                                     '</td>'+
                                     '<td data-label="DV">'+
-                                        '<input type="text" name="agregarItem[' + j + '][dv]" id="dv[]" onchange="calcularImporte(this);" class="form-control denominacion_vales" autocomplete="off"/>'+
+                                        '<input type="text" name="agregarItem[' + j + '][dv]" id="dv[]" class="form-control denominacion_vales" autocomplete="off"/>'+
                                     '</td>'+
                                     '<td data-label="Importe">'+
                                         '<input type="text" name="agregarItem[' + j + '][importe]" id="importes[]"  class="form-control importe" readonly />'+
@@ -611,16 +625,16 @@
                                     '<textarea name="agregarItem[' + j + '][a]"   class="form-control"></textarea>'+
                                 '</td>'+
                                 '<td data-label="KM final">'+
-                                    '<input type="text" name="agregarItem[' + j + '][kmfinal]" id="kmFinal[]" onchange="calcularKmTotales(this);" class="form-control kmFinal" autocomplete="off" />'+
+                                    '<input type="text" name="agregarItem[' + j + '][kmfinal]" id="kmFinal[]" class="form-control kmFinal" autocomplete="off" />'+
                                 '</td>'+
                                 '<td data-label="Vales">'+
                                     '<textarea name="agregarItem[' + j + '][vales]" id="vales[]" class="form-control numbersOnly vales_tag"></textarea>'+
                                 '</td>'+
                                 '<td data-label="Litros">'+
-                                    '<input type="text" name="agregarItem[' + j + '][litros]" id="litros[]" onchange="calcularLitrosTotales(this);"  class="form-control inst_litros" autocomplete="off" />'+
+                                    '<input type="text" name="agregarItem[' + j + '][litros]" id="litros[]" class="form-control inst_litros" autocomplete="off" />'+
                                 '</td>'+
                                 '<td data-label="DV">'+
-                                    '<input type="text" name="agregarItem[' + j + '][dv]" id="dv[]" onchange="calcularImporte(this);" class="form-control denominacion_vales" autocomplete="off" />'+
+                                    '<input type="text" name="agregarItem[' + j + '][dv]" id="dv[]" class="form-control denominacion_vales" autocomplete="off" />'+
                                 '</td>'+
                                 '<td data-label="Importe">'+
                                     '<input type="text" name="agregarItem[' + j + '][importe]" id="importes[]"  class="form-control importe" readonly />'+
@@ -651,16 +665,16 @@
                                     '<textarea name="agregarItem[' + j + '][a]"   class="form-control"></textarea>'+
                                 '</td>'+
                                 '<td data-label="KM final">'+
-                                    '<input type="text" name="agregarItem[' + j + '][kmfinal]" id="kmFinal[]" onchange="calcularKmTotales(this);" class="form-control kmFinal" autocomplete="off" />'+
+                                    '<input type="text" name="agregarItem[' + j + '][kmfinal]" id="kmFinal[]" class="form-control kmFinal" autocomplete="off" />'+
                                 '</td>'+
                                 '<td data-label="Vales">'+
                                     '<textarea name="agregarItem[' + j + '][vales]" id="vales[]" class="form-control numbersOnly vales_tag"></textarea>'+
                                 '</td>'+
                                 '<td data-label="Litros">'+
-                                    '<input type="text" name="agregarItem[' + j + '][litros]" id="litros[]" onchange="calcularLitrosTotales(this);"  class="form-control inst_litros" autocomplete="off" />'+
+                                    '<input type="text" name="agregarItem[' + j + '][litros]" id="litros[]"  class="form-control inst_litros" autocomplete="off" />'+
                                 '</td>'+
                                 '<td data-label="DV">'+
-                                    '<input type="text" name="agregarItem[' + j + '][dv]" id="dv[]" onchange="calcularImporte(this);" class="form-control denominacion_vales" autocomplete="off"/>'+
+                                    '<input type="text" name="agregarItem[' + j + '][dv]" id="dv[]" class="form-control denominacion_vales" autocomplete="off"/>'+
                                 '</td>'+
                                 '<td data-label="Importe">'+
                                     '<input type="text" name="agregarItem[' + j + '][importe]" id="importes[]"  class="form-control importe" readonly />'+
@@ -701,16 +715,16 @@
                                     '<textarea name="agregarItem[' + j + '][a]"   class="form-control"></textarea>'+
                                 '</td>'+
                                 '<td data-label="KM final">'+
-                                    '<input type="text" name="agregarItem[' + j + '][kmfinal]" id="kmFinal[]" onchange="calcularKmTotales(this);" class="form-control kmFinal" autocomplete="off" />'+
+                                    '<input type="text" name="agregarItem[' + j + '][kmfinal]" id="kmFinal[]" class="form-control kmFinal" autocomplete="off" />'+
                                 '</td>'+
                                 '<td data-label="Vales">'+
                                     '<textarea name="agregarItem[' + j + '][vales]" id="vales[]" class="form-control numbersOnly vales_tag"></textarea>'+
                                 '</td>'+
                                 '<td data-label="Litros">'+
-                                    '<input type="text" name="agregarItem[' + j + '][litros]" id="litros[]" onchange="calcularLitrosTotales(this);"  class="form-control inst_litros" autocomplete="off"/>'+
+                                    '<input type="text" name="agregarItem[' + j + '][litros]" id="litros[]"  class="form-control inst_litros" autocomplete="off"/>'+
                                 '</td>'+
                                 '<td data-label="DV">'+
-                                    '<input type="text" name="agregarItem[' + j + '][dv]" id="dv[]" onchange="calcularImporte(this);" class="form-control denominacion_vales" autocomplete="off"/>'+
+                                    '<input type="text" name="agregarItem[' + j + '][dv]" id="dv[]" class="form-control denominacion_vales" autocomplete="off"/>'+
                                 '</td>'+
                                 '<td data-label="Importe">'+
                                     '<input type="text" name="agregarItem[' + j + '][importe]" id="importes[]"  class="form-control importe" readonly />'+
@@ -1045,6 +1059,87 @@
             var primerCaracter = periodo.charAt(0);
             $('#periodo').val(periodo);
             $('#periodo_actual').val(primerCaracter);
+        }
+
+        /**
+        * calcular total
+        */
+        function calculoTotal(){
+            // variables
+            var km_actual = 0; var length = $('.kmFinal').length; var kmFinal = $('.kmFinal'); var operacion = 0;
+            var kmInicial = $('#_kilometroInicial').val(); var km_totales = document.getElementById('km_totales');
+            var classLts = $('.inst_litros'); var lts = 0; var ltsTotales = document.getElementById('litros_totales');
+            // calcular importe
+            var tblImporte = $('.importe'); var importe_total = 0;
+            kmFinal.each(function(index, element) {
+                var valor = this.value;
+                // si existe algún valor se realizará la sumatoria
+                if (valor) {
+                    if (index === (length - 1)) {
+                        // se toma el último puesto de la tabla
+                        valor = parseInt(valor);
+                        km_actual = km_actual + valor;
+                        operacion = parseInt(km_actual - kmInicial);
+                    }
+                } else {
+                    operacion = 0;
+                }
+            });
+
+            /**
+            * kilometros totales
+            */
+            if (km_totales.value == 'NaN') {
+                km_totales.value = 0;
+            } else if (km_actual > 0) {
+                km_totales.value = operacion;
+            } else {
+                km_totales.value = 0;
+            }
+
+            /**
+            * BLOQUE DE CALCULO LITROS TOTALES DE COMBUSTIBLE
+            */
+            classLts.each(function(i, e){
+                var valor_actual = this.value;
+                //si existe el valor se realizará una sumatoria
+                if (valor_actual) {
+                    if (valor_actual > 0) {
+                        lts += parseFloat(valor_actual, 2);
+                    }
+                } else {
+                    // si no hay registros vamos a ponerle un valor de 0
+                    lts = 0;
+                }
+            });
+            // mostrar el resultados de los litros totales
+            if (ltsTotales.value == 'NaN') {
+                ltsTotales.value = 0;
+            }
+
+            ltsTotales.value = lts.toFixed(2);
+
+            /**
+            * calcular el importe
+            */
+            tblImporte.each(function(i, e){
+                var valimporte = this.value;
+                if (valimporte) {
+                    if (valimporte > 0) {
+                        importe_total += parseFloat(valimporte, 2);
+                    }
+                } else {
+                    importe_total = 0;
+                }
+            });
+
+            var imp_total = document.getElementById('importe_total');
+            if (imp_total.value == 'NaN') {
+                imp_total.value = 0;
+            }
+
+            imp_total.value = importe_total.toFixed(2);
+
         }
     </script>
 @endsection

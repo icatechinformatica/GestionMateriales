@@ -164,6 +164,10 @@
             border-bottom: 0;
         }
     }
+    .error{
+	    color: red;
+    }
+    input.error{border: 1px solid red;}
  </style>
 @endsection
 
@@ -186,7 +190,7 @@
                         <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-map-marked-alt"></i> Bitacora de Recorrido</h6>
                     </div>
                     <div class="card-body">
-                        <form method="POST" action="{{ route('solicitud.bitacora.store') }}">
+                        <form method="POST" action="{{ route('solicitud.bitacora.store') }}" name="form_bitacora_recorrido" id="form_bitacora_recorrido">
                             @csrf
                             <div class="form-row">
                                 <div class="col-md-4 mb-3">
@@ -317,6 +321,11 @@
                             <button type="button" name="addBitacora" id="addBitacora" class="btn btn-success btn-md">
                                 <i class="fas fa-plus-circle"></i> <b>Agregar Recorrido</b>
                             </button>
+                           {{-- botón para calcular --}}
+                           <button type="button" class="btn btn-warning btn-md" onclick="calculoTotal()">
+                                <i class="fas fa-calculator"></i> <b>Calcular</b>
+                           </button>
+                           {{-- botón para calcular --}}
                             <br><br>
                             {{-- botón de agregar elemento de la bitacora END --}}
                             <div class="field_wrapper">
@@ -343,16 +352,16 @@
                                 <table class="table table-bordered" id="totalesDinamicos">
                                     <tbody>
                                       <tr>
-                                        <td data-label="a:" style="width: 48.11%; text-align: right;" colspan="4">
-                                            <h3><b>TOTALES:</b></h3>
+                                        <td data-label="a:" style="width: 45%; text-align: right;" colspan="4">
+                                            <h3><b>KM TOTALES:</b></h3>
                                         </td>
-                                        <td data-label="KM final" style="width: 7%;">
-                                            <input type="text" name="km_totales" id="km_totales"   class="form-control" readonly/>
+                                        <td data-label="KM final" style="width: 10%;">
+                                            <input type="text" name="km_totales" id="km_totales" value="0"  class="form-control" readonly/>
                                         </td>
-                                        <td data-label="Vales" style="width: 15%; text-align: right;">
+                                        <td data-label="Vales" style="width: 12%; text-align: right;">
                                             <h3><b>LITROS:</b></h3>
                                         </td>
-                                        <td data-label="Litros" style="width: 7%;">
+                                        <td data-label="Litros" style="width: 10%;">
                                             <input type="text" name="litros_totales" id="litros_totales" value="0"  class="form-control" readonly/>
                                         </td>
                                         <td data-label="DV" style="width: 7%;">
@@ -407,6 +416,11 @@
 @section('contenidoJavaScript')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <script src="{{ asset('assets/js_/typehead.min.js') }}"></script>
+{{-- agregar assets de javascript para la validación --}}
+    <script src="{{ asset('assets/jqueryvalidate/jquery.validate.min.js') }}"></script>
+    <script src="{{ asset('assets/jqueryvalidate/additional-methods.min.js') }}"></script>
+    <script src="{{ asset('assets/jqueryvalidate/metodos/validate_bitacora_recorrido.js') }}"></script>
+{{-- agregar assets de javascript para la validación END --}}
     <script type="text/javascript">
         $.ajaxSetup({
             headers: {
@@ -466,19 +480,19 @@
                                     '<textarea name="agregarItem[' + j + '][a]"   class="form-control"></textarea>'+
                                 '</td>'+
                                 '<td data-label="KM final">'+
-                                    '<input type="text" name="agregarItem[' + j + '][kmfinal]" id="kmFinal[]" onchange="calcularKmTotales(this);" class="form-control kmFinal" autocomplete="off" />'+
+                                    '<input type="text" name="agregarItem[' + j + '][kmfinal]" id="kmFinal[]" class="form-control kmFinal" autocomplete="off" />'+
                                 '</td>'+
                                 '<td data-label="Vales">'+
                                     '<textarea name="agregarItem[' + j + '][vales]" id="vales[]" class="form-control numbersOnly vales_tag"></textarea>'+
                                 '</td>'+
                                 '<td data-label="Litros">'+
-                                    '<input type="text" name="agregarItem[' + j + '][litros]" id="litros[]" onchange="calcularLitrosTotales(this);"  class="form-control inst_litros" autocomplete="off" />'+
+                                    '<input type="text" name="agregarItem[' + j + '][litros]" id="litros[]"  class="form-control inst_litros" autocomplete="off" />'+
                                 '</td>'+
                                 '<td data-label="DV">'+
-                                    '<input type="text" name="agregarItem[' + j + '][dv]" id="dv[]" onchange="calcularImporte(this);" class="form-control denominacion_vales" autocomplete="off"/>'+
+                                    '<input type="text" name="agregarItem[' + j + '][dv]" id="dv[]" class="form-control denominacion_vales" autocomplete="off"/>'+
                                 '</td>'+
                                 '<td data-label="Importe">'+
-                                    '<input type="text" name="agregarItem[' + j + '][importe]" id="importes[]"  class="form-control importe" readonly />'+
+                                    '<input type="text" name="agregarItem[' + j + '][importe]" id="importes[]"  class="form-control importe total_importe" readonly />'+
                                 '</td>'+
                                 '<td data-label="Acción">'+
                                     '<button type="button" class="btn btn-danger btn-circle btn-sm remove-tr">'+
@@ -516,19 +530,19 @@
                                     '<textarea name="agregarItem[' + j + '][a]"   class="form-control"></textarea>'+
                                 '</td>'+
                                 '<td data-label="KM final">'+
-                                    '<input type="text" name="agregarItem[' + j + '][kmfinal]" id="kmFinal[]" onchange="calcularKmTotales(this);" class="form-control kmFinal" autocomplete="off" />'+
+                                    '<input type="text" name="agregarItem[' + j + '][kmfinal]" id="kmFinal[]" class="form-control kmFinal" autocomplete="off" />'+
                                 '</td>'+
                                 '<td data-label="Vales">'+
                                     '<textarea name="agregarItem[' + j + '][vales]" id="vales[]" class="form-control numbersOnly vales_tag"></textarea>'+
                                 '</td>'+
                                 '<td data-label="Litros">'+
-                                    '<input type="text" name="agregarItem[' + j + '][litros]" id="litros[]" onchange="calcularLitrosTotales(this);"  class="form-control inst_litros" autocomplete="off" />'+
+                                    '<input type="text" name="agregarItem[' + j + '][litros]" id="litros[]"  class="form-control inst_litros" autocomplete="off" />'+
                                 '</td>'+
                                 '<td data-label="DV">'+
-                                    '<input type="text" name="agregarItem[' + j + '][dv]" id="dv[]" onchange="calcularImporte(this);" class="form-control denominacion_vales" autocomplete="off" />'+
+                                    '<input type="text" name="agregarItem[' + j + '][dv]" id="dv[]" class="form-control denominacion_vales" autocomplete="off" />'+
                                 '</td>'+
                                 '<td data-label="Importe">'+
-                                    '<input type="text" name="agregarItem[' + j + '][importe]" id="importes[]"  class="form-control importe" readonly />'+
+                                    '<input type="text" name="agregarItem[' + j + '][importe]" id="importes[]"  class="form-control importe total_importe" readonly />'+
                                 '</td>'+
                                 '<td data-label="Acción">'+
                                     '<button type="button" class="btn btn-danger btn-circle btn-sm remove-tr">'+
@@ -861,6 +875,85 @@
             var primerCaracter = periodo.charAt(0);
             $('#periodo').val(periodo);
             $('#periodo_actual').val(primerCaracter);
+        }
+
+        /**@argument
+         * calculo total
+         */
+        function calculoTotal(){
+            // primero checamos si hay alguna grilla para ver si podemos hacer el calculo de contenido
+            var km_actual = 0;
+            var length = $('.kmFinal').length;
+            var km_inicial = $('#_kilometroInicial').val();
+            var km_totales = document.getElementById("km_totales");
+            var ltsclass = $('.inst_litros');
+            var operacion = 0;
+            var litrosTotales = 0
+            var ltsTotales = document.getElementById("litros_totales");
+            var importe = $('.total_importe');
+            var importeTotal = 0;
+            $('.kmFinal').each(function(index, element){
+                var valor = this.value;
+                // si existe algún valor re realizará la sumatoria
+                if (valor) {
+                    if (index === (length - 1)) {
+                        // si tengo el último elemento
+                        valor = parseInt(valor);
+                        km_actual = km_actual + valor;
+                        operacion = parseInt(km_actual - km_inicial);
+                    }
+                } else {
+                    operacion = 0;
+                }
+            });
+
+            if (km_actual > 0) {
+                km_totales.value = operacion;
+            } else {
+                km_totales.value = 0;
+            }
+
+            /*
+            *   calcular litros totales
+            */
+            ltsclass.each(function(index, element){
+                var val = this.value;
+                // si existe valores se realizará la sumatoria
+                if (val) {
+                    if (val > 0) {
+                        litrosTotales += parseFloat(val , 2);
+                    }
+                }
+                else {
+                    // si no hay registros vamos a ponerle un valor de 0
+                    litrosTotales = 0;
+                }
+            });
+            // mostrar los litros totales
+            ltsTotales.value = litrosTotales.toFixed(2);
+
+            /*
+            * calcular importe
+            */
+            importe.each(function(i, e){
+                var val_importe = this.value;
+                // si existen los valores se realizará la sumatoria
+                if (val_importe) {
+                    if (val_importe > 0) {
+                        importeTotal += parseInt(val_importe);
+                    }
+                } else{
+                    importeTotal = 0;
+                }
+            });
+
+            var impTotal = document.getElementById("importe_total");
+            if (impTotal.value == 'NaN') {
+                impTotal.value = 0;
+                // 
+            }
+            impTotal.value = importeTotal; 
+
         }
     </script>
 @endsection

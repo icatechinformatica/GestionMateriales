@@ -110,32 +110,65 @@
                     </div>
                     <div class="card-body">
                         {{-- registro de datos --}}
-                        <div class="form-row">
-                            @if (count($revisarPreComision) > 0)
-                                @foreach ($revisarPreComision as $itemPreComisionRevisar => $v)
-                                    <div class="col-md-4">
-                                        <div class="card text-black bg-light bg-gradient mb-3" style="max-width: 18rem;">
-                                            <div class="card-body">
-                                                <h5 class="card-title">PLACAS: {{ $v->placas_vehiculo }}</h5>
-                                                <p class="card-text">RENDIMIENTO: {{ $v->rendimiento }}</p>
-                                                @can('revisar comision')
-                                                    <a href="{{ route('solicitud.pre.comision.revision.detalle', base64_encode($v->id)) }}" class="btn btn-primary btn-circle btn-md" data-toggle="tooltip" data-placement="top" title="CHECAR DE LA COMISIÓN">
-                                                        <i class="fas fa-search"></i>
-                                                    </a>
-                                                @endcan
-                                                <a href="{{ route('generar.reporte.bitacora.pdf', base64_encode($v->id)) }}" target="_blank" class="btn btn-danger  btn-circle btn-md" data-toggle="tooltip" data-placement="top" title="CHECAR DETALLE DE LA SOLICITUD">
-                                                    <i class="fas fa-print"></i>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            @else
+{{-- agregar tabla responsiva --}}
+                        <table>
+                            <thead>
                                 <tr>
-                                    <td colspan="4"><h3> <b>NO HAY REGISTROS PARA MOSTRAR</b> </h3></td>
+                                    <th scope="col">Memorandum</th>
+                                    <th scope="col">Placas</th>
+                                    <th scope="col">Rendimiento</th>
+                                    <th scope="col">Revisión</th>
+                                    <th scope="col">Generar Documento</th>
                                 </tr>
-                            @endif
-                        </div>
+                            </thead>
+                            <tbody>
+                               @if (count($revisarPreComision) > 0)
+                                  @foreach ($revisarPreComision as $itemPreComisionRevisar => $v)
+                                    <tr>
+                                        <td data-label="Memorandum"><b>{{ $v->memorandum_comision }}</b></td>
+                                        <td data-label="Placas">{{ $v->placas_vehiculo }}</td>
+                                        <td data-label="Rendimiento">{{ $v->rendimiento }}</td>
+                                        <td data-label="Revisión">
+                                            @can('revisar comision')
+                                               @switch($v->status_seguimiento_id)
+                                                   @case(5)
+                                                        <a href="{{ route('solicitud.pre.comision.revision.detalle', [base64_encode($v->id), base64_encode($v->status_seguimiento_id)]) }}" class="btn btn-success btn-circle btn-md" data-toggle="tooltip" data-placement="top" title="COMISIÓN LISTA">
+                                                            <i class="fas fa-check-circle"></i>
+                                                        </a>
+                                                    @break
+                                                   @default
+                                                        <a href="{{ route('solicitud.pre.comision.revision.detalle', [base64_encode($v->id), base64_encode($v->status_seguimiento_id)]) }}" class="btn btn-primary btn-circle btn-md" data-toggle="tooltip" data-placement="top" title="REVISAR LA COMISIÓN">
+                                                            <i class="fas fa-search"></i>
+                                                        </a>
+                                               @endswitch
+                                            @endcan
+                                        </td>
+                                        <td data-label="Generar Documento">
+                                           @switch($v->status_seguimiento_id)
+                                                @case(5)
+                                                    <a href="{{ route('generar.reporte.bitacora.pdf', base64_encode($v->solicitud_id)) }}" target="_blank" class="btn btn-danger  btn-circle btn-md" data-toggle="tooltip" data-placement="top" title="GENERAR BITÁCORA">
+                                                        <i class="far fa-file-pdf fa-1x"></i>
+                                                    </a>
+                                                @break
+                                               @default
+                                                <a href="javascript:;" class="btn btn-primary  btn-circle btn-md" data-toggle="tooltip" data-placement="top" title="GENERAR BITÁCORA">
+                                                    <i class="fas fa-unlink"></i>
+                                                </a>
+                                           @endswitch
+                                            
+                                        </td>
+                                    </tr>
+                                  @endforeach
+                               @else
+                                    <tr>
+                                        <td colspan="4"><center><h3> <b>NO HAY REGISTROS PARA MOSTRAR</b> </h3></center></td>
+                                    </tr>
+                               @endif
+                                
+                            </tbody>
+                        </table>
+{{-- agregar table responsiva END --}}
+                        
                     </div>
                 </div>
 

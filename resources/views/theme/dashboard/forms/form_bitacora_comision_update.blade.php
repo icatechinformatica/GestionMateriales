@@ -335,6 +335,7 @@
                                         <th  style="width: 11%;">Fecha</th>
                                         <th  style="width: 13%;">De:</th>
                                         <th  style="width: 13%;">a: </th>
+                                        <th style="width: 13%">Tipo:</th>
                                         <th style="width: 7%;">...</th>
                                       </tr>
                                     </thead>
@@ -349,6 +350,13 @@
                                             </td>
                                             <td>
                                                 <textarea name="addcomision[{{ $i->id }}][a_comision]" class="form-control">{{ $i->a_comision }}</textarea>
+                                            </td>
+                                            <td>
+                                               <select name="addcomision[{{ $i->id }}][tipo]" class="form-control">
+                                                    <option value="">-- SELECCIONAR --</option>
+                                                    <option value="recorrido" {{ ($i->tipo == 'recorrido') ? 'selected' : ''}}>RECORRIDO</option>
+                                                    <option value="punto_a_punto" {{ ($i->tipo == 'punto_a_punto') ? 'selected' : '' }}>PUNTO A PUNTO</option>
+                                               </select> 
                                             </td>
                                             <td data-label="...">
                                                 <button type="button" class="btn btn-danger btn-circle btn-sm remove-tr">
@@ -365,6 +373,9 @@
                             {{-- botón de agregar elemento de la bitacora --}}
                             <button type="button" name="addItemcomision" id="addItemcomision" class="btn btn-secondary btn-md">
                                 <i class="fas fa-file-invoice"></i> <b>Agregar Comisión</b>
+                            </button>
+                            <button type="button" name="getCalculation" id="getCalculation" class="btn btn-warning btn-md">
+                                <i class="fas fa-calculator"></i> <b>Generar Cálculo</b>
                             </button>
                             <br><br>
                             {{-- botón de agregar elemento de la bitacora END --}}
@@ -387,13 +398,13 @@
                                                     <input type="text" class="form-control" name="addcomisiones[{{ $v->id }}][factura]" id="facturas[]" value="{{ $v->factura_comision }}"/>
                                                 </td>
                                                 <td>
-                                                    <input type="text" name="addcomisiones[{{ $v->id }}][litros]" id="litros[]" onchange="calcularLitrosTotales(this);" class="form-control lts_comision" autocomplete="off" value="{{ $v->litros_comision }}"/>
+                                                    <input type="text" name="addcomisiones[{{ $v->id }}][litros]" id="litros[]" class="form-control lts_comision" autocomplete="off" value="{{ $v->litros_comision }}"/>
                                                 </td>
                                                 <td>
-                                                    <input type="text" class="form-control unitario_precio" name="addcomisiones[{{ $v->id }}][pu]" id="precioUnitario[]" onchange="calcularPrecioUnitario(this);" autocomplete="off" value="{{ $v->precio_unitario_comision }}"/>
+                                                    <input type="text" class="form-control unitario_precio" name="addcomisiones[{{ $v->id }}][pu]" id="precioUnitario[]" autocomplete="off" value="{{ $v->precio_unitario_comision }}"/>
                                                 </td>
                                                 <td>
-                                                    <input type="text" class="form-control importe" name="addcomisiones[{{ $v->id }}][importe]" id="totalImporte[]" onchange="calcularImporteTotal(this);" autocomplete="off" value="{{ $v->importe_comision }}"/>
+                                                    <input type="text" class="form-control importe_unitario" name="addcomisiones[{{ $v->id }}][importe]" id="totalImporte[]" autocomplete="off" value="{{ $v->importe_comision }}"/>
                                                 </td>
                                                 <td data-label="...">
                                                     <button type="button" class="btn btn-danger btn-circle btn-sm remove-tr-comision">
@@ -425,7 +436,7 @@
                                             <input type="text" name="litros_totales" id="litros_totales" class="form-control" readonly value="{{ $temporal->litros_totales }}"/>
                                         </td>
                                         <td data-label="IMPORTE TOTAL">
-                                            <input type="text" name="importe_total" id="importe_total" value="{{ $temporal->importe_total }}"  class="form-control importe" readonly/>
+                                            <input type="text" name="importe_total" id="importe_total" value="{{ $temporal->importe_total }}"  class="form-control importe_total" readonly/>
                                         </td>
                                       </tr>
                                     </tbody>
@@ -460,6 +471,32 @@
                             @endrole
                             <input type="hidden" name="periodo_comision_actual" id="periodo_comision_actual" value="{{ $temporal->periodo_actual }}"/>
                             <input type="hidden" name="pre_comision_id" id="pre_comision_id" value="{{ base64_encode($id_precomision) }}">
+                           @switch($preComision->rendimiento)
+                               @case('RENDIMIENTO_MIXTO')
+                                    @php
+                                        $rend = $temporal->rendimiento_mixto;
+                                    @endphp   
+                                @break
+                                @case('RENDIMIENTO_CIUDAD')
+                                    @php
+                                        $rend = $temporal->rendimiento_ciudad;
+                                    @endphp
+                                @break
+                               @case('RENDIMIENTO_CARRETERA')
+                                  @php
+                                      $rend = $temporal->rendimiento_carretera;
+                                  @endphp
+                                @break
+                                @case('RENDIMIENTO_CARGA')
+                                   @php
+                                       $rend = $temporal->rendimiento_carga;
+                                   @endphp
+                                @break
+                               @default
+                           @endswitch
+                           <input type="hidden" name="rendimiento_final" id="rendimiento_final" value="{{ $rend }}">
+                           <input type="hidden" name="costo_combustible" id="costo_combustible" value="{{ $preComision->costo_combustible }}">
+                           <input type="hidden" name="monto_total_rendimiento" id="monto_total_rendimiento">
                         </form>
                     </div>
                 </div>
@@ -604,6 +641,9 @@
 @section('contenidoJavaScript')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <script src="{{ asset('assets/js_/typehead.min.js') }}"></script>
+{{-- agregar un método js --}}
+    <script type="module" src="{{ asset('assets/jqueryvalidate/metodos/calcularComisionEdit.js') }}"></script>
+{{-- agregar un método js END --}}
     <script type="text/javascript">
         $.ajaxSetup({
             headers: {
@@ -661,6 +701,13 @@
                                     '<td>' +
                                         '<textarea name="addcomision['+ j +'][a_comision]" class="form-control"></textarea>' +
                                     '</td>' +
+                                    '<td>' +
+                                        '<select name="addcomision['+ j +'][tipo]" id="tipo[]" class="form-control" onfocus="this.selectedIndex = 0;">'+
+                                            '<option value="">-- SELECCIONAR --</option>'+
+                                            '<option value="recorrido">RECORRIDO</option>' +
+                                            '<option value="punto_a_punto">PUNTO A PUNTO</option>' +
+                                        '</select>' +
+                                    '</td>'+
                                     '<td data-label="...">'+
                                         '<button type="button" class="btn btn-danger btn-circle btn-sm remove-tr">'+
                                             '<i class="fas fa-minus-circle"></i>'+
@@ -680,6 +727,13 @@
                                     '<td>' +
                                         '<textarea name="addcomision['+ j +'][a_comision]" class="form-control"></textarea>' +
                                     '</td>' +
+                                    '<td>' +
+                                        '<select name="addcomision['+ j +'][tipo]" id="tipo[]" class="form-control" onfocus="this.selectedIndex = 0;">'+
+                                            '<option value="">-- SELECCIONAR --</option>'+
+                                            '<option value="recorrido">RECORRIDO</option>' +
+                                            '<option value="punto_a_punto">PUNTO A PUNTO</option>' +
+                                        '</select>' +
+                                    '</td>'+
                                     '<td data-label="...">'+
                                         '<button type="button" class="btn btn-danger btn-circle btn-sm remove-tr">'+
                                             '<i class="fas fa-minus-circle"></i>'+
@@ -701,6 +755,13 @@
                                 '<td>' +
                                     '<textarea name="addcomision['+ j +'][a_comision]" class="form-control"></textarea>' +
                                 '</td>' +
+                                '<td>' +
+                                    '<select name="addcomision['+ j +'][tipo]" id="tipo[]" class="form-control" onfocus="this.selectedIndex = 0;">'+
+                                        '<option value="">-- SELECCIONAR --</option>'+
+                                        '<option value="recorrido">RECORRIDO</option>' +
+                                        '<option value="punto_a_punto">PUNTO A PUNTO</option>' +
+                                    '</select>' +
+                                '</td>'+
                                 '<td data-label="...">'+
                                     '<button type="button" class="btn btn-danger btn-circle btn-sm remove-tr">'+
                                         '<i class="fas fa-minus-circle"></i>'+
@@ -723,6 +784,13 @@
                                 '<td>' +
                                     '<textarea name="addcomision['+ j +'][a_comision]" class="form-control"></textarea>' +
                                 '</td>' +
+                                '<td>' +
+                                    '<select name="addcomision['+ j +'][tipo]" id="tipo[]" class="form-control" onfocus="this.selectedIndex = 0;">'+
+                                        '<option value="">-- SELECCIONAR --</option>'+
+                                        '<option value="recorrido">RECORRIDO</option>' +
+                                        '<option value="punto_a_punto">PUNTO A PUNTO</option>' +
+                                    '</select>' +
+                                '</td>'+
                                 '<td data-label="...">'+
                                     '<button type="button" class="btn btn-danger btn-circle btn-sm remove-tr">'+
                                         '<i class="fas fa-minus-circle"></i>'+
@@ -742,6 +810,13 @@
                                 '<td>' +
                                     '<textarea name="addcomision['+ j +'][a_comision]" class="form-control"></textarea>' +
                                 '</td>' +
+                                '<td>' +
+                                    '<select name="addcomision['+ j +'][tipo]" id="tipo[]" class="form-control" onfocus="this.selectedIndex = 0;">'+
+                                        '<option value="">-- SELECCIONAR --</option>'+
+                                        '<option value="recorrido">RECORRIDO</option>' +
+                                        '<option value="punto_a_punto">PUNTO A PUNTO</option>' +
+                                    '</select>' +
+                                '</td>'+
                                 '<td data-label="...">'+
                                     '<button type="button" class="btn btn-danger btn-circle btn-sm remove-tr">'+
                                         '<i class="fas fa-minus-circle"></i>'+
@@ -762,13 +837,13 @@
                                 '<input type="text" class="form-control" name="addcomisiones['+ i +'][factura]" id="facturas[]"/>' +
                             '</td>' +
                             '<td>' +
-                                '<input type="text" name="addcomisiones[' + i +'][litros]" id="litros[]" onchange="calcularLitrosTotales(this);" class="form-control lts_comision" autocomplete="off"/>' +
+                                '<input type="text" name="addcomisiones[' + i +'][litros]" id="litros[]" class="form-control lts_comision" autocomplete="off"/>' +
                             '</td>' +
                             '<td>' +
-                                '<input type="text" class="form-control unitario_precio" name="addcomisiones[' + i +'][pu]" id="precioUnitario[]" onchange="calcularPrecioUnitario(this);" autocomplete="off"/>' +
+                                '<input type="text" class="form-control unitario_precio" name="addcomisiones[' + i +'][pu]" id="precioUnitario[]" autocomplete="off"/>' +
                             '</td>' +
                             '<td>' +
-                                '<input type="text" class="form-control importe" name="addcomisiones[' + i +'][importe]" id="totalImporte[]" onchange="calcularImporteTotal(this);" autocomplete="off"/>' +
+                                '<input type="text" class="form-control importe_unitario" name="addcomisiones[' + i +'][importe]" id="totalImporte[]" autocomplete="off"/>' +
                             '</td>' +
                             '<td data-label="...">'+
                                 '<button type="button" class="btn btn-danger btn-circle btn-sm remove-tr-comision">'+
@@ -887,6 +962,18 @@
                 }
             });
 
+            /**@author daniel
+             * funcion javascript para hacer un calculo directo entre los litros del item y 
+             * el precio por litro que maneja cada partida
+             * */
+            $(document).on('keyup', '.unitario_precio', '.lts_comision', function(){
+                var ltsComision = $(this).closest('tr').find('.lts_comision').val();
+                var unitarioPrecio = $(this).closest('tr').find('.unitario_precio').val();
+                if (ltsComision.length > 0 && unitarioPrecio.length > 0) {
+                    let importeTotal = ltsComision * unitarioPrecio;
+                    $(this).closest('tr').find('.importe_unitario').val(importeTotal);
+                }
+            });
             /*
             * funcion para checar caracteres especiales
             */
@@ -1089,25 +1176,25 @@
             }
         }
 
-        function calcularPrecioUnitario(argumentos){
-            var preciototal = 0, precioanterior = 0;
-            var f = argumentos.parentNode.parentNode;
-            var nods = f.childNodes;
-            for (let index = 0; index < nods.length; index++) {
-                if (nods[index].firstChild.id == 'precioUnitario[]') {
-                    precioanterior = nods[index].firstChild.value;
-                    preciototal = parseFloat(nods[index].firstChild.value,10);
-                    nods[index].firstChild.value = preciototal;
-                }
-            }
+        // function calcularPrecioUnitario(argumentos){
+        //     var preciototal = 0, precioanterior = 0;
+        //     var f = argumentos.parentNode.parentNode;
+        //     var nods = f.childNodes;
+        //     for (let index = 0; index < nods.length; index++) {
+        //         if (nods[index].firstChild.id == 'precioUnitario[]') {
+        //             precioanterior = nods[index].firstChild.value;
+        //             preciototal = parseFloat(nods[index].firstChild.value,10);
+        //             nods[index].firstChild.value = preciototal;
+        //         }
+        //     }
 
-            var precio_unitario_total = document.getElementById("precio_unitario_total");
-            if (precio_unitario_total.value == 'NaN') {
-                precio_unitario_total.value = 0;
-            }
-            var sumatoria_precioUnitario = parseFloat(precio_unitario_total.value) + preciototal;
-            precio_unitario_total.value = roundToTwo(sumatoria_precioUnitario);
-        }
+        //     var precio_unitario_total = document.getElementById("precio_unitario_total");
+        //     if (precio_unitario_total.value == 'NaN') {
+        //         precio_unitario_total.value = 0;
+        //     }
+        //     var sumatoria_precioUnitario = parseFloat(precio_unitario_total.value) + preciototal;
+        //     precio_unitario_total.value = roundToTwo(sumatoria_precioUnitario);
+        // }
 
         function calcularImporteTotal(args)
         {

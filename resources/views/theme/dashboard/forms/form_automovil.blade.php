@@ -156,7 +156,12 @@
                                 <div class="col-md-4 mb-3">
                                     <label for="periodo">Modelo</label>
                                     <div class="custom-file">
-                                        <input type="text" class="form-control" id="modelo" name="modelo" autocomplete="off">
+                                        <input type="text" class="form-control @error('rendimiento_ciudad') is-invalid @enderror typeahead" id="modelo" name="modelo" autocomplete="off">
+                                        @error('placas')
+                                            <div class="alert alert-danger mt-1 mb-1">
+                                                {{ $message }}
+                                            </div>
+                                        @enderror
                                     </div>
                                 </div>
                                 <div class="col-md-4 mb-3">
@@ -255,7 +260,63 @@
                                             </div>
                                         @enderror
                                     </div>
-                                </div> 
+                                </div>
+                            </div>
+                            <span class="d-block g-mb-3 g-font-size-22 g-color-gray-dark-v1 g-font-secondary">
+                                <b>RENDIMIENTOS</b>
+                            </span>
+                            <hr class="g-brd-gray-light-v4">
+                            <div class="form-row">
+                                <div class="col-md-3 mb-3">
+                                    <label for="rendimiento_ciudad">Rendimiento de la ciudad</label>
+                                    <div class="custom-file">
+                                        <input type="text" name="rendimiento_ciudad" id="rendimiento_ciudad" class="form-control" autocomplete="off" onkeypress="return valideKey(event);">
+                                        @error('rendimiento_ciudad')
+                                            <div class="alert alert-danger mt-1 mb-1">
+                                                {{ $message }}
+                                            </div>
+                                        @enderror
+                                    </div>
+                                </div>
+                               {{-- rendimiento en carretera --}}
+                                <div class="col-md-3 mb-3">
+                                    <label for="rendimiento_carretera">Rendimiento en Carretera</label>
+                                    <div class="custom-file">
+                                        <input type="text" name="rendimiento_carretera" id="rendimiento_carretera" class="form-control" autocomplete="off" onkeypress="return valideKey(event);">
+                                        @error('rendimiento_carretera')
+                                            <div class="alert alert-danger mt-1 mb-1">
+                                                {{ $message }}
+                                            </div>
+                                        @enderror
+                                    </div>
+                                </div>
+                                {{-- rendimiento en carretera END --}}
+                                {{--  rendimiento Mixto--}}
+                                <div class="col-md-3 mb-3">
+                                    <label for="rendimiento_mixto">Rendimiento en Mixto</label>
+                                    <div class="custom-file">
+                                        <input type="text" name="rendimiento_mixto" id="rendimiento_mixto" class="form-control" autocomplete="off" onkeypress="return valideKey(event);">
+                                        @error('rendimiento_mixto')
+                                            <div class="alert alert-danger mt-1 mb-1">
+                                                {{ $message }}
+                                            </div>
+                                        @enderror
+                                    </div>
+                                </div>
+                                {{-- rendimiento Mixto END --}}
+                                {{-- rendimiento carga--}}
+                                <div class="col-md-3 mb-3">
+                                    <label for="rendimiento_carga">Rendimiento de Carga</label>
+                                    <div class="custom-file">
+                                        <input type="text" name="rendimiento_carga" id="rendimiento_carga" class="form-control" autocomplete="off" onkeypress="return valideKey(event);">
+                                        @error('rendimiento_carga')
+                                            <div class="alert alert-danger mt-1 mb-1">
+                                                {{ $message }}
+                                            </div>
+                                        @enderror
+                                    </div>
+                                </div>
+                                {{-- rendimiento carga END --}}
                             </div>
                             <hr>
 

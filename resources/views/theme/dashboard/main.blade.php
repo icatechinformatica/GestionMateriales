@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>@yield('title', 'Plantilla de tablero de Administración sissopecom')</title>
+    <title>{{ (isset($titlePage)) ? $titlePage : 'Plantilla de tablero de Administración SIRMAT' }}</title>
     <link rel="stylesheet" href="{{ asset('assets/bootstrap-5.0.1/css/bootstrap.css') }}">
     {{-- estilos layouts --}}
     {{-- <link rel="stylesheet" href="{{ asset('assets/css_/dashboard/style.css') }}">
@@ -49,10 +49,10 @@
               <!-- Begin Page Content -->
               <div class="container-fluid">
 
-                  <!-- Page Heading -->
+                 {{-- Page Heading BreadCrumb --}}
                   @include('theme.dashboard.breadcrumb')
 
-                  <!-- Content Row -->
+                 {{-- contenido --}}
                   @yield('contenido')
               </div>
               <!-- /.container-fluid -->
