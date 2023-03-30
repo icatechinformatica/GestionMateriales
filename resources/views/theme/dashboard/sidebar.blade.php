@@ -162,6 +162,32 @@
   </li>
   {{-- Nav Item - Revisión Requisiciones END --}}
 
+{{-- Agregar Factura --}}
+  <li class="nav-item">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#callapsefactura"
+    aria-expanded="true" aria-controls="collapseTwo">
+        <i class="fas fa-file-invoice"></i>
+        <span>Factura y Folio</span>
+    </a>
+    <div id="callapsefactura" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+        <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Facturas y Folios:</h6>
+
+              <a href="{{ route('factura.index') }}" rel="noopener noreferrer" class="collapse-item">
+                <i class="fas fa-file-invoice"></i> Factura
+              </a>
+
+
+
+              <a class="collapse-item" href="{{ route('solicitud.bitacora.previo.guardado') }}">
+                  <i class="fas fa-receipt"></i> Folio
+              </a>
+
+
+        </div>
+    </div>
+  </li>
+{{-- Agregar Factura END --}}
 
   <!-- Divider -->
   <hr class="sidebar-divider">

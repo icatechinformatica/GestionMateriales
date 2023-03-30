@@ -58,7 +58,7 @@
                         {!! Form::label('ARCHIVO DE MEMORANDUM', 'ARCHIVO DE MEMORANDUM', ['for' => 'memoupdate', 'class' => 'control-label']) !!}
                         {!! Form::file('memoupdate', ['id' => 'memoupdate', 'class' => 'form-control']) !!}
                         <div class="invalid-feedback">
-                            Proveer Autoriza 
+                            Proveer Autoriza
                         </div>
                     </div>
                 </div>
@@ -66,7 +66,7 @@
                 <br>
                 {!!
                     Form::button(
-                        '<i class="fas fa-upload"></i> Modificar', 
+                        '<i class="fas fa-upload"></i> Modificar',
                         ['class' => 'btn btn-danger', 'type' => 'submit']
                     )
                 !!}

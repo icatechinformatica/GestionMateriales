@@ -72,7 +72,7 @@
         z-index: 1000;
         float: left;
         display: none;
-        min-width: 160px;   
+        min-width: 160px;
         padding: 4px 0;
         margin: 0 0 10px 25px;
         list-style: none;
@@ -124,7 +124,7 @@
         table caption {
                 font-size: 1.3em;
         }
-            
+
         table thead {
             border: none;
             clip: rect(0 0 0 0);
@@ -135,20 +135,20 @@
             position: absolute;
             width: 1px;
         }
-            
+
         table tr {
             border-bottom: 3px solid #ddd;
             display: block;
             margin-bottom: .625em;
         }
-            
+
         table td {
             border-bottom: 1px solid #ddd;
             display: block;
             font-size: .8em;
             text-align: right;
         }
-            
+
         table td::before {
             /*
             * aria-label has no advantage, it won't be read inside a table
@@ -159,7 +159,7 @@
             font-weight: bold;
             text-transform: uppercase;
         }
-            
+
         table td:last-child {
             border-bottom: 0;
         }
@@ -211,7 +211,7 @@
                 <div class="modal-body">
                     <div class="row"></div>
                     <div class="col-lg-12 modal-content-dialog">
-                        
+
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -276,7 +276,7 @@
                        j = cont_recorrido + 1;
                        if (j == 0) {
                             $("#recorridotable").append(
-                                '<tr>'+ 
+                                '<tr>'+
                                     '<td>' +
                                         '<input type="date" name="addcomision['+ j +'][fecha_comision]" class="form-control"/>' +
                                     '</td>' +
@@ -295,7 +295,7 @@
                             );
                        } else {
                             $("#recorridotable").append(
-                                '<tr>'+ 
+                                '<tr>'+
                                     '<td>' +
                                         '<input type="date" name="addcomision['+ j +'][fecha_comision]" class="form-control"/>' +
                                     '</td>' +
@@ -316,7 +316,7 @@
                     } else if (j < max_fields){
                         j++;
                         $("#recorridotable").append(
-                            '<tr>'+ 
+                            '<tr>'+
                                 '<td>' +
                                     '<input type="date" name="addcomision['+ j +'][fecha_comision]" class="form-control"/>' +
                                 '</td>' +
@@ -338,7 +338,7 @@
                     j ++;
                     if (j == 0) {
                         $("#recorridotable").append(
-                            '<tr>'+ 
+                            '<tr>'+
                                 '<td>' +
                                     '<input type="date" name="addcomision['+ j +'][fecha_comision]" class="form-control"/>' +
                                 '</td>' +
@@ -357,7 +357,7 @@
                         );
                     } else {
                         $("#recorridotable").append(
-                            '<tr>'+ 
+                            '<tr>'+
                                 '<td>' +
                                     '<input type="date" name="addcomision['+ j +'][fecha_comision]" class="form-control"/>' +
                                 '</td>' +
@@ -504,9 +504,9 @@
                     arreglo.sort(function (a,b) {
                         return b-a;
                     });
-                    
+
                     var sumatoria = calculo(arreglo);
-                    
+
                     var importe = sumatoria * denominacionVales;
                     $(this).closest('tr').find('.importe').val(importe);
                 }
@@ -599,12 +599,12 @@
                         }
                     });
                 } else {
-                    
+
                 }
             });
 
             $('#periodo_comision').click(function () {
-                $('#exampleModal').modal('show'); 
+                $('#exampleModal').modal('show');
             });
 
             /** @argument - arg
@@ -678,7 +678,7 @@
                 }
             });
         });
-        /** 
+        /**
         * funciones javascripts puras
         */
 
@@ -699,7 +699,7 @@
             if (ltsTotales.value == 'NaN') {
                 ltsTotales.value = 0;
             }
-            var litrosTotales = parseFloat(ltsTotales.value) + litrosTotales; 
+            var litrosTotales = parseFloat(ltsTotales.value) + litrosTotales;
             ltsTotales.value = roundToTwo(litrosTotales);
         }
 
@@ -765,7 +765,7 @@
             $('#periodo_comision_actual').val(primerCaracter);
         }
 
-        function roundToTwo(num) {    
+        function roundToTwo(num) {
             return +(Math.round(num + "e+2")  + "e-2");
         }
 
@@ -792,7 +792,7 @@
                 pu.value = round(parseFloat(pu.value).toFixed(2) - element);
             }
         }
-        
+
         function restarimporte(arg){
             var element = 0;
             element = parseFloat(arg, 2);

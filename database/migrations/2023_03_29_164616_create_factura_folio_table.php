@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateFolioTable extends Migration
+class CreateFacturaFolioTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,9 @@ class CreateFolioTable extends Migration
      */
     public function up()
     {
-        Schema::create('folio', function (Blueprint $table) {
-            $table->id();
-            $table->string('numero_folio', 150);
-            $table->year('anio');
-            $table->string('documento', 255);
+        Schema::create('factura_folio', function (Blueprint $table) {
+            $table->unsignedBigInteger('factura_id');
+            $table->unsignedBigInteger('folio_id');
             $table->timestamps();
         });
     }
@@ -29,6 +27,6 @@ class CreateFolioTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('folio');
+        Schema::dropIfExists('factura_folio');
     }
 }
