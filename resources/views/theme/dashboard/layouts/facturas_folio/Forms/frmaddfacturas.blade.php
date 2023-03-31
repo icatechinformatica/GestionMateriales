@@ -214,8 +214,8 @@
                         <div class="col-md-4 mb-3">
                             <label for="fecha_comision">Cliente</label>
                             <div class="custom-file">
-                                <input type="text" name="cliente" id="cliente" class="@error('fecha_comision') is-invalid @enderror form-control" autocomplete="off">
-                                @error('fecha_comision')
+                                <input type="text" name="cliente" id="cliente" class="@error('cliente') is-invalid @enderror form-control" autocomplete="off">
+                                @error('cliente')
                                     <div class="alert alert-danger mt-1 mb-1">
                                         {{ $message }}
                                     </div>
@@ -229,9 +229,9 @@
                             </div>
                         </div>
                         <div class="col-md-4 mb-3">
-                            <label for="placas_comision">Folio/Serie</label>
+                            <label for="folio_serie">Folio/Serie</label>
                             <div class="custom-file">
-                                <input type="text" class="@error('placas_comision') is-invalid @enderror typeahead form-control" id="folio_serie" name="folio_serie" autocomplete="off">
+                                <input type="text" class="@error('folio_serie') is-invalid @enderror typeahead form-control" id="folio_serie" name="folio_serie" autocomplete="off">
                             </div>
                         </div>
                     </div>
@@ -241,18 +241,18 @@
                             <label for="marca_vehiculo">Subtotal</label>
                             <div class="input-group">
                                 <span class="input-group-text">$</span>
-                                <input type="text" class="form-control " id="subtotal" name="subtotal" autocomplete="off">
+                                <input type="text" class="form-control" id="subtotal" name="subtotal" autocomplete="off">
                             </div>
                         </div>
                         <div class="col-md-4 mb-3">
-                            <label for="marca_vehiculo">Impuestos Trasladados</label>
+                            <label for="impuesto_trasladados">Impuestos Trasladados</label>
                             <div class="input-group">
                                 <span class="input-group-text">$</span>
                                 <input type="text" class="form-control " id="impuesto_trasladados" name="impuesto_trasladados" autocomplete="off" >
                             </div>
                         </div>
                         <div class="col-md-4 mb-3">
-                            <label for="tipo">Total</label>
+                            <label for="total">Total</label>
                             <div class="input-group">
                                 <span class="input-group-text">$</span>
                                 <input type="text" class="form-control " id="total" name="total"  readonly >

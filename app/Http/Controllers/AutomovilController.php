@@ -114,7 +114,7 @@ class AutomovilController extends Controller
         $idvehiculo = base64_decode($id);
         $getvehiculo = $this->editVehiculo($idvehiculo);
         $resguardante = $this->getResguardante();
-        
+
         return view('theme.dashboard.forms.form_automovil_edit', compact('getvehiculo', 'resguardante'));
     }
 
@@ -153,11 +153,11 @@ class AutomovilController extends Controller
            $idvehiculo =  base64_decode($id);
            $update_vehiculo = $this->updateVehiculo($idvehiculo, $request);
            if ($update_vehiculo == true) {
-               # si es verdadero vamos a enviar 
+               # si es verdadero vamos a enviar
                return redirect()->route('solicitud.cat.indice')->with('success', sprintf('¡REGISTRO ACTUALIZADO EXÍTOSAMENTE!'));
            }
         } catch (QueryException $r) {
-            //lanzar excepcion de sql 
+            //lanzar excepcion de sql
             return back()->with('error', $r->getMessage());
         }
     }
