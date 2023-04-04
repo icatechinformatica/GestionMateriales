@@ -13,7 +13,7 @@ class Factura extends Model
     public $timestamps = true;
 
     protected $fillable = [
-        'id', '	concepto', 'archivo', '	subtotal', 'cliente', 'serie', 'impuestos_trasladados', 'total' , 'solicitud_id'
+        'id', '	concepto', 'archivo', '	subtotal', 'cliente', 'serie', 'impuestos_trasladados', 'total'
     ];
 
     protected $hidden = ['created_at', 'updated_at'];

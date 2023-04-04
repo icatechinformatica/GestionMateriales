@@ -5,7 +5,8 @@ namespace App\Http\Controllers\factura_folio;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\factura_folio\Factura;
-use App\Traits\UploadFileTrait;
+use App\Http\Traits\UploadFileTrait;
+use Illuminate\Database\QueryException;
 
 class FacturaController extends Controller
 {
@@ -50,33 +51,71 @@ class FacturaController extends Controller
         /**
          * validar inputs antes de guardar el registro
          */
-        $validador = $request->validate([
-            'fileup' => 'required|mimes:pdf|max:2048',
-            'cliente' => 'required',
-            'concepto' => 'required',
-            'folio_serie' => 'required',
-            'subtotal' => 'required|numeric|between:0,1000000.99',
-            'impuesto_trasladados' => 'required|numeric|between:0,1000000.99',
-            'total' => 'required|numeric|between:0,1000000.99'
-        ],[
-            'fileup.required' => 'El archivo es requerido',
-            'fileup.mimes' => 'Sólo se aceptan archivos en formato pdf',
-            'fileup.max' => 'Tamaño máximo de 4 MB',
-            'cliente.required' => 'El cliente es requerido',
-            'concepto.required' => 'El concepto es requerido',
-            'folio_serie.required' => 'El folio/Serie es requerido',
-            'subtotal.required' => 'Subtotal es requerido',
-            'subtotal.numeric' => 'Subtotal debe ser númerico',
-            'impuesto_trasladados.required' => 'Impuesto de traslado requerido',
-            'impuesto_trasladados.numeric' => 'Impuesto de traslado debe ser númerico',
-            'total.required' => 'El total es requerido',
-            'total.numeric' => 'toal es númerico'
-        ]);
+        // $validador = $request->validate([
+        //     'fileup' => 'required|mimes:pdf|max:2048',
+        //     'cliente' => 'required',
+        //     'concepto' => 'required',
+        //     'folio_serie' => 'required',
+        //     'subtotal' => 'required|numeric|between:0,1000000.99',
+        //     'impuesto_trasladados' => 'required|numeric|between:0,1000000.99',
+        //     'total' => 'required|numeric|between:0,1000000.99'
+        // ],[
+        //     'fileup.required' => 'El archivo es requerido',
+        //     'fileup.mimes' => 'Sólo se aceptan archivos en formato pdf',
+        //     'fileup.max' => 'Tamaño máximo de 4 MB',
+        //     'cliente.required' => 'El cliente es requerido',
+        //     'concepto.required' => 'El concepto es requerido',
+        //     'folio_serie.required' => 'El folio/Serie es requerido',
+        //     'subtotal.required' => 'Subtotal es requerido',
+        //     'subtotal.numeric' => 'Subtotal debe ser númerico',
+        //     'impuesto_trasladados.required' => 'Impuesto de traslado requerido',
+        //     'impuesto_trasladados.numeric' => 'Impuesto de traslado debe ser númerico',
+        //     'total.required' => 'El total es requerido',
+        //     'total.numeric' => 'toal es númerico'
+        // ]);
 
         try {
             //se realiza el guardado de datos
-        } catch (\Throwable $th) {
+            $nuevaFactura = Factura::create([
+                'cliente' => trim(strtoupper($request->cliente)),
+                'concepto' => trim(strtoupper($request->concepto)),
+                'serie' => trim(strtoupper($request->folio_serie)),
+                'impuestos_trasladados' => trim($request->impuesto_trasladados),
+                'subtotal' => trim($request->subtotal),
+                'total' => trim($request->total),
+            ]); // guardar registro
+
+            /**
+             * obtener el último ID
+             */
+            $lastId = $nuevaFactura->id;
+
+            if ($request->hasFile('fileup')) {
+                # si hay archivo se agrega el registro a la base de datos y contenido también a la carpeta
+                $file = $request->file('fileup');
+                $returnImage = $this->uploadFile($file, $lastId);
+                // creamos un arreglo
+                $arrFactura = [
+                    'archivo' => $returnImage
+                ];
+                // vamos a actualizar el registro con el arreglo que trae diferentes variables y carga de archivos
+                Factura::WHERE('id', $lastId)->update($arrFactura);
+                //limpiarmos el arreglo
+                unset($arrFactura);
+            }
+            // retornaremos una llamada json porque no necesito un retornar una vista
+            $doneArray = [
+                'success' => true,
+                'message' => 'Factura Agregada Exitosamente!',
+                'data' => $lastId
+            ];
+            return response()->json($doneArray, 200);
+        } catch (QueryException $th) {
             //throw $th;
+            $errorArray = [
+                'Error' => $th->getMessage(),
+            ];
+            return response()->json($errorArray, 401);
         }
         echo "done";
     }

@@ -90,8 +90,8 @@ class PreComisionController extends Controller
          * cargamos los registros del vehículos que estamos teniendo para poderlo utilizar en la consulta
          */
         $catAutomovil = CatalogoVehiculo::select('catalogo_vehiculo.marca', 'catalogo_vehiculo.modelo',
-        'catalogo_vehiculo.numero_serie', 'catalogo_vehiculo.numero_motor', 'catalogo_vehiculo.placas', 
-        'catalogo_vehiculo.color', 'catalogo_vehiculo.tipo', 'resguardante.resguardante_unidad', 
+        'catalogo_vehiculo.numero_serie', 'catalogo_vehiculo.numero_motor', 'catalogo_vehiculo.placas',
+        'catalogo_vehiculo.color', 'catalogo_vehiculo.tipo', 'resguardante.resguardante_unidad',
         'resguardante.puesto_resguardante_unidad', 'catalogo_vehiculo.id as vehiculoId', 'catalogo_vehiculo.rendimiento_ciudad',
         'catalogo_vehiculo.rendimiento_carretera', 'catalogo_vehiculo.rendimiento_mixto', 'catalogo_vehiculo.rendimiento_carga')
                         ->leftjoin('resguardante', 'catalogo_vehiculo.resguardante_id', '=', 'resguardante.id')
@@ -184,7 +184,7 @@ class PreComisionController extends Controller
             $tiempoSolicitud = Carbon::createFromDate($fechaInicio->fecha_inicio)->diffInDays($fechaFin);
 
             SeguimientoSolicitud::where('solicitud_id', $idSolicitud)->update([
-                'status_seguimiento_id' => 5, 
+                'status_seguimiento_id' => 5,
                 'fecha_fin' => $fechaFin,
                 'tiempo_solicitud' => $tiempoSolicitud
             ]);
@@ -242,7 +242,7 @@ class PreComisionController extends Controller
                      * actualizamos vía bucle
                      */
                     if (!empty($request->addcomisiones)) {
-                        # checamos si el arreglo está vacio o no      
+                        # checamos si el arreglo está vacio o no
                         foreach ($request->addcomisiones as $key => $value) {
                             # guardamos los registros
                             $comisiones = new BitacoraComisionTemporal;
@@ -310,7 +310,7 @@ class PreComisionController extends Controller
                     $solicitudComision->km_inicial = $request->get('kmInicial');
                     $solicitudComision->nombre_elabora = Str::upper(Auth::user()->name);
                     $solicitudComision->puesto_elabora = Str::upper(Auth::user()->puesto);
-                    $solicitudComision->conductor = Str::upper($request->get('nombreConductor')); 
+                    $solicitudComision->conductor = Str::upper($request->get('nombreConductor'));
                     $solicitudComision->periodo_actual = Str::upper($request->get('periodo_comision_actual'));
                     $solicitudComision->litros_totales = $request->get('litros_totales');
                     $solicitudComision->anio_solicitud = $anioSolicitud;
@@ -355,7 +355,7 @@ class PreComisionController extends Controller
                             # se entra en el bucle para cargar los datos en la tabla
                             $comisionRecorrido = new RecorridoComision();
                             $comisionRecorrido->fecha_comision = $value['fecha_comision'];
-                            $comisionRecorrido->de_comision =  Str::upper($value['de_comision']); 
+                            $comisionRecorrido->de_comision =  Str::upper($value['de_comision']);
                             $comisionRecorrido->a_comision = Str::upper($value['a_comision']);
                             $comisionRecorrido->tipo = $value['tipo'];
                             $comisionRecorrido->solicitud_id = $lastId;
@@ -395,7 +395,7 @@ class PreComisionController extends Controller
                         }
                     }
                     /**
-                     * vamos a llamar al registro del vehiculo para actualizar el 
+                     * vamos a llamar al registro del vehiculo para actualizar el
                      */
                     $catVehiculo = CatalogoVehiculo::where('id', $request->idcatvehiculo)->first();
                     if (is_null($catVehiculo->km_final)) {
@@ -459,7 +459,7 @@ class PreComisionController extends Controller
 
 
         if ($status < 5) {
-            
+
             /**
              * se actualiza el seguimiento_solicitud se cambia el seguimiento
              */
@@ -470,7 +470,7 @@ class PreComisionController extends Controller
             $fechaFin = Carbon::now()->format('Y-m-d');
             $tiempoSolicitud = Carbon::createFromDate($fechaInicio->fecha_inicio)->diffInDays($fechaFin);
             SeguimientoSolicitud::where('solicitud_id', $sqlComisionGetRevision->solicitudId)->update([
-                'status_seguimiento_id' => 3, 
+                'status_seguimiento_id' => 3,
                 'fecha_fin' => $fechaFin,
                 'tiempo_solicitud' => $tiempoSolicitud
             ]);
@@ -495,7 +495,7 @@ class PreComisionController extends Controller
         $fechaFin = Carbon::now()->format('Y-m-d');
         $tiempoSolicitud = Carbon::createFromDate($fechaInicio->fecha_inicio)->diffInDays($fechaFin);
         SeguimientoSolicitud::where('solicitud_id', $sqlComisionGetRevision->solicitudId)->update([
-            'status_seguimiento_id' => 3, 
+            'status_seguimiento_id' => 3,
             'fecha_fin' => $fechaFin,
             'tiempo_solicitud' => $tiempoSolicitud
         ]);

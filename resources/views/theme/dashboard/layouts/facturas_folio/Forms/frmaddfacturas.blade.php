@@ -182,114 +182,119 @@
 {{-- tabla --}}
 <div class="container-fluid dark-nav">
     <div class="row">
-        <span id="success_message"></span>
         <div class="col-lg-1 mb-4"></div>
         <div class="col-lg-10 mb-4">
+            @if ($message = Session::get('success'))
+                <div class="alert alert-success alert-block">
+                    <strong>{{ $message }}</strong>
+                </div>
+            @endif
+            <span id="success_message"></span>
             <div class="card shadow mb-4">
                 <div class="card-body">
 {{-- FORM --}}
-    <form method="POST" id="frmFacturastore" enctype="multipart/form-data">
-{{--   @csrf TOKEN --}}
-            @csrf
-{{--  @csrf TOKEN END --}}
-{{-- Agregar Formulario --}}
-                    <div class="form-row">
-                        <div class="col-md-6 mb-3">
-                            <label for="memo_comision">&nbsp;</label>
-                            <div class="custom-file">
-                                <h3><b>CARGAR FACTURA</b></h3>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="col-md-7 mb-3 process" style="display:none;">
-                            <div class="progress">
-                                <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" style=""></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="col-md-4 mb-3">
-                            <label for="fecha_comision">Cliente</label>
-                            <div class="custom-file">
-                                <input type="text" name="cliente" id="cliente" class="@error('cliente') is-invalid @enderror form-control" autocomplete="off">
-                                @error('cliente')
-                                    <div class="alert alert-danger mt-1 mb-1">
-                                        {{ $message }}
+                    <form method="POST" id="frmFacturastore" enctype="multipart/form-data">
+                {{--   @csrf TOKEN --}}
+                            @csrf
+                {{--  @csrf TOKEN END --}}
+                {{-- Agregar Formulario --}}
+                                    <div class="form-row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="memo_comision">&nbsp;</label>
+                                            <div class="custom-file">
+                                                <h3><b>CARGAR FACTURA</b></h3>
+                                            </div>
+                                        </div>
                                     </div>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <label for="periodo_comision">Concepto</label>
-                            <div class="custom-file">
-                                <input type="text" class="form-control" id="concepto" name="concepto" autocomplete="off">
-                            </div>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <label for="folio_serie">Folio/Serie</label>
-                            <div class="custom-file">
-                                <input type="text" class="@error('folio_serie') is-invalid @enderror typeahead form-control" id="folio_serie" name="folio_serie" autocomplete="off">
-                            </div>
-                        </div>
-                    </div>
 
-                    <div class="form-row">
-                        <div class="col-md-4 mb-3">
-                            <label for="marca_vehiculo">Subtotal</label>
-                            <div class="input-group">
-                                <span class="input-group-text">$</span>
-                                <input type="text" class="form-control" id="subtotal" name="subtotal" autocomplete="off">
-                            </div>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <label for="impuesto_trasladados">Impuestos Trasladados</label>
-                            <div class="input-group">
-                                <span class="input-group-text">$</span>
-                                <input type="text" class="form-control " id="impuesto_trasladados" name="impuesto_trasladados" autocomplete="off" >
-                            </div>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <label for="total">Total</label>
-                            <div class="input-group">
-                                <span class="input-group-text">$</span>
-                                <input type="text" class="form-control " id="total" name="total"  readonly >
-                            </div>
-                        </div>
-                    </div>
+                                    <div class="form-row">
+                                        <div class="col-md-7 mb-3 process" style="display:none;">
+                                            <div class="progress">
+                                                <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" style=""></div>
+                                            </div>
+                                        </div>
+                                    </div>
 
-                    <div class="form-row">
-                        <div class="col-md-1 mb-3">
-                        </div>
-                        <div class="col-md-10 mb-3 center">
-                            <div class="btn-container">
-                                <!--the three icons: default, ok file (img), error file (not an img)-->
-                                <h1 class="imgupload"><i class="fas fa-file-pdf"></i></h1>
-                                <h1 class="imgupload ok"><i class="fas fa-check"></i></h1>
-                                <h1 class="imgupload stop"><i class="fas fa-times"></i></h1>
-                                <!--this field changes dinamically displaying the filename we are trying to upload-->
-                                <p id="namefile">Sólo Archivos pdf's (pdf)</p>
-                                <!--our custom btn which which stays under the actual one-->
-                                <button type="button" id="btnup" class="btn btn-primary btn-lg">Busca el documento</button>
-                                <!--this is the actual file input, is set with opacity=0 beacause we wanna see our custom one-->
-                                <input type="file" value="" name="fileup" id="fileup">
-                            </div>
-                        </div>
-                        <div class="col-md-1 mb-3">
-                        </div>
-                    </div>
+                                    <div class="form-row">
+                                        <div class="col-md-4 mb-3">
+                                            <label for="fecha_comision">Cliente</label>
+                                            <div class="custom-file">
+                                                <input type="text" name="cliente" id="cliente" class="@error('cliente') is-invalid @enderror form-control" autocomplete="off">
+                                                @error('cliente')
+                                                    <div class="alert alert-danger mt-1 mb-1">
+                                                        {{ $message }}
+                                                    </div>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label for="periodo_comision">Concepto</label>
+                                            <div class="custom-file">
+                                                <input type="text" class="form-control" id="concepto" name="concepto" autocomplete="off">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label for="folio_serie">Folio/Serie</label>
+                                            <div class="custom-file">
+                                                <input type="text" class="@error('folio_serie') is-invalid @enderror typeahead form-control" id="folio_serie" name="folio_serie" autocomplete="off">
+                                            </div>
+                                        </div>
+                                    </div>
 
-                    <div class="form-row">
-                        <div class="col-md-4">
-                            <button type="submit" class="btn btn-success" id="submitFrm">
-                                <i class="fas fa-save"></i> Guardar Factura
-                            </button>
-                        </div>
-                    </div>
-{{-- Agregar Formulario END --}}
-    </form>
+                                    <div class="form-row">
+                                        <div class="col-md-4 mb-3">
+                                            <label for="subtotal">Subtotal</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text">$</span>
+                                                <input type="text" class="form-control" id="subtotal" name="subtotal" autocomplete="off">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label for="impuesto_trasladados">Impuestos Trasladados</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text">$</span>
+                                                <input type="text" class="form-control " id="impuesto_trasladados" name="impuesto_trasladados" autocomplete="off" >
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label for="total">Total</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text">$</span>
+                                                <input type="text" class="form-control " id="total" name="total"  readonly >
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div class="col-md-1 mb-3">
+                                        </div>
+                                        <div class="col-md-10 mb-3 center">
+                                            <div class="btn-container">
+                                                <!--the three icons: default, ok file (img), error file (not an img)-->
+                                                <h1 class="imgupload"><i class="fas fa-file-pdf"></i></h1>
+                                                <h1 class="imgupload ok"><i class="fas fa-check"></i></h1>
+                                                <h1 class="imgupload stop"><i class="fas fa-times"></i></h1>
+                                                <!--this field changes dinamically displaying the filename we are trying to upload-->
+                                                <p id="namefile">Sólo Archivos pdf's (pdf)</p>
+                                                <!--our custom btn which which stays under the actual one-->
+                                                <button type="button" id="btnup" class="btn btn-primary btn-lg">Busca el documento</button>
+                                                <!--this is the actual file input, is set with opacity=0 beacause we wanna see our custom one-->
+                                                <input type="file" value="" name="fileup" id="fileup">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-1 mb-3">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div class="col-md-4">
+                                            <button type="submit" class="btn btn-success" id="submitFrm">
+                                                <i class="fas fa-save"></i> Guardar Factura
+                                            </button>
+                                        </div>
+                                    </div>
+                {{-- Agregar Formulario END --}}
+                    </form>
 {{-- FORM END --}}
                 </div>
             </div>
@@ -314,11 +319,16 @@
                 const count_error = 0;
                 if (count_error == 0)
                 {
+                    const fd = new FormData($('#frmFacturastore')[0]);
+                    // fd.append('file', $( '#fileup' )[0].files[0])
                     // si el contador de errores es 0 se procede a realizar la petición en ajax
                     $.ajax({
                         url: "{{ route('factura.save') }}",
                         method: "POST",
-                        data: $("#frmFacturastore").serialize(),
+                        dataType: 'json',
+                        processData: false,
+                        contentType: false,
+                        data: fd,
                         beforeSend: function()
                         {
                             $('#submitFrm').attr('disabled', 'disabled');
@@ -330,13 +340,15 @@
                             let percentage = 0;
                             const timer = setInterval(() => {
                                 percentage = percentage + 20;
-                                progress_bar_process(percentage, timer)
+                                progress_bar_process(percentage, timer, data)
                             }, 1000);
                         },
                         error: function(xhr, textStatus, error)
                         {
                             // manejar errores
                             console.log(xhr.statusText);
+                            console.log(xhr.responseText);
+                            console.log(xhr.status);
                             console.log(textStatus);
                             console.log(error);
                         }
@@ -346,8 +358,8 @@
                 }
             });
 
-            const progress_bar_process = (percentage, timer) => {
-                console.log(percentage);
+            const progress_bar_process = (percentage, timer, data) => {
+                console.log(data);
                 $(".progress-bar").css('width', percentage + '%');
                 if (percentage > 100) {
                     clearInterval(timer); // funcion que resetea el intervalo de tiempos
