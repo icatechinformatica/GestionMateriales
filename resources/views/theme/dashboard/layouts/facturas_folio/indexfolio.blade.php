@@ -68,6 +68,9 @@
             text-transform: uppercase;
         }
 
+        .currency:before{ content:'$ '; }
+        .currency:after{ content: ''; }
+
         @media screen and (max-width: 600px) {
             table {
                 border: 0;
@@ -149,12 +152,12 @@
             @if (count($factura) > 0)
                @foreach ($factura as $k => $v)
                     <tr>
-                        <td data-label="Folio/Serie"></td>
-                        <td data-label="Concepto"></td>
-                        <td data-label="Total"></td>
+                        <td data-label="Folio/Serie">{{ $v->serie }}</td>
+                        <td data-label="Concepto">{{ $v->concepto }}</td>
+                        <td data-label="Total">@money($v->total)</td>
                         <td data-label="Detalles">
-                            <a type="button" class="btn btn-info btn-circle btn-lg" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Tooltip on top">
-                                <i class="fas fa-search"></i>
+                            <a type="button" class="btn btn-danger btn-circle btn-lg" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Tooltip on top" href="{{ route('factura.getfile', ['filename' => $v->id]) }}">
+                                <i class="fas fa-file-pdf"></i>
                             </a>
                         </td>
                     </tr>

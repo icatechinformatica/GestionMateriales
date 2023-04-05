@@ -9,7 +9,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/factura/index', [FacturaController::class, 'index'])->name('factura.index');
     Route::get('/factura/create', [FacturaController::class, 'create'])->name('factura.create');
     Route::post('/factura/store', [FacturaController::class, 'store'])->name('factura.save');
-
+    Route::get('/factura/{filename}', [FacturaController::class, 'getFile'])->name('factura.getfile');
 });
 
 

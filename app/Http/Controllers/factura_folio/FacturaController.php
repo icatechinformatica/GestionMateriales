@@ -76,14 +76,14 @@ class FacturaController extends Controller
 
         try {
             //se realiza el guardado de datos
-            $nuevaFactura = Factura::create([
-                'cliente' => trim(strtoupper($request->cliente)),
-                'concepto' => trim(strtoupper($request->concepto)),
-                'serie' => trim(strtoupper($request->folio_serie)),
-                'impuestos_trasladados' => trim($request->impuesto_trasladados),
-                'subtotal' => trim($request->subtotal),
-                'total' => trim($request->total),
-            ]); // guardar registro
+            $nuevaFactura = new Factura;
+            $nuevaFactura->concepto = trim(strtoupper($request->concepto));
+            $nuevaFactura->subtotal = trim($request->subtotal);
+            $nuevaFactura->cliente = trim(strtoupper($request->cliente));
+            $nuevaFactura->serie = trim(strtoupper($request->folio_serie));
+            $nuevaFactura->impuestos_trasladados = trim($request->impuesto_trasladados);
+            $nuevaFactura->total = trim($request->total);
+            $nuevaFactura->save(); // se guardan los registros
 
             /**
              * obtener el último ID
@@ -107,7 +107,7 @@ class FacturaController extends Controller
             $doneArray = [
                 'success' => true,
                 'message' => 'Factura Agregada Exitosamente!',
-                'data' => $lastId
+                'data' => 'OK'
             ];
             return response()->json($doneArray, 200);
         } catch (QueryException $th) {
@@ -163,5 +163,19 @@ class FacturaController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function getFile($filename)
+    {
+        $files = Factura::findOrFail($filename)->first();
+        if (!\File::exists($files->archivo)) {
+            # checndo si el archivo éxiste
+            abort(404); // si no hay abortamos
+        }
+        $file = \File::get($files->archivo);
+        $type = \File::mimetype($files->archivo);
+        $response = \Response::make($file, 200);
+        $response->header("Content-Type", $type);
+        return $response;
     }
 }

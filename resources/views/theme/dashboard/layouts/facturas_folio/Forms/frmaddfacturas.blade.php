@@ -359,7 +359,6 @@
             });
 
             const progress_bar_process = (percentage, timer, data) => {
-                console.log(data);
                 $(".progress-bar").css('width', percentage + '%');
                 if (percentage > 100) {
                     clearInterval(timer); // funcion que resetea el intervalo de tiempos
@@ -367,10 +366,11 @@
                     $('.process').css('display', 'none'); // mostramos en pantalla el div
                     $('.progress-bar').css('width', '0%'); // seteamos el valor del progress bar
                     $('#submitFrm').attr('disabled', false);
-                    $('#success_message').html("<div class='alert alert-success'>Data Saved</div>");
+                    $('#success_message').html("<div class='alert alert-success'>"+ data.message +"</div>");
                     setTimeout(() => {
                         $('#success_message').html('')
-                    }, 500);
+                        window.location.href = "{{ route('factura.index')}}";
+                    }, 800);
                 }
             }
 

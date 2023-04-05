@@ -68,6 +68,7 @@ return [
 
     'links' => [
         public_path('storage') => storage_path('app/public'),
+        public_path('facturas') => storage_path('app/facturas'), // se crea un nuevo enlace y se corre el comando php artisan storage:link
     ],
 
 ];

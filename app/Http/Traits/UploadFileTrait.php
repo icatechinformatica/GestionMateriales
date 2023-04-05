@@ -11,8 +11,18 @@ trait UploadFileTrait {
         $fileName = $name.'_'.$requestId.'_'.time().'.'.$requestFile->getClientOriginalExtension();
         //mover el archivo a publico de store
         $requestFile->storeAs('facturas/'.$requestId, $fileName);
-        //obtener el documento URL
-        $requestDocument =  Storage::disk('local')->get('facturas/'.id."/".$fileName);
+        //obtenemos el path
+        $path = storage_path('app/facturas/'.$requestId."/".$fileName);
+        // checamos si exite el archivo que estoy retornando
+        if (!\File::exists($path)) {
+            # si no existe retornamos un false
+            $requestDocument = NULL;
+        } else {
+            //obtener el documento URL
+            # si existe el archivo retornamos la url
+            $requestDocument = Storage::url('facturas/'.$requestId."/".$fileName);
+        }
+
         return $requestDocument; // regresamos el documento si se guardo correctamente
 
     }
