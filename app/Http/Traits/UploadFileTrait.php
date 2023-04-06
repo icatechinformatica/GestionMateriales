@@ -20,7 +20,8 @@ trait UploadFileTrait {
         } else {
             //obtener el documento URL
             # si existe el archivo retornamos la url
-            $requestDocument = Storage::url('facturas/'.$requestId."/".$fileName);
+            $requestDocument = 'facturas/'.$requestId."/".$fileName;
+            // Storage::url('facturas/'.$requestId."/".$fileName);
         }
 
         return $requestDocument; // regresamos el documento si se guardo correctamente

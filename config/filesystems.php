@@ -53,6 +53,13 @@ return [
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
         ],
 
+        'facturas' => [
+            'driver' => 'local',
+            'roor' => storage_path('app/facturas'),
+            'url' => env('APP_URL').'/facturas',
+            'visibility' => 'public',
+        ],
+
     ],
 
     /*

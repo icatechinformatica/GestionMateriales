@@ -156,7 +156,7 @@
                         <td data-label="Concepto">{{ $v->concepto }}</td>
                         <td data-label="Total">@money($v->total)</td>
                         <td data-label="Detalles">
-                            <a type="button" class="btn btn-danger btn-circle btn-lg" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Tooltip on top" href="{{ route('factura.getfile', ['filename' => $v->id]) }}">
+                            <a type="button" class="btn btn-danger btn-circle btn-lg" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Tooltip on top" href="{{ route('factura.getfile', ['filename' => $v->id]) }}" target="_blank">
                                 <i class="fas fa-file-pdf"></i>
                             </a>
                         </td>

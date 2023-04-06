@@ -167,8 +167,9 @@ class FacturaController extends Controller
 
     public function getFile($filename)
     {
-        $files = Factura::findOrFail($filename)->first();
-        if (!\File::exists($files->archivo)) {
+        $files = Factura::WHERE('id', $filename)->first();
+        $filepath = $files->archivo;
+        if (!\File::exists(storage_path('app/'.$filepath))) {
             # checndo si el archivo éxiste
             abort(404); // si no hay abortamos
         }
