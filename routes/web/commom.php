@@ -45,7 +45,7 @@ editar catalogo resguardante|eliminar catalogo resguardante|ver comision'])->gro
     Route::get('/solicitud/catalogo/index', 'AutomovilController@index')->name('solicitud.cat.indice')->middleware('can:leer catalogo vehiculo');
     Route::get('/solicitud/catalogo/automovil/edit/{id}', [AutomovilController::class, 'edit'])->name('solicitud.cat.automovil.edit')->middleware('can:editar catalogo vehiculo');
     Route::put('/solicitud/catalogo/automovil/{id}/actualizar', [AutomovilController::class, 'update'])->name('solicitud.cat.automovil.update')->middleware('can:editar catalogo vehiculo');
-    
+
     /**
      * rutas resguardantes
      */
@@ -54,7 +54,7 @@ editar catalogo resguardante|eliminar catalogo resguardante|ver comision'])->gro
     Route::post('/solicitud/resguardante/store', [ResguardanteController::class, 'store'])->name('solicitud.resguardante.store')->middleware('can:crear catalogo resguardante');
     Route::get('/solicitud/resguardante/edit/{id}', [ResguardanteController::class, 'edit'])->name('solicitud.resguardante.edit')->middleware('can:editar catalogo resguardante');
     Route::put('/solicitud/resguardante/update/{id}', [ResguardanteController::class, 'update'])->name('solicitud.resguardante.update')->middleware('can:editar catalogo resguardante');
-    
+
     /**
      * rutas catalogo choferes
      */
