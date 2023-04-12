@@ -18,7 +18,7 @@ class CustomAuthController extends Controller
     //
     public function index()
     {
-        return view('auth._login');
+        return view('auth.login');
     }
 
     protected function customLogin(Request $request)
@@ -30,7 +30,7 @@ class CustomAuthController extends Controller
             'email.required' => 'Correo electrónico es requerido',
             'password.required' => 'la contraseña es requerida'
         ]);
-   
+
         $credentials = $request->only('email', 'password');
         if (Auth::attempt($credentials)) {
             /**
@@ -47,14 +47,14 @@ class CustomAuthController extends Controller
             return redirect()->route('dashboard')
                         ->withSuccess('Sesión Iniciada.');
         }
-  
+
         return redirect("login")->withSuccess('Los datos de inicio de sesión no son válidos');
     }
 
     public function signOut() {
         Session::flush();
         Auth::logout();
-  
+
         return Redirect('login');
     }
 
@@ -85,7 +85,7 @@ class CustomAuthController extends Controller
         $this->storeLog($peticion);
         Session::flush();
         Auth::logout();
-  
+
         return Redirect('login');
     }
 
