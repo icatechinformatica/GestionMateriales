@@ -17,7 +17,7 @@ use App\Http\Controllers\cat\DirectorioController;
 |
 */
 
-Auth::routes();
+//Auth::routes();
 
 
 Route::get('login', [CustomAuthController::class, 'index'])->name('login');
