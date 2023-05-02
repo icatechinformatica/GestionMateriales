@@ -9,16 +9,19 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Traits\LogTrait;
 use Carbon\Carbon;
+use App\Http\Traits\VehiculoTrait;
 
 
 
 class CustomAuthController extends Controller
 {
-    use LogTrait;
+    use LogTrait, VehiculoTrait;
     //
     public function index()
     {
-        return view('auth.login');
+        // return view('auth.login');
+        $catalogo = $this->getVehiculo();
+        return view('theme.dashboard.layouts.index_cat_automovil', compact('catalogo'));
     }
 
     protected function customLogin(Request $request)
