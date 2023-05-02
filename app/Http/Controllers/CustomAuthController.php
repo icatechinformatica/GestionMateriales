@@ -19,7 +19,7 @@ class CustomAuthController extends Controller
     //
     public function index()
     {
-
+        dd($this->getVehiculo());
         $catalogo = $this->getVehiculo();
         return view('theme.dashboard.layouts.index_cat_automovil', compact('catalogo'));
     }
