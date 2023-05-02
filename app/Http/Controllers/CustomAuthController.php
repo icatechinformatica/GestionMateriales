@@ -16,6 +16,12 @@ use App\Http\Traits\VehiculoTrait;
 class CustomAuthController extends Controller
 {
     use LogTrait, VehiculoTrait;
+
+    public function __construct()
+    {
+        $this->middleware('guest')->except('logout');
+    }
+
     //
     public function index()
     {

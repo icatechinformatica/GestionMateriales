@@ -16,14 +16,15 @@ use App\Http\Controllers\cat\DirectorioController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::get('/login', [CustomAuthController::class, 'index'])->name('login');
-Route::post('/customlogin', [CustomAuthController::class, 'customLogin'])->name('login.custom');
-Route::get('signout', [CustomAuthController::class, 'singout'])->name('signout');
-Route::get('/', [CustomAuthController::class, 'dashboard'])->name('dashboard');
-Route::get('register', [CustomAuthController::class, 'register'])->name('register');
-Route::post('custom-register', [CustomAuthController::class, 'customRegister'])->name('register.custom');
-Route::get('/solicitud/catalogo/index', 'AutomovilController@index')->name('solicitud.cat.indice')->middleware('can:leer catalogo vehiculo');
+Route::namespace('Auth')->group(function () {
+    Route::get('/login', [CustomAuthController::class, 'index'])->name('login');
+    Route::post('/customlogin', [CustomAuthController::class, 'customLogin'])->name('login.custom');
+    Route::get('signout', [CustomAuthController::class, 'singout'])->name('signout');
+    Route::get('/', [CustomAuthController::class, 'dashboard'])->name('dashboard');
+    Route::get('register', [CustomAuthController::class, 'register'])->name('register');
+    Route::post('custom-register', [CustomAuthController::class, 'customRegister'])->name('register.custom');
+    Route::get('/solicitud/catalogo/index', 'AutomovilController@index')->name('solicitud.cat.indice')->middleware('can:leer catalogo vehiculo');
+});
 
 
 Route::middleware(['auth', 'role:revisor|capturista', 'permission:crear catalogo vehiculo|leer catalogo vehiculo|
