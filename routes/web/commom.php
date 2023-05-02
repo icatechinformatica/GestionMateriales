@@ -17,10 +17,7 @@ use App\Http\Controllers\cat\DirectorioController;
 |
 */
 
-//Auth::routes();
-
-
-Route::get('login', [CustomAuthController::class, 'index'])->name('login');
+Route::get('/login', [CustomAuthController::class, 'index'])->name('login');
 Route::post('/customlogin', [CustomAuthController::class, 'customLogin'])->name('login.custom');
 Route::get('signout', [CustomAuthController::class, 'singout'])->name('signout');
 Route::get('/', [CustomAuthController::class, 'dashboard'])->name('dashboard');
