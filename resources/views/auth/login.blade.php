@@ -1,10 +1,11 @@
 @extends('layouts.newapp')
 
 @section('content')
-<form class="login100-form validate-form" method="POST" action="{{ route('login.custom') }}">
+<form class="login100-form validate-form" action="{{ route('login.custom') }}" method="post">
+    {{ method_field('POST') }}
     @csrf
     <span class="login100-form-title">
-        SISTEMA INTEGRAL DE RECURSOS MATERIALES
+        SISTEMA INTEGRAL DE RECURSOS MATERIALES (SIRMAT)
     </span>
    {{-- mensaje del sistema --}}
     @if ($message = Session::get('error'))
