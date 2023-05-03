@@ -4,88 +4,7 @@
 @section('title', 'Revisión de Bitácora | SISCOM by ICATECH')
 
 @section('contenidoCss')
-    <style>
-        table {
-        border: 1px solid #ccc;
-        border-collapse: collapse;
-        margin: 0;
-        padding: 0;
-        width: 100%;
-        table-layout: fixed;
-        }
-
-        table caption {
-        font-size: 1.5em;
-        margin: .5em 0 .75em;
-        }
-
-        table tr {
-        background-color: #f8f8f8;
-        border: 1px solid #ddd;
-        padding: .35em;
-        }
-
-        table th,
-        table td {
-        padding: .625em;
-        text-align: center;
-        }
-
-        table th {
-        font-size: .85em;
-        letter-spacing: .1em;
-        text-transform: uppercase;
-        }
-
-        @media screen and (max-width: 600px) {
-            table {
-                border: 0;
-            }
-
-            table caption {
-                font-size: 1.3em;
-            }
-            
-            table thead {
-                border: none;
-                clip: rect(0 0 0 0);
-                height: 1px;
-                margin: -1px;
-                overflow: hidden;
-                padding: 0;
-                position: absolute;
-                width: 1px;
-            }
-            
-            table tr {
-                border-bottom: 3px solid #ddd;
-                display: block;
-                margin-bottom: .625em;
-            }
-            
-            table td {
-                border-bottom: 1px solid #ddd;
-                display: block;
-                font-size: .8em;
-                text-align: right;
-            }
-            
-            table td::before {
-                /*
-                * aria-label has no advantage, it won't be read inside a table
-                content: attr(aria-label);
-                */
-                content: attr(data-label);
-                float: left;
-                font-weight: bold;
-                text-transform: uppercase;
-            }
-            
-            table td:last-child {
-                border-bottom: 0;
-            }
-        }
-    </style>
+    <link href="{{ asset('css/generalStyles.css') }}" rel="stylesheet">
 @endsection
 
 @section('contenido')
@@ -184,21 +103,21 @@
                                                         <a href="{{ route('revision.bitacora.detalle', base64_encode($v->id)) }}" class="btn btn-warning btn-circle btn-md" data-toggle="tooltip" data-placement="top" title="CHECAR DETALLE DE LA SOLICITUD">
                                                         @break
                                                     @case('FINALIZADO')
-                                                        {{-- btn-success --}}    
+                                                        {{-- btn-success --}}
                                                         <a href="{{ route('revision.bitacora.detalle', base64_encode($v->id)) }}" class="btn btn-success btn-circle btn-md" data-toggle="tooltip" data-placement="top" title="CHECAR DETALLE DE LA SOLICITUD">
                                                     @break
-                                                        
+
                                                 @endswitch
                                                         <i class="fas fa-traffic-light"></i>
                                                     </a>
                                             @endcan
-                                          </td>  
+                                          </td>
                                         </tr>
                                       @endforeach
                                    @else
                                     <tr>
                                         <td colspan="4"><center><h3> <b>NO HAY REGISTROS PARA MOSTRAR</b> </h3></center></td>
-                                    </tr>  
+                                    </tr>
                                    @endif
                                 </tbody>
                             </table>
@@ -209,7 +128,7 @@
 
             </div>
         {{-- Columna de contenido END --}}
-        
+
     </div>
 {{-- Content Row END --}}
 
@@ -217,6 +136,6 @@
 @endsection
 
 @section('contenidoJavaScript')
-    
+
 @endsection
 {{-- DISEÑADO Y DESARROLLADO POR MIS. DANIEL MÉNDEZ CRUZ --}}

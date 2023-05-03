@@ -16,6 +16,7 @@ use App\Http\Controllers\cat\DirectorioController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+    Auth::routes();
     Route::get('/login', [CustomAuthController::class, 'index'])->name('login');
     Route::post('/customlogin', [CustomAuthController::class, 'customLogin'])->name('login.custom');
     Route::get('/signout', [CustomAuthController::class, 'singout'])->name('signout');
@@ -29,7 +30,7 @@ editar catalogo resguardante|eliminar catalogo resguardante|ver comision'])->gro
     /**
      * ruta principal HOME
      */
-    Route::get('/inicio', [CustomAuthController::class, 'dashboard'])->name('dashboard');
+    Route::get('/', [CustomAuthController::class, 'dashboard'])->name('dashboard');
     /**
      * rutas validacion presupuestal
      */
