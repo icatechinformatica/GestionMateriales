@@ -5,18 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{{ (isset($titlePage)) ? $titlePage : 'Plantilla de tablero de Administración SIRMAT' }}</title>
-    <link rel="stylesheet" href="{{ asset('assets/bootstrap-5.0.1/css/bootstrap.css') }}">
-    {{-- estilos layouts --}}
-    {{-- iconos --}}
-    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
-    {{-- iconos END --}}
-    <link rel="stylesheet" href="{{ asset('assets/fontawesome-free/css/all.min.css') }}">
-    <link href="{{ asset('assets/css_/sb-admin-2.css') }}" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('assets/css_/common.css') }}">
     {{-- yield script css --}}
-    @section('contenidoCss')
-
-    @endsection
+    @include('theme.dashboard.style')
     {{-- yield script css --}}
 </head>
 <body id="page-top">
