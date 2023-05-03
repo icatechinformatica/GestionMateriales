@@ -14,7 +14,9 @@
     <link href="{{ asset('assets/css_/sb-admin-2.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('assets/css_/common.css') }}">
     {{-- yield script css --}}
-    @yield('contenidoCss')
+    @section('contenidoCss')
+
+    @endsection
     {{-- yield script css --}}
 </head>
 <body id="page-top">
