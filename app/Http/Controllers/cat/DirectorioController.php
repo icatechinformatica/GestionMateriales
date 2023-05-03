@@ -69,7 +69,7 @@ class DirectorioController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // crear post
     }
 
     /**

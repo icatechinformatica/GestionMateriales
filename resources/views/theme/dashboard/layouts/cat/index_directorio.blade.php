@@ -4,111 +4,7 @@
 {{-- @section('title', 'Formato de Requesición | SISCOM by ICATECH') --}}
 
 @section('contenidoCss')
-    <style>
-        table {
-        border: 1px solid #ccc;
-        border-collapse: collapse;
-        margin: 0;
-        padding: 0;
-        width: 100%;
-        table-layout: fixed;
-        }
-
-        table caption {
-        font-size: 1.5em;
-        margin: .5em 0 .75em;
-        }
-
-        table tr {
-        background-color: #f8f8f8;
-        border: 1px solid #ddd;
-        padding: .35em;
-        }
-
-        table th,
-        table td {
-        padding: .625em;
-        text-align: center;
-        }
-
-        table th {
-        font-size: .85em;
-        letter-spacing: .1em;
-        text-transform: uppercase;
-        }
-
-        .bd-example {
-            --bd-example-padding: 1rem;
-            position: relative;
-            padding: 1.5rem;
-            margin: 0 -1.5rem;
-            border: solid hsla(215, 30%, 92%, 0.877);
-            border-width: 1px 0;
-            background-color: #f8f8f8;
-        }
-
-        @media screen and (max-width: 600px) {
-            table {
-                border: 0;
-            }
-
-            table caption {
-                font-size: 1.3em;
-            }
-            
-            table thead {
-                border: none;
-                clip: rect(0 0 0 0);
-                height: 1px;
-                margin: -1px;
-                overflow: hidden;
-                padding: 0;
-                position: absolute;
-                width: 1px;
-            }
-            
-            table tr {
-                border-bottom: 3px solid #ddd;
-                display: block;
-                margin-bottom: .625em;
-            }
-            
-            table td {
-                border-bottom: 1px solid #ddd;
-                display: block;
-                font-size: .8em;
-                text-align: right;
-            }
-            
-            table td::before {
-                /*
-                * aria-label has no advantage, it won't be read inside a table
-                content: attr(aria-label);
-                */
-                content: attr(data-label);
-                float: left;
-                font-weight: bold;
-                text-transform: uppercase;
-            }
-            
-            table td:last-child {
-                border-bottom: 0;
-            }
-        }
-
-        @media (min-width: 768px)
-        {
-            .bd-example {
-                --bd-example-padding: 1.5rem;
-                margin-right: 0;
-                margin-left: 0;
-                border-width: 1px;
-                border-top-left-radius: 0.375rem;
-                border-top-right-radius: 0.375rem;
-                background-color: #ffffff;
-            }
-        }
-    </style>
+    <link href="{{ asset('css/styles.css') }}" rel="stylesheet">
 @endsection
 
 @section('contenido')
@@ -128,13 +24,13 @@
                     </div>
                     <form method="GET" class="mb-5">
                         <div class="input-group col-mb-4">
-                            
-                                <input 
-                                type="text" 
-                                name="busqueda" 
-                                class="form-control" 
-                                placeholder="BUSCAR..." 
-                                aria-label="Search" 
+
+                                <input
+                                type="text"
+                                name="busqueda"
+                                class="form-control"
+                                placeholder="BUSCAR..."
+                                aria-label="Search"
                                 aria-describedby="button-addon2"
                                 autocomplete="off"
                                 value="{{ request()->get('busqueda') }}"/>
@@ -186,6 +82,6 @@
 @endsection
 
 @section('contenidoJavaScript')
-    
+
 @endsection
 {{-- DISEÑADO Y DESARROLLADO POR MIS. DANIEL MÉNDEZ CRUZ --}}

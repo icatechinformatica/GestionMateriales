@@ -70,4 +70,6 @@ editar catalogo resguardante|eliminar catalogo resguardante|ver comision'])->gro
      */
     Route::get('/solicitud/catalogo/directorio/index', [DirectorioController::class, 'index'])->name('solicitud.cat.directorio.indice')->middleware('can:leer catalogo vehiculo');
     Route::get('/solicitud/catalogo/directorio/create', [DirectorioController::class, 'create'])->name('cat.directorio.create');
+    Route::post('/solicitud/catalogo/directorio/store', [DirectorioController::class, 'store'])->name('cat.directorio.store');
+
 });

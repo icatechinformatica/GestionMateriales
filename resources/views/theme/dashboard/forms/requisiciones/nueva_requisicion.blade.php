@@ -2,162 +2,7 @@
 @extends('theme.dashboard.main', ['breadcrum' => __('REQUISICIÓN DE MATERIALES / NUEVA REQUISICIÓN'), 'titlePage' => __('SIRMAT | Nueva Requisición de Materiales')])
 
 @section('contenidoCss')
-    <style>
-        table {
-        border: 1px solid #ccc;
-        border-collapse: collapse;
-        margin: 0;
-        padding: 0;
-        width: 100%;
-        table-layout: fixed;
-        }
-
-        table caption {
-        font-size: 1.5em;
-        margin: .5em 0 .75em;
-        }
-
-        table tr {
-        background-color: #f8f8f8;
-        border: 1px solid #ddd;
-        padding: .35em;
-        }
-
-        table th,
-        table td {
-        padding: .625em;
-        text-align: center;
-        }
-
-        table th {
-        font-size: .85em;
-        letter-spacing: .1em;
-        text-transform: uppercase;
-        }
-
-        .bd-example {
-            --bd-example-padding: 1rem;
-            position: relative;
-            padding: 1.5rem;
-            margin: 0 -1.5rem;
-            border: solid hsla(215, 30%, 92%, 0.877);
-            border-width: 1px 0;
-            background-color: #f8f8f8;
-        }
-
-        .ui-autocomplete {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        z-index: 1000;
-        float: left;
-        display: none;
-        min-width: 160px;   
-        padding: 4px 0;
-        margin: 0 0 10px 25px;
-        list-style: none;
-        background-color: #ffffff;
-        border-color: #ccc;
-        border-color: rgba(0, 0, 0, 0.2);
-        border-style: solid;
-        border-width: 1px;
-        -webkit-border-radius: 5px;
-        -moz-border-radius: 5px;
-        border-radius: 5px;
-        -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-        -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-        -webkit-background-clip: padding-box;
-        -moz-background-clip: padding;
-        background-clip: padding-box;
-        *border-right-width: 2px;
-        *border-bottom-width: 2px;
-    }
-
-    .ui-menu-item > a.ui-corner-all {
-        display: block;
-        padding: 3px 15px;
-        clear: both;
-        font-weight: normal;
-        line-height: 18px;
-        color: #555555;
-        white-space: nowrap;
-        text-decoration: none;
-    }
-
-    .ui-state-hover, .ui-state-active {
-        color: #ffffff;
-        text-decoration: none;
-        background-color: #0088cc;
-        border-radius: 0px;
-        -webkit-border-radius: 0px;
-        -moz-border-radius: 0px;
-        background-image: none;
-        cursor: pointer;
-    }
-
-        @media screen and (max-width: 600px) {
-            table {
-                border: 0;
-            }
-
-            table caption {
-                font-size: 1.3em;
-            }
-            
-            table thead {
-                border: none;
-                clip: rect(0 0 0 0);
-                height: 1px;
-                margin: -1px;
-                overflow: hidden;
-                padding: 0;
-                position: absolute;
-                width: 1px;
-            }
-            
-            table tr {
-                border-bottom: 3px solid #ddd;
-                display: block;
-                margin-bottom: .625em;
-            }
-            
-            table td {
-                border-bottom: 1px solid #ddd;
-                display: block;
-                font-size: .8em;
-                text-align: right;
-            }
-            
-            table td::before {
-                /*
-                * aria-label has no advantage, it won't be read inside a table
-                content: attr(aria-label);
-                */
-                content: attr(data-label);
-                float: left;
-                font-weight: bold;
-                text-transform: uppercase;
-            }
-            
-            table td:last-child {
-                border-bottom: 0;
-            }
-        }
-
-        @media (min-width: 768px)
-        {
-            .bd-example {
-                --bd-example-padding: 1.5rem;
-                margin-right: 0;
-                margin-left: 0;
-                border-width: 1px;
-                border-top-left-radius: 0.375rem;
-                border-top-right-radius: 0.375rem;
-                background-color: #ffffff;
-            }
-        }
-    </style>
+    <link href="{{ asset('css/styles.css') }}" rel="stylesheet">
 @endsection
 
 @section('contenido')
@@ -182,7 +27,7 @@
                             {!! Form::text('area_solicita', '',['class' => 'form-control', 'required', 'autocomplete' => 'off', 'id' => 'area_solicitud']) !!}
                             {!! Form::label('area_solicita', 'Área que Solicita', ['for' => 'area_solicita', 'class' => 'control-label']) !!}
                             <div class="invalid-feedback">
-                                Proveer Área Solicita 
+                                Proveer Área Solicita
                             </div>
                         </div>
                     </div>
@@ -191,7 +36,7 @@
                             {!! Form::select('depto',['L' => 'LISTAS', 'S' => '-- SELECCIONAR --'], 'S', ['class' => 'form-control', 'id' => 'deptos']) !!}
                             {!! Form::label('depto', 'Departamento', ['for' => 'depto', 'class' => 'control-label']) !!}
                             <div class="invalid-feedback">
-                                Proveer Departamento 
+                                Proveer Departamento
                             </div>
                         </div>
                     </div>
@@ -200,7 +45,7 @@
                             {!! Form::date('fechaRequisicion', '',['class' => 'form-control', 'required']) !!}
                             {!! Form::label('fechaRequisicion', 'Fecha de Requisición', ['for' => 'fechaRequisicion', 'class' => 'control-label']) !!}
                             <div class="invalid-feedback">
-                                Proveer Fecha 
+                                Proveer Fecha
                             </div>
                         </div>
                     </div>
@@ -230,7 +75,7 @@
                             {!! Form::text('autoriza', '',['class' => 'form-control', 'required']) !!}
                             {!! Form::label('autoriza', 'Autoriza', ['for' => 'autoriza', 'class' => 'control-label']) !!}
                             <div class="invalid-feedback">
-                                Proveer Autoriza 
+                                Proveer Autoriza
                             </div>
                         </div>
                     </div>
@@ -239,7 +84,7 @@
                             {!! Form::text('puesto_autoriza', '',['class' => 'form-control', 'required']) !!}
                             {!! Form::label('puesto_autoriza_label', 'Puesto Autoriza', ['for' => 'puesto_autoriza', 'class' => 'control-label']) !!}
                             <div class="invalid-feedback">
-                                Proveer Puesto Autoriza 
+                                Proveer Puesto Autoriza
                             </div>
                         </div>
                     </div>
@@ -253,7 +98,7 @@
                     </div>
                 </div>
                 <hr>
-                {!! Form::button('<i class="fas fa-plus-square"></i> Partida Presupuestal', 
+                {!! Form::button('<i class="fas fa-plus-square"></i> Partida Presupuestal',
                     ['class' => 'btn btn-info', 'id' => 'btnAgregar']
                 ) !!}
                 <br><br>
@@ -263,9 +108,9 @@
                 {!! Form::hidden('id_departamento', '',['id' => 'id_departamento']) !!}
                 {!! Form::hidden('id_administrativo', '', ['id' => 'id_administrativo']) !!}
                 <hr>
-                {!! 
+                {!!
                     Form::button(
-                        '<i class="fas fa-edit" aria-hidden="true"></i> Enviar', 
+                        '<i class="fas fa-edit" aria-hidden="true"></i> Enviar',
                         ['class' => 'btn btn-success', 'type' => 'submit']
                     )
                 !!}
@@ -402,7 +247,7 @@
             $('#addItemPartida_'+contador).empty();
             contador--;
         });
-        
+
         /**
          * Eliminar item de elemento
         */
@@ -429,7 +274,7 @@
         /**
          * @author - Daniel Méndez Cruz
          * @argument - id
-         * ajax - 
+         * ajax -
         */
         $(document).on('focus', '.autocom', function(){
             //obtener id
@@ -543,12 +388,12 @@
                         });
                    })
                 } else {
-                    
+
                 }
             }
        });
     })();
-    
+
 </script>
 @endsection
 {{-- DISEÑADO Y DESARROLLADO POR MIS. DANIEL MÉNDEZ CRUZ --}}
