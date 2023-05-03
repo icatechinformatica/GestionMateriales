@@ -4,7 +4,7 @@
 @section('title', 'Revisión de Bitácora | SISCOM by ICATECH')
 
 @section('contenidoCss')
-    <style>
+    <style type="text/css">
         table {
         border: 1px solid #ccc;
         border-collapse: collapse;
@@ -45,7 +45,7 @@
             table caption {
                 font-size: 1.3em;
             }
-            
+
             table thead {
                 border: none;
                 clip: rect(0 0 0 0);
@@ -56,20 +56,20 @@
                 position: absolute;
                 width: 1px;
             }
-            
+
             table tr {
                 border-bottom: 3px solid #ddd;
                 display: block;
                 margin-bottom: .625em;
             }
-            
+
             table td {
                 border-bottom: 1px solid #ddd;
                 display: block;
                 font-size: .8em;
                 text-align: right;
             }
-            
+
             table td::before {
                 /*
                 * aria-label has no advantage, it won't be read inside a table
@@ -80,7 +80,7 @@
                 font-weight: bold;
                 text-transform: uppercase;
             }
-            
+
             table td:last-child {
                 border-bottom: 0;
             }
@@ -135,38 +135,6 @@
                         </h6>
                     </div>
                     <div class="card-body">
-                        {{-- <div class="form-row">
-                            <div class="col-md-4 mb-3">
-                                <label for="marca_vehiculo">FILTRAR MES</label>
-                                <div class="custom-file">
-                                    <select class="form-control" name="mes_filtrado" id="mes_filtrado">
-                                        <option value="">---- SELECCIONAR ----</option>
-                                        @foreach ($meses as $k => $v)
-                                         <option value="{{ $v }}">{{ $k }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label for="marca_vehiculo">FILTRAR PERIODO</label>
-                                <div class="custom-file">
-                                    <select class="form-control" name="periodo_filtrado" id="periodo_filtrado">
-                                        <option value="">---- SELECCIONAR ----</option>
-                                        <option value="1">PRIMER PERIODO</option>
-                                        <option value="2">SEGUNDO PERIODO</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label for="modelo">&nbsp;</label>
-                                <div class="custom-file">
-                                    <button class="btn btn-info">
-                                        <i class="fas fa-filter"></i>
-                                        Filtrar
-                                    </button>
-                                </div>
-                            </div>
-                        </div> --}}
                         {{--  --}}
                         <div class="form-row">
                             @if (count($catalogo) > 0)
@@ -197,7 +165,7 @@
 
             </div>
         {{-- Columna de contenido END --}}
-        
+
     </div>
 {{-- Content Row END --}}
 
@@ -205,6 +173,6 @@
 @endsection
 
 @section('contenidoJavaScript')
-    
+
 @endsection
 {{-- DISEÑADO Y DESARROLLADO POR MIS. DANIEL MÉNDEZ CRUZ --}}

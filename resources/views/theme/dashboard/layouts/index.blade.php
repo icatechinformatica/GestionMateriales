@@ -4,7 +4,7 @@
 @section('title', 'Inicio de sissopecom | ICATECH')
 
 @section('contenidoCss')
-    
+
 @endsection
 
 @section('contenido')
@@ -36,7 +36,7 @@
 
             </div>
         {{-- Columna de contenido END --}}
-        
+
     </div>
 {{-- Content Row END --}}
 
@@ -115,6 +115,6 @@
 @endsection
 
 @section('contenidoJavaScript')
-    
+
 @endsection
 {{-- DISEÑADO Y DESARROLLADO POR MIS. DANIEL MÉNDEZ CRUZ --}}

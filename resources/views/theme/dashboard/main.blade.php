@@ -7,14 +7,6 @@
     <title>{{ (isset($titlePage)) ? $titlePage : 'Plantilla de tablero de Administración SIRMAT' }}</title>
     <link rel="stylesheet" href="{{ asset('assets/bootstrap-5.0.1/css/bootstrap.css') }}">
     {{-- estilos layouts --}}
-    {{-- <link rel="stylesheet" href="{{ asset('assets/css_/dashboard/style.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css_/shared/style.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css_/dashboard/table.css') }}"> --}}
-    {{-- estilos layouts END --}}
-    {{-- estilos vendor --}}
-    {{-- <link rel="stylesheet" href="{{ asset('assets/iconfonts/mdi/css/materialdesignicons.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/iconfonts/flag-icons-css/flag-icon.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/iconfonts/ionicons/dist/css/ionicons.min.css') }}"> --}}
     {{-- iconos --}}
     <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
     {{-- iconos END --}}
@@ -33,7 +25,7 @@
       {{-- sidebar --}}
         @include('theme.dashboard.sidebar')
       {{-- sidebar END --}}
-      
+
 
       <!-- Content Wrapper -->
       <div id="content-wrapper" class="d-flex flex-column">
@@ -44,7 +36,7 @@
               {{-- topbar --}}
                 @include('theme.dashboard.nav')
               {{-- topbar END --}}
-              
+
 
               <!-- Begin Page Content -->
               <div class="container-fluid">
@@ -59,12 +51,12 @@
 
           </div>
          {{-- Main Content END --}}
-          
+
 
           {{-- pie de página --}}
           @include('theme.dashboard.footer')
           {{-- fin de pie de página --}}
-          
+
 
       </div>
       <!-- End of Content Wrapper -->
@@ -73,7 +65,7 @@
   <!-- End of Page Wrapper -->
 
      {{-- Desplazarse hasta el botón superior --}}
-  
+
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
     </a>
