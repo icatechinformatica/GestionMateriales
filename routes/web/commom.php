@@ -16,20 +16,20 @@ use App\Http\Controllers\cat\DirectorioController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::namespace('Auth')->group(function () {
     Route::get('/login', [CustomAuthController::class, 'index'])->name('login');
     Route::post('/customlogin', [CustomAuthController::class, 'customLogin'])->name('login.custom');
-    Route::get('signout', [CustomAuthController::class, 'singout'])->name('signout');
-    Route::get('/', [CustomAuthController::class, 'dashboard'])->name('dashboard');
-    Route::get('register', [CustomAuthController::class, 'register'])->name('register');
-    Route::post('custom-register', [CustomAuthController::class, 'customRegister'])->name('register.custom');
-    Route::get('/solicitud/catalogo/index', 'AutomovilController@index')->name('solicitud.cat.indice')->middleware('can:leer catalogo vehiculo');
-});
+    Route::get('/signout', [CustomAuthController::class, 'singout'])->name('signout');
+    Route::get('/register', [CustomAuthController::class, 'register'])->name('register');
+    Route::post('/custom-register', [CustomAuthController::class, 'customRegister'])->name('register.custom');
 
 
 Route::middleware(['auth', 'role:revisor|capturista', 'permission:crear catalogo vehiculo|leer catalogo vehiculo|
 editar catalogo vehiculo|eliminar catalogo vehiculo|leer catalogo choferes|editar catalogo choferes|crear catalogo choferes|eliminar catalogo choferes|leer catalogo resguardante|crear catalogo resguardante|
 editar catalogo resguardante|eliminar catalogo resguardante|ver comision'])->group(function () {
+    /**
+     * ruta principal HOME
+     */
+    Route::get('/inicio', [CustomAuthController::class, 'dashboard'])->name('dashboard');
     /**
      * rutas validacion presupuestal
      */
@@ -41,7 +41,7 @@ editar catalogo resguardante|eliminar catalogo resguardante|ver comision'])->gro
      */
     Route::get('/solicitud/catalogo/vehiculo', [AutomovilController::class, 'create'])->name('solicitud.catalogo.vehiculo')->middleware('can:crear catalogo vehiculo');
     Route::post('/solicitud/catalogo/store', 'AutomovilController@store')->name('solicitud.catalogo.store')->middleware('can:crear catalogo vehiculo');
-    // Route::get('/solicitud/catalogo/index', 'AutomovilController@index')->name('solicitud.cat.indice')->middleware('can:leer catalogo vehiculo');
+    Route::get('/solicitud/catalogo/index', 'AutomovilController@index')->name('solicitud.cat.indice')->middleware('can:leer catalogo vehiculo');
     Route::get('/solicitud/catalogo/automovil/edit/{id}', [AutomovilController::class, 'edit'])->name('solicitud.cat.automovil.edit')->middleware('can:editar catalogo vehiculo');
     Route::put('/solicitud/catalogo/automovil/{id}/actualizar', [AutomovilController::class, 'update'])->name('solicitud.cat.automovil.update')->middleware('can:editar catalogo vehiculo');
 
