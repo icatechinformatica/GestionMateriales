@@ -16,17 +16,21 @@ use App\Http\Controllers\cat\DirectorioController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+// agregar nuevo middleware que evita el ir hacia atrás desde el navegador después de un logout
+Route::group(['middleware' => 'prevent-back-history'], function(){
     Auth::routes();
     Route::get('/login', [CustomAuthController::class, 'index'])->name('login');
     Route::post('/customlogin', [CustomAuthController::class, 'customLogin'])->name('login.custom');
     Route::get('/signout', [CustomAuthController::class, 'singout'])->name('signout');
     Route::get('/register', [CustomAuthController::class, 'register'])->name('register');
     Route::post('/custom-register', [CustomAuthController::class, 'customRegister'])->name('register.custom');
+});
 
 
 Route::middleware(['auth', 'role:revisor|capturista', 'permission:crear catalogo vehiculo|leer catalogo vehiculo|
 editar catalogo vehiculo|eliminar catalogo vehiculo|leer catalogo choferes|editar catalogo choferes|crear catalogo choferes|eliminar catalogo choferes|leer catalogo resguardante|crear catalogo resguardante|
-editar catalogo resguardante|eliminar catalogo resguardante|ver comision'])->group(function () {
+editar catalogo resguardante|eliminar catalogo resguardante|ver comision', 'prevent-back-history'])->group(function () {
     /**
      * ruta principal HOME
      */
