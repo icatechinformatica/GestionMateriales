@@ -179,9 +179,9 @@
 
 
 
-              <a class="collapse-item" href="{{ route('solicitud.bitacora.previo.guardado') }}">
+              {{-- <a class="collapse-item" href="{{ route('solicitud.bitacora.previo.guardado') }}">
                   <i class="fas fa-receipt"></i> Folio
-              </a>
+              </a> --}}
 
 
         </div>

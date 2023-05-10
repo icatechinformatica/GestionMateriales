@@ -231,23 +231,53 @@
             });
 
             // function cargar los datos
-            $(document).on('keyup', '#subtotal', '#impuesto_trasladados', () => {
+            $(document).on('keyup', '#subtotal', () => {
+                // declaración de variables y constantes
                 const subtotal = $(this).find("input[id='subtotal']").val();
                 const impuesto = $(this).find("input[id='impuesto_trasladados']").val();
-                // checamos si están vacios
-                if (subtotal == null || impuesto == null) {
-                    return false;
+                const total = document.getElementById("total");
+                // checamos si los inputs están vacios
+                if (subtotal.length === 0) {
+                    // subtotal está vacio
+                    return true;
+                }
+                else if (impuesto.length === 0) {
+                    // si impuesto está vacio sólo paso el valor del subtotal al total
+                    let subt = Number(subtotal);
+                    let valor = parseFloat(subt);
+                    total.value = roundToTwo(valor);
                 } else {
-                    // empezamos a realizar el calculo
-                    const total = document.getElementById("total");
-                    if (total.value == 'NaN') {
-                        total.value = 0;
-                    }
-                    const valor = parseFloat(subtotal) + parseFloat(impuesto);
+                    // si estamos en este segmento se debe hacer un calcúlo
+                    let subt = Number(subtotal);
+                    let  impus = Number(impuesto);
+                    let valor = parseFloat(subt) + parseFloat(impus);
                     total.value = roundToTwo(valor);
                 }
             });
 
+            // calculo de subtotal pero iniciando con
+            $(document).on('keyup', '#impuesto_trasladados', () => {
+                // declaración de variables
+                const subtotal = $(this).find("input[id='subtotal']").val();
+                const impuesto = $(this).find("input[id='impuesto_trasladados']").val();
+                const total = document.getElementById("total");
+                // checamos los inputs vacios
+                if (impuesto.length === 0) {
+                    // impuesto está vacio
+                    return true;
+                } else if(subtotal.length === 0){
+                    // si subtotal está vacio sólo paso el valor del impuesto al total
+                    let impus = Number(impuesto);
+                    let valor = parseFloat(impus);
+                    total.value = roundToTwo(valor);
+                } else {
+                    // si estamos en este segmento se debe hacer un calcúlo
+                    let subt = Number(subtotal);
+                    let  impus = Number(impuesto);
+                    let valor = parseFloat(subt) + parseFloat(impus);
+                    total.value = roundToTwo(valor);
+                }
+            });
             /**
              * evento de cambio en un input
             */
