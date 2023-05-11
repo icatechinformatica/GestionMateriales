@@ -25,6 +25,7 @@ Route::group(['middleware' => 'prevent-back-history'], function(){
     Route::get('/signout', [CustomAuthController::class, 'singout'])->name('signout');
     Route::get('/register', [CustomAuthController::class, 'register'])->name('register');
     Route::post('/custom-register', [CustomAuthController::class, 'customRegister'])->name('register.custom');
+
 });
 
 
