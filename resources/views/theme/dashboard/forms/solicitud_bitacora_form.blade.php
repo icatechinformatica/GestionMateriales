@@ -4,171 +4,7 @@
 @section('title', 'Formulario de Solictud Recorrido de Bitácora | SISCOM by ICATECH')
 
 @section('contenidoCss')
- <style>
-    .custom-file-label::after { content: "Seleccionar";}
-    table {
-        border: 1px solid #ccc;
-        border-collapse: collapse;
-        margin: 0;
-        padding: 0;
-        width: 100%;
-        table-layout: fixed;
-    }
-
-    table caption {
-        font-size: 1.5em;
-        margin: .5em 0 .75em;
-    }
-
-    table tr {
-        background-color: #f8f8f8;
-        border: 1px solid #ddd;
-        padding: .35em;
-    }
-
-    table th,
-    table td {
-        padding: .625em;
-        text-align: center;
-    }
-
-    table th {
-        font-size: .70em;
-        letter-spacing: .09em;
-        text-transform: uppercase;
-    }
-    /*
-    * square buttons effects
-    */
-    .btn-squared-default
-    {
-        width: 100px !important;
-        height: 100px !important;
-        font-size: 10px;
-    }
-
-    .btn-squared-default:hover
-    {
-        border: 3px solid white;
-        font-weight: 700;
-    }
-
-    .btn-squared-default-plain
-    {
-        width: 100px !important;
-        height: 100px !important;
-        font-size: 10px;
-    }
-
-    .btn-squared-default-plain:hover
-    {
-        border: 0px solid white;
-    }
-
-    .ui-autocomplete {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        z-index: 1000;
-        float: left;
-        display: none;
-        min-width: 160px;   
-        padding: 4px 0;
-        margin: 0 0 10px 25px;
-        list-style: none;
-        background-color: #ffffff;
-        border-color: #ccc;
-        border-color: rgba(0, 0, 0, 0.2);
-        border-style: solid;
-        border-width: 1px;
-        -webkit-border-radius: 5px;
-        -moz-border-radius: 5px;
-        border-radius: 5px;
-        -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-        -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-        -webkit-background-clip: padding-box;
-        -moz-background-clip: padding;
-        background-clip: padding-box;
-        *border-right-width: 2px;
-        *border-bottom-width: 2px;
-    }
-
-    .ui-menu-item > a.ui-corner-all {
-        display: block;
-        padding: 3px 15px;
-        clear: both;
-        font-weight: normal;
-        line-height: 18px;
-        color: #555555;
-        white-space: nowrap;
-        text-decoration: none;
-    }
-
-    .ui-state-hover, .ui-state-active {
-        color: #ffffff;
-        text-decoration: none;
-        background-color: #0088cc;
-        border-radius: 0px;
-        -webkit-border-radius: 0px;
-        -moz-border-radius: 0px;
-        background-image: none;
-        cursor: pointer;
-    }
-
-    @media screen and (max-width: 600px) {
-        table {
-                border: 0;
-        }
-
-        table caption {
-                font-size: 1.3em;
-        }
-            
-        table thead {
-            border: none;
-            clip: rect(0 0 0 0);
-            height: 1px;
-            margin: -1px;
-            overflow: hidden;
-            padding: 0;
-            position: absolute;
-            width: 1px;
-        }
-            
-        table tr {
-            border-bottom: 3px solid #ddd;
-            display: block;
-            margin-bottom: .625em;
-        }
-            
-        table td {
-            border-bottom: 1px solid #ddd;
-            display: block;
-            font-size: .8em;
-            text-align: right;
-        }
-            
-        table td::before {
-            /*
-            * aria-label has no advantage, it won't be read inside a table
-            content: attr(aria-label);
-            */
-            content: attr(data-label);
-            float: left;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-            
-        table td:last-child {
-            border-bottom: 0;
-        }
-    }
-    .error{
-	    color: red;
-    }
-    input.error{border: 1px solid red;}
- </style>
+    <link rel="stylesheet" href="{{ asset('css/generalStyles.css') }}">
 @endsection
 
 @section('contenido')
@@ -290,7 +126,7 @@
                                     <div class="custom-file">
                                         <input type="text" class="form-control" id="no_factura_compra" name="no_factura_compra" autocomplete="off">
                                     </div>
-                                </div> 
+                                </div>
                             </div>
                             <hr>
                             <div class="form-row">
@@ -298,7 +134,7 @@
                                     <label for="placas">Nombre del Conductor</label>
                                     <div class="custom-file">
                                         <input type="text" class="form-control" id="nombreConductor" name="nombreConductor" autocomplete="off">
-                                    </div> 
+                                    </div>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -306,13 +142,13 @@
                                     <label for="placas">Responsable de la Unidad</label>
                                     <div class="custom-file">
                                         <input type="text" class="form-control" id="responsableUnidad" name="responsableUnidad" readonly>
-                                    </div> 
+                                    </div>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="placas">Puesto del responsable de la unidad</label>
                                     <div class="custom-file">
                                         <input type="text" class="form-control" id="puestoResponsableUnidad" readonly name="puestoResponsableUnidad" readonly>
-                                    </div> 
+                                    </div>
                                 </div>
                             </div>
                             <input type="hidden" class="form-control" name="idcatvehiculo" id="idcatvehiculo" readonly>
@@ -398,7 +234,7 @@
                 <div class="modal-body">
                     <div class="row"></div>
                     <div class="col-lg-12 modal-content-dialog">
-                        
+
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -512,9 +348,9 @@
                         var km_recorrido_anterior = $('#dynamicTable tr').last().find('.kmFinal').val();
                         if (km_recorrido_anterior == 'NaN' || km_recorrido_anterior == 0) {
                             km_recorrido_anterior = 0;
-                            
+
                         }
-  
+
                         $("#dynamicTable").append(
                             '<tr>'+
                                 '<td data-label="Fecha">'+
@@ -625,9 +461,9 @@
                     arreglo.sort(function (a,b) {
                         return b-a;
                     });
-                    
+
                     var sumatoria = calculo(arreglo);
-                    
+
                     var importe = sumatoria * denominacionVales;
                     $(this).closest('tr').find('.importe').val(importe);
                 }
@@ -702,12 +538,12 @@
                         }
                     });
                 } else {
-                    
+
                 }
             });
 
             $('#periodo').click(function () {
-                $('#exampleModal').modal('show'); 
+                $('#exampleModal').modal('show');
             });
 
             /** @argument - arg
@@ -781,9 +617,9 @@
                     });
                 }
             });
-            
+
         });
-        /** 
+        /**
         * funciones javascripts puras
         */
         function calcularImporte(valor){
@@ -801,9 +637,9 @@
             var importeTotal = document.getElementById("importe_total");
             if (importeTotal.vale == 'NaN') {
                 importeTotal.value = 0;
-                // 
+                //
             }
-            importeTotal.value = parseFloat(importeTotal.value) + totalitem; 
+            importeTotal.value = parseFloat(importeTotal.value) + totalitem;
         }
 
         function restarImporte(argument){
@@ -812,11 +648,11 @@
             var impTotal = document.getElementById("importe_total");
             if (impTotal.value == 'NaN' || impTotal.value == 0) {
                 impTotal.value = 0;
-                // 
+                //
             } else {
                 impTotal.value = parseFloat(impTotal.value) - elemento;
             }
-             
+
         }
 
         function calcularLitrosTotales(arg){
@@ -836,7 +672,7 @@
             if (ltsTotales.value == 'NaN') {
                 ltsTotales.value = 0;
             }
-            ltsTotales.value = parseFloat(ltsTotales.value) + litrosTotales; 
+            ltsTotales.value = parseFloat(ltsTotales.value) + litrosTotales;
         }
         function restarLitros(args){
             var element = 0;
@@ -950,9 +786,9 @@
             var impTotal = document.getElementById("importe_total");
             if (impTotal.value == 'NaN') {
                 impTotal.value = 0;
-                // 
+                //
             }
-            impTotal.value = importeTotal; 
+            impTotal.value = importeTotal;
 
         }
     </script>
