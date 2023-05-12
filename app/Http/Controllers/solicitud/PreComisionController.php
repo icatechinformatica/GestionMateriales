@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\solicitud\RecorridoComisionTemporal;
 use App\Models\solicitud\BitacoraComisionTemporal;
 use App\Models\solicitud\Temporal;
-use App\Models\Solicitud\CatalogoVehiculo;
+use App\Models\solicitud\CatalogoVehiculo;
 use Carbon\Carbon;
 use App\Models\solicitud\Solicitud;
 use Illuminate\Support\Str;
