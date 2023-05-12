@@ -176,7 +176,11 @@
 @section('contenidoJavaScript')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <script src="{{ asset('assets/js_/typehead.min.js') }}"></script>
+{{-- agregar assets de javascript para la validación --}}
+    <script src="{{ asset('assets/jqueryvalidate/jquery.validate.min.js') }}"></script>
+    <script src="{{ asset('assets/jqueryvalidate/additional-methods.min.js') }}"></script>
     <script src="{{ asset('assets/jqueryvalidate/metodos/validate_precomision_store.js') }}"></script>
+{{-- agregar assets de javascript para la validación END --}}
     <script type="module" src="{{ asset('assets/jqueryvalidate/metodos/CalcularMonto.js') }}"></script>
     <script type="text/javascript">
         // import { getRendimiento } from "{{ asset('assets/jqueryvalidate/metodos/CalcularMonto.js') }}";
