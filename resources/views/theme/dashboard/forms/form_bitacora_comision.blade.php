@@ -5,6 +5,7 @@
 
 @section('contenidoCss')
     <link rel="stylesheet" href="{{ asset('css/generalStyles.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/validateError.css') }}">
 @endsection
 
 @section('contenido')
