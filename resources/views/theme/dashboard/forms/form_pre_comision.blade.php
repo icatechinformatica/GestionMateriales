@@ -5,6 +5,7 @@
 
 @section('contenidoCss')
     <link rel="stylesheet" href="{{ asset('css/generalStyles.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/validateError.css') }}">
 @endsection
 
 @section('contenido')
@@ -30,7 +31,7 @@
                         <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-route"></i>&nbsp;  COMISIONES PRE-BITÁCORA</h6>
                     </div>
                     <div class="card-body">
-                        <form method="POST" action="{{ route('solicitud.pre.comision.store') }}">
+                        <form method="POST" id="precomisionstore" name="precomisionstore" action="{{ route('solicitud.pre.comision.store') }}">
                             @csrf
                             <div class="form-row">
                                {{-- placas de vehiculo --}}
@@ -175,6 +176,7 @@
 @section('contenidoJavaScript')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <script src="{{ asset('assets/js_/typehead.min.js') }}"></script>
+    <script src="{{ asset('assets/jqueryvalidate/metodos/validate_precomision_store.js') }}"></script>
     <script type="module" src="{{ asset('assets/jqueryvalidate/metodos/CalcularMonto.js') }}"></script>
     <script type="text/javascript">
         // import { getRendimiento } from "{{ asset('assets/jqueryvalidate/metodos/CalcularMonto.js') }}";
