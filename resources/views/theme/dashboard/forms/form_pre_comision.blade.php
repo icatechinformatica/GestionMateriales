@@ -82,7 +82,7 @@
                                     <input type="text" class="form-control" id="km_total" placeholder="Kilometraje Total" name="km_total" autocomplete="off">
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label for="placas_comision">Monto Total de Combustible (Aproximado)</label>
+                                    <label for="placas_comision">Monto Total de Combustible (Aprox.)</label>
                                     <input type="text" class="form-control" id="monto_total_rendimiento" placeholder="Monto Total de Combustible" name="monto_total_rendimiento" autocomplete="off" readonly>
                                 </div>
                             </div>
@@ -194,51 +194,83 @@
 
             var j = -1; //elemento inicial contador
             var i = -1;
-            var max_fields = 200; //maximo elementos permitidos
+            var max_fields = 400; //maximo elementos permitidos
             var addBitacora = $("#addBitacora");
             var sum = 0;
             var importeTotal = 0;
             var conteo_actual = 0;
 
             $('#addpuntoapunto').click(function(){
-                if (j < max_fields) {
-                    j++;
-                    $("#puntoapunto").append(
-                        '<tr>'+
-                            '<td>' +
-                                '<textarea name="puntoapunto['+ j +'][de]" id="de[]" class="form-control"></textarea>' +
-                            '</td>' +
-                            '<td>' +
-                                '<textarea name="puntoapunto['+ j +'][a]" id="a[]" class="form-control"></textarea>' +
-                            '</td>' +
-                            '<td>' +
-                                '<input type="text" name="puntoapunto['+ j +'][kms]" id="kms[]" onchange="calculoKmTotal(this);" autocomplete="off" class="form-control kmsitems"/>' +
-                            '</td>' +
-                            '<td>' +
-                                '<input type="text" name="puntoapunto['+ j +'][peaje]" id="peaje[]" onchange="calcularPeaje(this);" autocomplete="off"  class="form-control importes_item"/>' +
-                            '</td>' +
-                            '<td>' +
-                                '<select name="puntoapunto['+ j +'][tipo]" id="tipo[]" class="form-control" onfocus="this.selectedIndex = 0;">'+
-                                    '<option value="">-- SELECCIONAR --</option>' +
-                                    '<option value="RECORRIDO">RECORRIDO</option>' +
-                                    '<option value="PUNTO_A_PUNTO">PUNTO A PUNTO</option>' +
-                                '</select>' +
-                            '</td>' +
-                            '<td data-label="...">'+
-                                '<button type="button" class="btn btn-danger btn-circle btn-sm remove-tr">'+
-                                    '<i class="fas fa-minus-circle"></i>'+
-                                '</button>'+
-                            '</td>'+
-                        '<tr>'
-                    );
+                // checar que si placas_comision se encuentra vacio
+                const placas = document.getElementById("placas_comision");
+                if (placas.value) {
+                    // ejecutamos código para agregar nuevos campos a la tabla
+                    if (j < max_fields) {
+                        j++;
+                        $("#puntoapunto").append(
+                            '<tr>'+
+                                '<td>' +
+                                    '<textarea name="puntoapunto['+ j +'][de]" id="de['+j+']" class="form-control"></textarea>' +
+                                '</td>' +
+                                '<td>' +
+                                    '<textarea name="puntoapunto['+ j +'][a]" id="a['+j+']" class="form-control"></textarea>' +
+                                '</td>' +
+                                '<td>' +
+                                    '<input type="text" name="puntoapunto['+ j +'][kms]" id="kms['+j+']" onchange="calculoKmTotal(this,'+j+');" autocomplete="off" class="form-control kmsitems"/>' +
+                                '</td>' +
+                                '<td>' +
+                                    '<input type="text" name="puntoapunto['+ j +'][peaje]" id="peaje['+j+']" onchange="calcularPeaje(this, '+j+');" autocomplete="off"  class="form-control importes_item"/>' +
+                                '</td>' +
+                                '<td>' +
+                                    '<select name="puntoapunto['+ j +'][tipo]" id="tipo['+j+']" class="form-control" onfocus="this.selectedIndex = 0;">'+
+                                        '<option value="">-- SELECCIONAR --</option>' +
+                                        '<option value="RECORRIDO">RECORRIDO</option>' +
+                                        '<option value="PUNTO_A_PUNTO">PUNTO A PUNTO</option>' +
+                                    '</select>' +
+                                '</td>' +
+                                '<td data-label="...">'+
+                                    '<button type="button" class="btn btn-danger btn-circle btn-sm remove-tr">'+
+                                        '<i class="fas fa-minus-circle"></i>'+
+                                    '</button>'+
+                                '</td>'+
+                            '<tr>'
+                        );
+                    }
+
+                } else {
+                    // mostramos un mensaje de alerta o información para que funcione de manera eficiente el proceso del sistema
+                    let modal = $(mymodal());
+                    modal.modal('show');
                 }
             });
+
+            /***@argument
+             *
+             * funcion de modal
+            */
+           const mymodal = () => {
+                return `<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" style="display: block; padding-right: 17px;">
+                            <div class="modal-dialog modal-sm" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title" id="mySmallModalLabel">Información</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        El campo PLACAS DE VEHICULO no debe estar vacio.
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`;
+           };
 
             //Once remove button is clicked
             $(document).on('click', '.remove-tr', function(e){
                 e.preventDefault();
-                var importes = $(this).closest('tr').find('.importes_item').val();
-                var kms = $(this).closest('tr').find('.kmsitems').val();
+                let importes = $(this).closest('tr').find('.importes_item').val();
+                let kms = $(this).closest('tr').find('.kmsitems').val();
                 restarimporte(importes);
                 let resultadorkmTotales = restarKmTotales(kms);
                 // obtener los datos para restar el monto
@@ -480,27 +512,27 @@
         * funciones javascripts puras
         */
 
-        function calcularLitrosTotales(arg){
-            var litrosTotales = 0, lts = 0, ltsanterior = 0;
-            var t = arg.parentNode.parentNode;
-            var nodos = t.childNodes;
-            // generamos el ciclo
-            for (let j = 0; j < nodos.length; j++) {
-                if (nodos[j].firstChild.id == 'litros[]') {
-                    ltsanterior = nodos[j].firstChild.value;
-                    litrosTotales = parseFloat(nodos[j].firstChild.value,10);
-                    nodos[j].firstChild.value = litrosTotales;
-                }
-            }
+        // function calcularLitrosTotales(arg){
+        //     var litrosTotales = 0, lts = 0, ltsanterior = 0;
+        //     var t = arg.parentNode.parentNode;
+        //     var nodos = t.childNodes;
+        //     // generamos el ciclo
+        //     for (let j = 0; j < nodos.length; j++) {
+        //         if (nodos[j].firstChild.id == 'litros[]') {
+        //             ltsanterior = nodos[j].firstChild.value;
+        //             litrosTotales = parseFloat(nodos[j].firstChild.value,10);
+        //             nodos[j].firstChild.value = litrosTotales;
+        //         }
+        //     }
 
-            var ltsTotales = document.getElementById("litros_totales");
-            if (ltsTotales.value == 'NaN') {
-                ltsTotales.value = 0;
-            }
-            var litrosTotales = parseFloat(ltsTotales.value) + litrosTotales;
-            ltsTotales.value = roundToTwo(litrosTotales);
-            calcularrendimiento(ltsTotales.value);
-        }
+        //     var ltsTotales = document.getElementById("litros_totales");
+        //     if (ltsTotales.value == 'NaN') {
+        //         ltsTotales.value = 0;
+        //     }
+        //     var litrosTotales = parseFloat(ltsTotales.value) + litrosTotales;
+        //     ltsTotales.value = roundToTwo(litrosTotales);
+        //     calcularrendimiento(ltsTotales.value);
+        // }
 
         function restarLitros(args){
             if (args.length != 0) {
@@ -580,24 +612,26 @@
 
         }
 
-        function calculoKmTotal(argumento){
+        function calculoKmTotal(argumento, indice){
             /**
              *  pasamos los argumentos para calcular el km total y obtener el km de ese nodo en el momento.
             */
             var km_actual = 0, kmsanterior = 0;
             var montoTotal = 0, rendimiento = 0;
-            var t = argumento.parentNode.parentNode;
+            var t = argumento.parentNode;
             var nods = t.childNodes;
             for (let index = 0; index < nods.length; index++) {
-                if (nods[index].firstChild.id == 'kms[]') {
-                    kmsanterior = nods[index].firstChild.value;
-                    km_actual = parseFloat(nods[index].firstChild.value,10);
-                    nods[index].firstChild.value = km_actual;
+                // entrando al bucle para comparar el nodo del id con el indice para hacer
+                // la operación de calculo de total de kilométros
+                if (nods[index].id === 'kms['+indice+']') {
+                    kmsanterior = nods[index].value;
+                    km_actual = parseFloat(nods[index].value,10);
+                    nods[index].value = km_actual;
                 }
             }
 
-            var km_totales = document.getElementById("km_totales");
-            var rendimiento_vehiculo = document.getElementById("rendimiento_vehiculo");
+            const km_totales = document.getElementById("km_totales");
+            const rendimiento_vehiculo = document.getElementById("rendimiento_vehiculo");
             switch (rendimiento_vehiculo.value) {
                 case 'rendimiento_mixto':
                     var rendimiento_mixto = document.getElementById("rendimiento_mixto");
@@ -610,33 +644,41 @@
                 default:
                     break;
             }
-            var costo_combustible = document.getElementById("costo_combustible");
-            if (km_totales.value == 'NaN') {
-                km_totales.value = 0;
-            }
-            // checamos si está vacio o es nullo tanto el costo_combustible como km_total
-            km_totales.value = parseFloat(km_actual) + parseFloat(km_totales.value);
-            montoTotal = parseFloat(km_totales.value) / parseFloat(rendimiento) * parseFloat(costo_combustible.value);
+            const costo_combustible = document.getElementById("costo_combustible");
+            // si el valor del costo de combustible es nullo se envia un
+            if (costo_combustible.value) {
+                // si no está vacio o nulo
+                if (km_totales.value == 'NaN') {
+                    km_totales.value = 0;
+                }
+                // checamos si está vacio o es nullo tanto el costo_combustible como km_total
+                km_totales.value = parseFloat(km_actual) + parseFloat(km_totales.value);
+                montoTotal = parseFloat(km_totales.value) / parseFloat(rendimiento) * parseFloat(costo_combustible.value);
 
-            var monto_total = document.getElementById("monto_total");
-            if (monto_total.value == 'NaN') {
-                monto_total.value = 0;
+                var monto_total = document.getElementById("monto_total");
+                if (monto_total.value == 'NaN') {
+                    monto_total.value = 0;
+                }
+                monto_total.value = parseFloat(montoTotal).toFixed(2);
             }
-            monto_total.value = parseFloat(montoTotal).toFixed(2);
         }
         /*
         * calcular peaje
         */
-        function calcularPeaje(ars)
+        function calcularPeaje(ars, index)
         {
             var peaje = 0, peajeAnterior = 0;
-            var i = ars.parentNode.parentNode;
+            var i = ars.parentNode;
             var nodos = i.childNodes;
             for (let j = 0; j < nodos.length; j++) {
-                if (nodos[j].firstChild.id == 'peaje[]') {
-                    peajeAnterior = nodos[j].firstChild.value;
-                    peaje = parseFloat(nodos[j].firstChild.value, 10);
-                    nodos[j].firstChild.value = peaje;
+                /**
+                 * realizar un bucle para poder checar con el id asignado si coinciden tenemos que poder cargar los
+                 * registros y hacer el calculo de lo contrario no se realiza acción alguna
+                 */
+                if (nodos[j].id == 'peaje['+index+']') {
+                    peajeAnterior = nodos[j].value;
+                    peaje = parseFloat(nodos[j].value, 10);
+                    nodos[j].value = peaje;
                 }
             }
             var importe_total = document.getElementById("peaje_total");
