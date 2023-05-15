@@ -74,10 +74,13 @@
                     <i class="fas fa-eye"></i> Revisión de la Bitácora
                 </a>
               @endcan
-              <a href="{{ route('solicitud.bitacora.generar_documento.firma') }}" class="collapse-item">
-                <i class="fas fa-file-signature"></i>
-                Firma de la Bitácora
-              </a>
+             {{-- revisión de bitacora generar documento es para capturista y revisor --}}
+             @can('ver-firma-bitacora')
+                <a href="{{ route('solicitud.bitacora.generar_documento.firma') }}" class="collapse-item">
+                    <i class="fas fa-file-signature"></i>
+                    Firma de la Bitácora
+                </a>
+             @endcan
           </div>
       </div>
   </li>
