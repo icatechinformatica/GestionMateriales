@@ -6,18 +6,7 @@
   </button>
 
   <!-- Topbar Search -->
-  <form
-      class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-      <div class="input-group">
-          <input type="text" class="form-control bg-light border-0 small" placeholder="Buscar..."
-              aria-label="Search" aria-describedby="basic-addon2">
-          <div class="input-group-append">
-              <button class="btn btn-info" type="button">
-                  <i class="fas fa-search fa-sm"></i>
-              </button>
-          </div>
-      </div>
-  </form>
+  <h1 style="text-align: center; text-transform: uppercase; color: #900C3F; font-weight: bold; margin-left: 1.5%"])>SIRMAT</h1>
 
   <!-- Topbar Navbar -->
   <ul class="navbar-nav ml-auto">

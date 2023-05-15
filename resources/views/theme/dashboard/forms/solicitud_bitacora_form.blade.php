@@ -317,19 +317,19 @@
                                     '<textarea name="agregarItem[' + j + '][a]"   class="form-control"></textarea>'+
                                 '</td>'+
                                 '<td data-label="KM final">'+
-                                    '<input type="text" name="agregarItem[' + j + '][kmfinal]" id="kmFinal[]" class="form-control kmFinal" autocomplete="off" />'+
+                                    '<input type="text" name="agregarItem[' + j + '][kmfinal]" id="kmFinal['+j+']" class="form-control kmFinal" autocomplete="off" />'+
                                 '</td>'+
                                 '<td data-label="Vales">'+
-                                    '<textarea name="agregarItem[' + j + '][vales]" id="vales[]" class="form-control numbersOnly vales_tag"></textarea>'+
+                                    '<textarea name="agregarItem[' + j + '][vales]" id="vales['+j+']" class="form-control numbersOnly vales_tag"></textarea>'+
                                 '</td>'+
                                 '<td data-label="Litros">'+
-                                    '<input type="text" name="agregarItem[' + j + '][litros]" id="litros[]"  class="form-control inst_litros" autocomplete="off" />'+
+                                    '<input type="text" name="agregarItem[' + j + '][litros]" id="litros['+j+']"  class="form-control inst_litros" autocomplete="off" />'+
                                 '</td>'+
                                 '<td data-label="DV">'+
-                                    '<input type="text" name="agregarItem[' + j + '][dv]" id="dv[]" class="form-control denominacion_vales" autocomplete="off"/>'+
+                                    '<input type="text" name="agregarItem[' + j + '][dv]" id="dv['+j+']" class="form-control denominacion_vales" autocomplete="off"/>'+
                                 '</td>'+
                                 '<td data-label="Importe">'+
-                                    '<input type="text" name="agregarItem[' + j + '][importe]" id="importes[]"  class="form-control importe total_importe" readonly />'+
+                                    '<input type="text" name="agregarItem[' + j + '][importe]" id="importes['+j+']"  class="form-control importe total_importe" readonly />'+
                                 '</td>'+
                                 '<td data-label="Acción">'+
                                     '<button type="button" class="btn btn-danger btn-circle btn-sm remove-tr">'+
@@ -349,7 +349,6 @@
                         var km_recorrido_anterior = $('#dynamicTable tr').last().find('.kmFinal').val();
                         if (km_recorrido_anterior == 'NaN' || km_recorrido_anterior == 0) {
                             km_recorrido_anterior = 0;
-
                         }
 
                         $("#dynamicTable").append(
@@ -367,19 +366,19 @@
                                     '<textarea name="agregarItem[' + j + '][a]"   class="form-control"></textarea>'+
                                 '</td>'+
                                 '<td data-label="KM final">'+
-                                    '<input type="text" name="agregarItem[' + j + '][kmfinal]" id="kmFinal[]" class="form-control kmFinal" autocomplete="off" />'+
+                                    '<input type="text" name="agregarItem[' + j + '][kmfinal]" id="kmFinal['+j+']" class="form-control kmFinal" autocomplete="off" />'+
                                 '</td>'+
                                 '<td data-label="Vales">'+
-                                    '<textarea name="agregarItem[' + j + '][vales]" id="vales[]" class="form-control numbersOnly vales_tag"></textarea>'+
+                                    '<textarea name="agregarItem[' + j + '][vales]" id="vales['+j+']" class="form-control numbersOnly vales_tag"></textarea>'+
                                 '</td>'+
                                 '<td data-label="Litros">'+
-                                    '<input type="text" name="agregarItem[' + j + '][litros]" id="litros[]"  class="form-control inst_litros" autocomplete="off" />'+
+                                    '<input type="text" name="agregarItem[' + j + '][litros]" id="litros['+j+']"  class="form-control inst_litros" autocomplete="off" />'+
                                 '</td>'+
                                 '<td data-label="DV">'+
-                                    '<input type="text" name="agregarItem[' + j + '][dv]" id="dv[]" class="form-control denominacion_vales" autocomplete="off" />'+
+                                    '<input type="text" name="agregarItem[' + j + '][dv]" id="dv['+j+']" class="form-control denominacion_vales" autocomplete="off" />'+
                                 '</td>'+
                                 '<td data-label="Importe">'+
-                                    '<input type="text" name="agregarItem[' + j + '][importe]" id="importes[]"  class="form-control importe total_importe" readonly />'+
+                                    '<input type="text" name="agregarItem[' + j + '][importe]" id="importes['+j+']"  class="form-control importe total_importe" readonly />'+
                                 '</td>'+
                                 '<td data-label="Acción">'+
                                     '<button type="button" class="btn btn-danger btn-circle btn-sm remove-tr">'+
