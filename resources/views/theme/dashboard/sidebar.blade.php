@@ -87,47 +87,49 @@
 
   <!-- Nav Item - Utilities Collapse Menu -->
     @can('ver catalogos')
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
-            aria-expanded="true" aria-controls="collapseUtilities">
-            <i class="fas fa-fw fa-wrench"></i>
-            <span>Catálogos</span>
-        </a>
-        <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
-            data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <h6 class="collapse-header">Sección de Catálogos:</h6>
+     @role('revisor')
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
+                aria-expanded="true" aria-controls="collapseUtilities">
+                <i class="fas fa-fw fa-wrench"></i>
+                <span>Catálogos</span>
+            </a>
+            <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
+                data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Sección de Catálogos:</h6>
+                    @can('leer catalogo vehiculo')
+                    <a href="{{ route('solicitud.cat.indice') }}" class="collapse-item">
+                        <i class="fas fa-car"></i>
+                        Catálogo de Vehiculos
+                    </a>
+                    @endcan
+
+                    @can('leer catalogo choferes')
+                    <a class="collapse-item" href="{{ route('solicitud.cat.chofer') }}">
+                        <i class="fas fa-address-card"></i>
+                        Catálogo Choferes
+                    </a>
+                    @endcan
+
+                    @can('leer catalogo resguardante')
+                    <a class="collapse-item" href="{{ route('solicitud.resguardante.indice') }}">
+                        <i class="fas fa-user-shield"></i>
+                        Resguardantes
+                    </a>
+                    @endcan
+
                 @can('leer catalogo vehiculo')
-                  <a href="{{ route('solicitud.cat.indice') }}" class="collapse-item">
-                    <i class="fas fa-car"></i>
-                    Catálogo de Vehiculos
-                  </a>
+                    <a class="collapse-item" href="{{ route('solicitud.cat.directorio.indice') }}">
+                        {{-- checar el cambio de permiso --}}
+                        <i class="fas fa-sitemap"></i>
+                        Directorio
+                    </a>
                 @endcan
-
-                @can('leer catalogo choferes')
-                  <a class="collapse-item" href="{{ route('solicitud.cat.chofer') }}">
-                    <i class="fas fa-address-card"></i>
-                    Catálogo Choferes
-                  </a>
-                @endcan
-
-                @can('leer catalogo resguardante')
-                  <a class="collapse-item" href="{{ route('solicitud.resguardante.indice') }}">
-                    <i class="fas fa-user-shield"></i>
-                    Resguardantes
-                  </a>
-                @endcan
-
-               @can('leer catalogo vehiculo')
-                  <a class="collapse-item" href="{{ route('solicitud.cat.directorio.indice') }}">
-                    {{-- checar el cambio de permiso --}}
-                    <i class="fas fa-sitemap"></i>
-                    Directorio
-                  </a>
-               @endcan
+                </div>
             </div>
-        </div>
-      </li>
+        </li>
+     @endrole
     @endcan
 
   {{-- Nav Item - Requisiciones --}}
