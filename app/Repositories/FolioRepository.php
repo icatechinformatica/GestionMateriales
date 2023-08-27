@@ -139,7 +139,7 @@ class FolioRepository implements FolioRepositoryInterface {
 
     public function getFoliosByStatus(){
         $estado = "DISPONIBLE";
-        return Folio::select("denominacion", DB::raw("GROUP_CONCAT(DISTINCT numero_folio ORDER BY numero_folio ASC  limit 1) AS folios"))->where('status', $estado)->groupBy('denominacion')->get();
+        return Folio::select(DB::raw("denominacion, GROUP_CONCAT(DISTINCT numero_folio ORDER BY numero_folio ASC  limit 1) AS folios"))->where('status', $estado)->groupBy('denominacion')->get();
     }
 
     public function getDenominacionByFactura(){
