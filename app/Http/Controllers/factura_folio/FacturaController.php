@@ -10,7 +10,8 @@ use Illuminate\Database\QueryException;
 use App\Http\Requests\FacturaRequest;
 use App\Interfaces\FacturaRepositoryInterface;
 use App\Interfaces\ProveedorRepositoryInterface;
-
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Response;
 
 class FacturaController extends Controller
 {
@@ -170,13 +171,13 @@ class FacturaController extends Controller
             abort(500);
         } else {
             $filepath = $files->archivo;
-            if (!\File::exists(storage_path('app/'.$filepath))) {
+            if (!File::exists(storage_path('app/'.$filepath))) {
                 # checando si el archivo éxiste
                 abort(404); // si no hay abortamos
             }
-            $file = \File::get($files->archivo);
-            $type = \File::mimetype($files->archivo);
-            $response = \Response::make($file, 200);
+            $file = File::get($files->archivo);
+            $type = File::mimetype($files->archivo);
+            $response = Response::make($file, 200);
             $response->header("Content-Type", $type);
             return $response;
         }
