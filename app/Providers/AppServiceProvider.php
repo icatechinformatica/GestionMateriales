@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -37,7 +38,7 @@ class AppServiceProvider extends ServiceProvider
         // forzar https en producción
         if ($this->app->environment('production')) {
             # forzamos el esquema a trabajar con https
-            \URL::forceScheme('https');
+            URL::forceScheme('https');
         }
     }
 }
