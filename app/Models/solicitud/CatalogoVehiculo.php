@@ -4,6 +4,10 @@ namespace App\Models\solicitud;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use App\Models\factura_folio\Folio;
 
 class CatalogoVehiculo extends Model
 {
@@ -13,7 +17,7 @@ class CatalogoVehiculo extends Model
     public $timestamps = true;
 
     protected $fillable = [
-        'id', 'color', 'numero_motor', 'marca', 'modelo', 'tipo', '	placas',
+        'id', 'color', 'numero_motor', 'marca', 'modelo', 'tipo', 'placas',
         'numero_serie', 'resguardante_id', 'numero_economico', 'km_final',
         'importe_combustible', 'rendimiento_ciudad', 'rendimiento_carreteta', 'rendimiento_mixto',
         'rendimiento_carga'
@@ -39,5 +43,10 @@ class CatalogoVehiculo extends Model
     public function resguardante(): BelongsTo
     {
         return $this->belongsTo(Resguardante::class, 'resguardante_id', 'id');
+    }
+
+    public function folio(): BelongsToMany
+    {
+        return $this->belongsToMany(Folio::class, 'vehiculo_folio', 'catalogo_vehiculo_id', 'folio_id')->withPivot('id','status', 'transitado');
     }
 }

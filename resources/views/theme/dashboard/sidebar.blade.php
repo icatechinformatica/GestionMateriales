@@ -40,11 +40,11 @@
               {{-- <a class="collapse-item" href="{{ route('solicitd.validacion_presupuestal.index') }}">
                 <i class="fas fa-plus-circle"></i> Agregar
               </a> --}}
-              @can('ver comision')
+              {{-- @can('ver comision')
                 <a href="{{ route('pre.comision.index') }}" rel="noopener noreferrer" class="collapse-item">
                   <i class="fas fa-keyboard"></i> Pre - Bitácora de Recorrido
                 </a>
-              @endcan
+              @endcan --}}
 
 
               @can('indice bitacora recorrido')
@@ -81,6 +81,13 @@
                     Firma de la Bitácora
                 </a>
              @endcan
+
+            {{-- reporte de la bitácora --}}
+                <a href="{{ route('reporte.solicitud.bitacora_recorrido') }}" class="collapse-item">
+                    <i class="fas fa-print"></i>
+                    Reporte de la Bitácora
+                </a>
+           {{-- reporte de la bitácora END --}}
           </div>
       </div>
   </li>
@@ -172,17 +179,19 @@
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#callapsefactura"
     aria-expanded="true" aria-controls="collapseTwo">
         <i class="fas fa-file-invoice"></i>
-        <span>Factura y Folio</span>
+        <span>Factura y Vales</span>
     </a>
     <div id="callapsefactura" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Facturas y Folios:</h6>
+            <h6 class="collapse-header">Facturas y Vales:</h6>
 
               <a href="{{ route('factura.index') }}" rel="noopener noreferrer" class="collapse-item">
                 <i class="fas fa-file-invoice"></i> Factura
               </a>
 
-
+              <a href="{{ route('folio.assign.vouchers') }}" rel="noopener noreferrer" class="collapse-item">
+                <i class="fas fa-cogs"></i> Asignación de Vales
+              </a>
 
               {{-- <a class="collapse-item" href="{{ route('solicitud.bitacora.previo.guardado') }}">
                   <i class="fas fa-receipt"></i> Folio

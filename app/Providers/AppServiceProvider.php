@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Blade;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -30,7 +31,7 @@ class AppServiceProvider extends ServiceProvider
         Carbon::setLocale(config('app.locale'));
         setlocale(LC_ALL, 'es_MX', 'es', 'ES', 'es_MX.utf8');
 
-        \Blade::directive('money', function ($amount) {
+        Blade::directive('money', function ($amount) {
             return "<?php echo '$ ' .  number_format($amount, 2); ?>";
         });
         // forzar https en producción

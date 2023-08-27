@@ -3,137 +3,192 @@
 
 @section('contenidoCss')
     <link href="{{ asset('css/folioCreateStyle.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/modalsuccess.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/validateError.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/heading.css') }}">
 @endsection
 
 @section('contenido')
 {{-- tabla --}}
 <div class="container-fluid dark-nav">
     <div class="row">
-        <div class="col-lg-1 mb-4"></div>
-        <div class="col-lg-10 mb-4">
-            @if ($message = Session::get('success'))
-                <div class="alert alert-success alert-block">
-                    <strong>{{ $message }}</strong>
-                </div>
-            @endif
+        @if ($message = Session::get('success'))
+            <div class="alert alert-success alert-block">
+                <strong>{{ $message }}</strong>
+            </div>
+        @endif
+    {{-- FORM --}}
+    {!! Form::open(['method' => 'POST', 'enctype' => 'multipart/form-data', 'id' => 'formFactura']) !!}
+        <div class="col-lg-9 md-4 posicionamiento_flotante">
             <span id="success_message"></span>
             <div class="card shadow mb-4">
+                <div class="card-header text-white" style="background-color: #621132;"><b>Cargar Factura</b></div>
                 <div class="card-body">
-{{-- FORM --}}
-                    <form method="POST" id="frmFacturastore" enctype="multipart/form-data">
-                {{--   @csrf TOKEN --}}
-                            @csrf
-                {{--  @csrf TOKEN END --}}
-                {{-- Agregar Formulario --}}
-                                    <div class="form-row">
-                                        <div class="col-md-6 mb-3">
-                                            <label for="memo_comision">&nbsp;</label>
-                                            <div class="custom-file">
-                                                <h3><b>CARGAR FACTURA</b></h3>
-                                            </div>
-                                        </div>
-                                    </div>
+                    {{-- abrimos formulario --}}
+                        {!! Form::token() !!}
+                        {{-- toker CSRF --}}
+                        <div class="form-row">
+                            <div class="col-md-12 mb-2">
+                                <p class="text-blk name">CLIENTE: INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLÓGICA DEL
+                                    ESTADO DE CHIAPAS</p>
+                                <p class="text-blk name">RFC: ICV000727K41 <br> USO CFDI: G03</p>
+                            </div>
+                        </div>
 
-                                    <div class="form-row">
-                                        <div class="col-md-7 mb-3 process" style="display:none;">
-                                            <div class="progress">
-                                                <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" style=""></div>
-                                            </div>
+                        <p class="text-blk name">DATOS DE LA FACTURA</p>
+                        <hr style="width:100%;">
+                        <div class="form-row">
+                            <div class="col-md-8 mb-3">
+                                {!! Form::label('proveedor', 'Proveedor') !!}
+                                <div class="custom-file">
+                                    {!! Form::select('proveedor', $proveedores,'',['class' => 'form-control '.($errors->has('proveedor') ? 'is-invalid' : null), 'autocomplete' => 'off', 'id' => 'proveedor', 'placeholder' => 'Selecciona Proveedor...']) !!}
+                                    @error('proveedor')
+                                        <div class="alert alert-danger mt-1 mb-1">
+                                            {{ $message }}
                                         </div>
-                                    </div>
-
-                                    <div class="form-row">
-                                        <div class="col-md-4 mb-3">
-                                            <label for="fecha_comision">Cliente</label>
-                                            <div class="custom-file">
-                                                <input type="text" name="cliente" id="cliente" class="@error('cliente') is-invalid @enderror form-control" autocomplete="off">
-                                                @error('cliente')
-                                                    <div class="alert alert-danger mt-1 mb-1">
-                                                        {{ $message }}
-                                                    </div>
-                                                @enderror
-                                            </div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                {!! Form::label('serie_folio', 'Serie/Folio') !!}
+                                <div class="custom-file">
+                                    {!! Form::text('serie_folio', '', ['class' => 'form-control '.($errors->has('serie_folio') ? 'is-invalid' : null), 'autocomplete' => 'off', 'id' => 'serie_folio']) !!}
+                                    @error('serie_folio')
+                                        <div class="alert alert-danger mt-1 mb-1">
+                                            {{ $message }}
                                         </div>
-                                        <div class="col-md-4 mb-3">
-                                            <label for="periodo_comision">Concepto</label>
-                                            <div class="custom-file">
-                                                <input type="text" class="form-control" id="concepto" name="concepto" autocomplete="off">
-                                            </div>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col-md-4 mb-3">
+                                {!! Form::label('folio_fiscal', 'Folio Fiscal UUID') !!}
+                                <div class="custom-file">
+                                    {!! Form::text('folio_fiscal', '', ['class' => 'form-control '.($errors->has('folio_fiscal') ? 'is-invalid' : null), 'autocomplete' => 'off', 'id' => 'folio_fiscal']) !!}
+                                    @error('folio_fiscal')
+                                        <div class="alert alert-danger mt-1 mb-1">
+                                            {{ $message }}
                                         </div>
-                                        <div class="col-md-4 mb-3">
-                                            <label for="folio_serie">Folio/Serie</label>
-                                            <div class="custom-file">
-                                                <input type="text" class="@error('folio_serie') is-invalid @enderror typeahead form-control" id="folio_serie" name="folio_serie" autocomplete="off">
-                                            </div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                {!! Form::label('certificado_emisor', 'Certificado Emisor') !!}
+                                <div class="custom-file">
+                                    {!! Form::text('certificado_emisor', '', ['class' => 'form-control '.($errors->has('certificado_emisor') ? 'is-invalid' : null), 'autocomplete' => 'off', 'id' => 'certificado_emisor']) !!}
+                                    @error('certificado_emisor')
+                                        <div class="alert alert-danger mt-1 mb-1">
+                                            {{ $message }}
                                         </div>
-                                    </div>
-
-                                    <div class="form-row">
-                                        <div class="col-md-4 mb-3">
-                                            <label for="subtotal">Subtotal</label>
-                                            <div class="input-group">
-                                                <span class="input-group-text">$</span>
-                                                <input type="text" class="form-control" id="subtotal" name="subtotal" autocomplete="off">
-                                            </div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                {!! Form::label('certificado_sat', 'Certificado del SAT') !!}
+                                <div class="custom-file">
+                                    {!! Form::text('certificado_sat', '', ['class' => 'form-control '.($errors->has('certificado_sat') ? 'is-invalid' : null), 'autocomplete' => 'off', 'id' => 'certificado_sat']) !!}
+                                    @error('certificado_sat')
+                                        <div class="alert alert-danger mt-1 mb-1">
+                                            {{ $message }}
                                         </div>
-                                        <div class="col-md-4 mb-3">
-                                            <label for="impuesto_trasladados">Impuestos Trasladados</label>
-                                            <div class="input-group">
-                                                <span class="input-group-text">$</span>
-                                                <input type="text" class="form-control " id="impuesto_trasladados" name="impuesto_trasladados" autocomplete="off" >
-                                            </div>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col-md-4 mb-3">
+                                {!! Form::label('tipo_comprobante', 'Tipo Comprobante') !!}
+                                <div class="custom-file">
+                                    {!! Form::text('tipo_comprobante', '', ['class' => 'form-control '.($errors->has('tipo_comprobante') ? 'is-invalid' : null), 'autocomplete' => 'off', 'id' => 'tipo_comprobante']) !!}
+                                    @error('tipo_comprobante')
+                                        <div class="alert alert-danger mt-1 mb-1">
+                                            {{ $message }}
                                         </div>
-                                        <div class="col-md-4 mb-3">
-                                            <label for="total">Total</label>
-                                            <div class="input-group">
-                                                <span class="input-group-text">$</span>
-                                                <input type="text" class="form-control " id="total" name="total"  readonly >
-                                            </div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                {!! Form::label('fecha_emision', 'Fecha de Emisión') !!}
+                                <div class="custom-file">
+                                    <input type="datetime-local" name="fecha_emision" id="fecha_emision" class="@error('fecha_emision') is-invalid @enderror form-control" autocomplete="off">
+                                    @error('fecha_emision')
+                                        <div class="alert alert-danger mt-1 mb-1">
+                                            {{ $message }}
                                         </div>
-                                    </div>
-
-                                    <div class="form-row">
-                                        <div class="col-md-1 mb-3">
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                {!! Form::label('fecha_certificacion', 'Fecha de Certificación') !!}
+                                <div class="custom-file">
+                                    <input type="datetime-local" name="fecha_certificacion" id="fecha_certificacion" class="@error('fecha_certificacion') is-invalid @enderror form-control" autocomplete="off">
+                                    @error('fecha_certificacion')
+                                        <div class="alert alert-danger mt-1 mb-1">
+                                            {{ $message }}
                                         </div>
-                                        <div class="col-md-10 mb-3 center">
-                                            <div class="btn-container">
-                                                <!--the three icons: default, ok file (img), error file (not an img)-->
-                                                <h1 class="imgupload"><i class="fas fa-file-pdf"></i></h1>
-                                                <h1 class="imgupload ok"><i class="fas fa-check"></i></h1>
-                                                <h1 class="imgupload stop"><i class="fas fa-times"></i></h1>
-                                                <!--this field changes dinamically displaying the filename we are trying to upload-->
-                                                <p id="namefile">Sólo Archivos pdf's (pdf)</p>
-                                                <!--our custom btn which which stays under the actual one-->
-                                                <button type="button" id="btnup" class="btn btn-primary btn-lg">Busca el documento</button>
-                                                <!--this is the actual file input, is set with opacity=0 beacause we wanna see our custom one-->
-                                                <input type="file" value="" name="fileup" id="fileup">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-1 mb-3">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-row">
-                                        <div class="col-md-4">
-                                            <button type="submit" class="btn btn-success" id="submitFrm">
-                                                <i class="fas fa-save"></i> Guardar Factura
-                                            </button>
-                                        </div>
-                                    </div>
-                {{-- Agregar Formulario END --}}
-                    </form>
-{{-- FORM END --}}
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+                    {{-- cerramos formulario --}}
                 </div>
             </div>
         </div>
-        <div class="col-lg-1 mb-4"></div>
+        <div class="col-lg-10 md-4 posicionamiento_flotante">
+            <div class="card shadow mb-4">
+                <div class="card-header text-white" style="background-color: #621132;"><b>Detalles de la Factura</b></div>
+                <div class="card-body">
+                <button class="btn btn-warning" id="addBillingItem" data-toggle="modal" data-target="#modalBillingTheme"><i class="fas fa-plus"></i> Añadir Elemento</button>
+                &nbsp;
+                <button type="submit" id="submitForm" class="btn btn-success">
+                    <i class="fas fa-plus"></i> Enviar
+                </button>
+                <hr>
+                <table>
+                    <thead>
+                    <tr>
+                        <th scope="col">C. Producto</th>
+                        <th scope="col">Cantidad</th>
+                        <th scope="col">C. Unidad</th>
+                        <th scope="col">Descripción</th>
+                        <th scope="col">V. Unitario</th>
+                        <th scope="col">Impuestos</th>
+                        <th scope="col">Importe</th>
+                    </tr>
+                    </thead>
+                    <tbody id="invoiceDetails">
+                        <tr id="noData">
+                            <td colspan="7"><center><h3> <b>NO HAY REGISTROS PARA MOSTRAR</b> </h3></center></td>
+                        </tr>
+                    </tbody>
+                </table>
+                </div>
+            </div>
+        </div>
+    {!! Form::close() !!}
+    {{-- FORM END --}}
     </div>
+    {{-- incluir modal de inserción de datos --}}
+    @include('theme.dashboard.layouts.facturas_folio.forms.modal_billing')
+
+
+    {{-- modal success --}}
+    @include('modals.modalsuccess')
+    {{-- modal success END --}}
     <hr>
 </div>
 {{-- tabla END --}}
 @endsection
 
 @section('contenidoJavaScript')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    {{-- agregar assets para validar --}}
+    <script src="{{ asset('assets/jqueryvalidate/jquery.validate.min.js') }}"></script>
+    <script src="{{ asset('assets/jqueryvalidate/additional-methods.min.js') }}"></script>
+    <script> const itemsData = []; </script>
+    <script src="{{ asset('assets/jqueryvalidate/metodos/validateModalBilling.js') }}"></script>
+    {{-- agregar assets para validar END --}}
     <script type="text/javascript">
         $.ajaxSetup({
             headers: {
@@ -141,14 +196,45 @@
             }
         });
         $(document).ready(function(){
-            $('#frmFacturastore').on('submit', (event) => {
-                event.preventDefault();
-                const count_error = 0;
-                if (count_error == 0)
-                {
-                    const fd = new FormData($('#frmFacturastore')[0]);
-                    // fd.append('file', $( '#fileup' )[0].files[0])
-                    // si el contador de errores es 0 se procede a realizar la petición en ajax
+            $('#addBillingItem').on('click', (evt) => {
+                evt.preventDefault(); // evitar eventos por defecto
+                $('#modalBillingTheme').modal('show');
+                activateModal(true);
+            });
+
+            /*
+            * validacion y submit
+            */
+           $('#formFactura').validate({
+                errorClass: "error",
+                rules: {
+                    folio_fiscal: {required:true},
+                    certificado_emisor: {required:true},
+                    certificado_sat: {required:true},
+                    tipo_comprobante: {required:true},
+                    fecha_emision: {required:true},
+                    fecha_certificacion: {required:true},
+                    serie_folio:{required:true},
+                    proveedor:{required:true}
+                },
+                messages:{
+                    folio_fiscal: {required: "el folio fiscal es requerido"},
+                    certificado_emisor:{required: "el certificado emisor es requerido"},
+                    certificado_sat:{required: "Certificado del SAT es requerido"},
+                    tipo_comprobante:{required: "el Tipo de Comprobante es requerido"},
+                    fecha_emision:{required: "la Fecha de Emisión es requerida"},
+                    fecha_certificacion:{required: "la Fecha de Certificación es requerida"},
+                    serie_folio:{required: "Serie o Folio requerido"},
+                    proveedor:{required: "Seleccione Proveedor"}
+                },
+                highlight: function(element, errorClass) {
+                    $(element).addClass(errorClass);
+                },
+                submitHandler: function(form, event){
+                    // manejamos el submiteo del formulario
+                    event.preventDefault();
+                    const fd = new FormData($('#formFactura')[0]);
+                    fd.append('itemsData', JSON.stringify(itemsData));
                     $.ajax({
                         url: "{{ route('factura.save') }}",
                         method: "POST",
@@ -158,16 +244,22 @@
                         data: fd,
                         beforeSend: function()
                         {
-                            $('#submitFrm').attr('disabled', 'disabled');
+                            $('#formFactura').attr('disabled', 'disabled');
                             $('.process').css('display', 'block');
+                            // modificamos el botón
+                            $('#addBillingItem').prop('disabled', true); // deshabilitar botón
+                            $("#submitForm").prop('disabled', true); // deshabilitar submit
+                            $("#submitForm")
+                                .html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Procesando...');
                         },
                         success: function(data)
                         {
+                            $('#modalSuccess').modal('show'); // se abre el modal
                             // manejando porcentaje
                             let percentage = 0;
                             const timer = setInterval(() => {
                                 percentage = percentage + 20;
-                                progress_bar_process(percentage, timer, data)
+                                spinnerProgress(percentage, timer, data)
                             }, 1000);
                         },
                         error: function(xhr, textStatus, error)
@@ -180,26 +272,24 @@
                             console.log(error);
                         }
                     })
-                } else {
-                    return false;
                 }
-            });
+           });
 
-            const progress_bar_process = (percentage, timer, data) => {
-                $(".progress-bar").css('width', percentage + '%');
-                if (percentage > 100) {
-                    clearInterval(timer); // funcion que resetea el intervalo de tiempos
-                    $('#frmFacturastore')[0].reset(); // resetear el formulario
-                    $('.process').css('display', 'none'); // mostramos en pantalla el div
-                    $('.progress-bar').css('width', '0%'); // seteamos el valor del progress bar
-                    $('#submitFrm').attr('disabled', false);
-                    $('#success_message').html("<div class='alert alert-success'>"+ data.message +"</div>");
-                    setTimeout(() => {
-                        $('#success_message').html('')
+           const spinnerProgress = (per, time, dat) => {
+            if (per > 100) {
+                clearInterval(time); // funcion que resetea el intervalo de tiempos
+                $('#formFactura').attr('disabled', false); // el formulario se habilita nuevamente
+                $('#addBillingItem').prop('disabled', false); // habilitar botón
+                $("#submitForm").prop('disabled', false); // habilitar submit
+                $("#submitForm")
+                 .html('<i class="fas fa-plus"></i> Enviar');
+                $('#modalSuccess').modal('hide'); // ocultar modal
+                setTimeout(() => {
+                    //redireccionar
                         window.location.href = "{{ route('factura.index')}}";
-                    }, 800);
-                }
+                }, 900);
             }
+           };
 
             const roundToTwo = (num) => {
                 return +(Math.round(num + "e+2")  + "e-2");
@@ -309,8 +399,35 @@
                     //habilitar
                     $( "#submitFrm" ).prop( "disabled", false );
                 }
-            })
+            });
+
+            const activateModal = (flag = true) => {
+                $(document).on('input', '#cantidad', function(){
+                    if (this.value != this.value.replace(/[^0-9,.]/g, '').replace(/,/g, '.')) {
+                        this.value = this.value.replace(/[^0-9,.]/g, '').replace(/,/g, '.');
+                    }
+                });
+                // cargar otros inputs para que no puedan sea sólo númerico
+
+                $('#valor_unitario, #impuestos, #importe').keypress(function(event) {
+                    if ((event.which != 46 || $(this).val().indexOf('.') != -1) &&
+                        ((event.which < 48 || event.which > 57) &&
+                        (event.which != 0 && event.which != 8))) {
+                        event.preventDefault();
+                    }
+
+                    var text = $(this).val();
+
+                    if ((text.indexOf('.') != -1) &&
+                        (text.substring(text.indexOf('.')).length > 2) &&
+                        (event.which != 0 && event.which != 8) &&
+                        ($(this)[0].selectionStart >= text.length - 2)) {
+                        event.preventDefault();
+                    }
+                });
+            }
         });
+
     </script>
 @endsection
 {{--  --}}

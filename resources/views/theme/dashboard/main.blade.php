@@ -70,6 +70,8 @@
         <i class="fas fa-angle-up"></i>
     </a>
 
+    @yield('modals')
+
     {{-- Desplazarse hasta el botón superior END--}}
 
     @include('theme.dashboard.modal')

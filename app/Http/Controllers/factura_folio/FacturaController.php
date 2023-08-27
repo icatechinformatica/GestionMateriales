@@ -7,10 +7,21 @@ use Illuminate\Http\Request;
 use App\Models\factura_folio\Factura;
 use App\Http\Traits\UploadFileTrait;
 use Illuminate\Database\QueryException;
+use App\Http\Requests\FacturaRequest;
+use App\Interfaces\FacturaRepositoryInterface;
+use App\Interfaces\ProveedorRepositoryInterface;
+
 
 class FacturaController extends Controller
 {
     use UploadFileTrait;
+    private FacturaRepositoryInterface $facturaRepository;
+    private ProveedorRepositoryInterface $proveedorRepository;
+    // crear constructor
+    public function __construct(FacturaRepositoryInterface $facturaRepository, ProveedorRepositoryInterface $proveedorRepository){
+        $this->facturaRepository = $facturaRepository;
+        $this->proveedorRepository = $proveedorRepository;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -18,13 +29,8 @@ class FacturaController extends Controller
      */
     public function index(Request $request)
     {
-        /**
-         * obtenemos todas las facturas con un poco con paginación
-         */
-        $factura = Factura::paginate(
-            $perPage = 15, $columns = ['*'], $pageName = 'factura'
-        );
         // regreso a la vista
+        $factura = $this->facturaRepository->facturaAll($request);
         return view('theme.dashboard.layouts.facturas_folio.indexfolio', compact('factura'));
     }
 
@@ -35,8 +41,9 @@ class FacturaController extends Controller
      */
     public function create()
     {
+        $proveedores = $this->proveedorRepository->proveedoresAll();
         // retornamos una vista del formulario
-        return view('theme.dashboard.layouts.facturas_folio.Forms.frmaddfacturas');
+        return view('theme.dashboard.layouts.facturas_folio.Forms.frmaddfacturas', compact('proveedores'));
     }
 
     /**
@@ -45,79 +52,40 @@ class FacturaController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(FacturaRequest $request)
     {
         // guardar los registros
-        /**
-         * validar inputs antes de guardar el registro
-         */
-        // $validador = $request->validate([
-        //     'fileup' => 'required|mimes:pdf|max:2048',
-        //     'cliente' => 'required',
-        //     'concepto' => 'required',
-        //     'folio_serie' => 'required',
-        //     'subtotal' => 'required|numeric|between:0,1000000.99',
-        //     'impuesto_trasladados' => 'required|numeric|between:0,1000000.99',
-        //     'total' => 'required|numeric|between:0,1000000.99'
-        // ],[
-        //     'fileup.required' => 'El archivo es requerido',
-        //     'fileup.mimes' => 'Sólo se aceptan archivos en formato pdf',
-        //     'fileup.max' => 'Tamaño máximo de 4 MB',
-        //     'cliente.required' => 'El cliente es requerido',
-        //     'concepto.required' => 'El concepto es requerido',
-        //     'folio_serie.required' => 'El folio/Serie es requerido',
-        //     'subtotal.required' => 'Subtotal es requerido',
-        //     'subtotal.numeric' => 'Subtotal debe ser númerico',
-        //     'impuesto_trasladados.required' => 'Impuesto de traslado requerido',
-        //     'impuesto_trasladados.numeric' => 'Impuesto de traslado debe ser númerico',
-        //     'total.required' => 'El total es requerido',
-        //     'total.numeric' => 'toal es númerico'
-        // ]);
-
         try {
-            //se realiza el guardado de datos
-            $nuevaFactura = new Factura;
-            $nuevaFactura->concepto = trim(strtoupper($request->concepto));
-            $nuevaFactura->subtotal = trim($request->subtotal);
-            $nuevaFactura->cliente = trim(strtoupper($request->cliente));
-            $nuevaFactura->serie = trim(strtoupper($request->folio_serie));
-            $nuevaFactura->impuestos_trasladados = trim($request->impuesto_trasladados);
-            $nuevaFactura->total = trim($request->total);
-            $nuevaFactura->save(); // se guardan los registros
-
             /**
-             * obtener el último ID
+             * obtener el último ID -  se envía al método crearFactura de la interface
+             * FacturaRepositoryInterface
              */
-            $lastId = $nuevaFactura->id;
 
-            if ($request->hasFile('fileup')) {
-                # si hay archivo se agrega el registro a la base de datos y contenido también a la carpeta
-                $file = $request->file('fileup');
-                $returnImage = $this->uploadFile($file, $lastId);
-                // creamos un arreglo
-                $arrFactura = [
-                    'archivo' => $returnImage
+            $factura = $this->facturaRepository->createFactura($request);
+
+            if ($factura){
+                // retornaremos una llamada json porque no necesito un retornar una vista
+                $doneArray = [
+                    'success' => true,
+                    'message' => 'Factura Agregada Exitosamente!',
+                    'data' => 'OK'
                 ];
-                // vamos a actualizar el registro con el arreglo que trae diferentes variables y carga de archivos
-                Factura::WHERE('id', $lastId)->update($arrFactura);
-                //limpiarmos el arreglo
-                unset($arrFactura);
+                return response()->json($doneArray, 200);
+            } else {
+                $wrongArray = [
+                    'success' => false,
+                    'message' => 'Error al procesar la solicitud!',
+                    'data' => 'ERROR'
+                ];
+                return response()->json($wrongArray, 500);
             }
-            // retornaremos una llamada json porque no necesito un retornar una vista
-            $doneArray = [
-                'success' => true,
-                'message' => 'Factura Agregada Exitosamente!',
-                'data' => 'OK'
-            ];
-            return response()->json($doneArray, 200);
         } catch (QueryException $th) {
             //throw $th;
             $errorArray = [
                 'Error' => $th->getMessage(),
             ];
-            return response()->json($errorArray, 401);
+            return response()->json($errorArray, 500);
         }
-        echo "done";
     }
 
     /**
@@ -139,7 +107,10 @@ class FacturaController extends Controller
      */
     public function edit($id)
     {
-        //
+        //$this->facturaRepository->getFactura($id);
+        $getFactura = $this->facturaRepository->getFactura($id);
+        $proveedores = $this->proveedorRepository->proveedoresAll();
+        return view('theme.dashboard.layouts.facturas_folio.Forms.frmupdatefacturas', compact('getFactura', 'proveedores'));
     }
 
     /**
@@ -149,9 +120,27 @@ class FacturaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(FacturaRequest $request, $id)
     {
         //
+        try {
+            //actualizar registro
+            $this->facturaRepository->updateFactura($id, $request);
+            $doneArray = [
+                'success' => true,
+                'message' => 'Factura Actualizada Exitosamente!',
+                'data' => 'OK'
+            ];
+            return response()->json($doneArray, 200);
+        } catch (QueryException $e) {
+            //excepción de consulta
+            $wrongArray = [
+                'success' => false,
+                'message' => 'Error al procesar la solicitud!',
+                'data' => 'ERROR'
+            ];
+            return response()->json($wrongArray, 500);
+        }
     }
 
     /**
@@ -163,20 +152,72 @@ class FacturaController extends Controller
     public function destroy($id)
     {
         //
+        try {
+            //realizar la operación
+            $response = $this->facturaRepository->eliminarDetalleFactura($id);
+            return redirect()->route('factura.edit', ['id' => base64_encode($response)])->with('success', 'REGISTRO ELIMINADO ÉXITOSAMENTE.');
+        } catch (QueryException $th) {
+            //mandamos mensaje de regreso de excepción
+            return back()->with('error', $th->getMessage());
+        }
     }
 
     public function getFile($filename)
     {
         $files = Factura::WHERE('id', $filename)->first();
-        $filepath = $files->archivo;
-        if (!\File::exists(storage_path('app/'.$filepath))) {
-            # checndo si el archivo éxiste
-            abort(404); // si no hay abortamos
+        if (!$files)
+        {
+            abort(500);
+        } else {
+            $filepath = $files->archivo;
+            if (!\File::exists(storage_path('app/'.$filepath))) {
+                # checando si el archivo éxiste
+                abort(404); // si no hay abortamos
+            }
+            $file = \File::get($files->archivo);
+            $type = \File::mimetype($files->archivo);
+            $response = \Response::make($file, 200);
+            $response->header("Content-Type", $type);
+            return $response;
         }
-        $file = \File::get($files->archivo);
-        $type = \File::mimetype($files->archivo);
-        $response = \Response::make($file, 200);
-        $response->header("Content-Type", $type);
-        return $response;
+
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function storeDetail(Request $request){
+        try {
+            //agregar nuevo registro
+            $detalle_factura = $this->facturaRepository->addDetalle($request);
+            if ($detalle_factura) {
+                # si la condición no es verdadera
+                $doneArray = [
+                    'success' => true,
+                    'message' => 'Factura Actualizada Exitosamente!',
+                    'data' => 'OK'
+                ];
+                return response()->json($doneArray, 200);
+            } else {
+                // si no es verdadera
+                $wrongArray = [
+                    'success' => false,
+                    'message' => 'Error al procesar la solicitud!',
+                    'data' => 'ERROR'
+                ];
+                return response()->json($wrongArray, 500);
+            }
+        } catch (QueryException $t) {
+            //arrojar una excepción
+            $wrongArray = [
+                'success' => false,
+                'message' => $t->getMessage(),
+                'data' => 'ERROR'
+            ];
+            return response()->json($wrongArray, 500);
+        }
     }
 }

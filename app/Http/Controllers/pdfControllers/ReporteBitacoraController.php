@@ -3,8 +3,9 @@
 namespace App\Http\Controllers\pdfControllers;
 
 use App\Http\Controllers\Controller;
+use App\Interfaces\ReporteRepositoryInterface;
 use Illuminate\Http\Request;
-use PDF;
+use Barryvdh\DomPDF\Facade as PDF;
 use App\Models\solicitud\Solicitud;
 use App\Models\solicitud\Bitacora;
 use App\Models\solicitud\BitacoraComision;
@@ -12,6 +13,12 @@ use App\Models\solicitud\RecorridoComision;
 
 class ReporteBitacoraController extends Controller
 {
+    private ReporteRepositoryInterface $reporteRepository;
+
+    public function __construct(ReporteRepositoryInterface $reporteRepository)
+    {
+        $this->reporteRepository = $reporteRepository;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -24,7 +31,7 @@ class ReporteBitacoraController extends Controller
             'title' => 'Welcome to OnlineWebTutorBlog.com',
             'author' => "Sanjay"
         ];
-          
+
         $pdf = PDF::loadView('theme.dashboard.reportes.reportebitacora', $data);
         // $pdf->setOptions(['isPhpEnabled' => true]);
         $pdf->setPaper('A4', 'landscape');
@@ -62,62 +69,23 @@ class ReporteBitacoraController extends Controller
     public function show($id)
     {
         //
-        $idSol = base64_decode($id);
-        $solicitud = Solicitud::select('solicitud.fecha', 
-                'solicitud.periodo', 
-                'solicitud.km_inicial', 
-                'solicitud.numero_factura_compra', 
-                'solicitud.periodo_actual', 
-                'solicitud.anio_actual', 'catalogo_vehiculo.color',
-                'solicitud.conductor',
-                'catalogo_vehiculo.numero_motor', 
-                'catalogo_vehiculo.marca',
-                'catalogo_vehiculo.modelo', 
-                'catalogo_vehiculo.tipo', 'catalogo_vehiculo.placas', 'catalogo_vehiculo.numero_serie',
-                'catalogo_vehiculo.linea', 'catalogo_vehiculo.importe_combustible', 'resguardante.resguardante_unidad',
-                'resguardante.puesto_resguardante_unidad', 
-                'solicitud.litros_totales', 'solicitud.importe_total',
-                'solicitud.total_km_recorridos', 'solicitud.status_proceso', 'solicitud.id', 'solicitud.catalogo_vehiculo_id', 'solicitud.observacion',
-                'solicitud.nombre_elabora', 'solicitud.puesto_elabora',
-                'solicitud.km_final_antes_cargar_combustible', 'solicitud.es_comision', 'solicitud.km_final_antes_cargar_combustible',
-                'solicitud.memorandum_comision', 'pre_comision.monto_total_rendimiento',
-                'catalogo_vehiculo.rendimiento_ciudad', 'catalogo_vehiculo.rendimiento_carretera', 'catalogo_vehiculo.rendimiento_mixto',
-                'catalogo_vehiculo.rendimiento_carga')
-                ->leftjoin('seguimiento_solicitud', 'solicitud.id', '=', 'seguimiento_solicitud.solicitud_id')
-                ->leftjoin('seguimiento_status', 'seguimiento_solicitud.status_seguimiento_id', '=', 'seguimiento_status.id')
-                ->leftjoin('catalogo_vehiculo', 'solicitud.catalogo_vehiculo_id', '=', 'catalogo_vehiculo.id')
-                ->leftjoin('resguardante', 'catalogo_vehiculo.resguardante_id', '=', 'resguardante.id')
-                ->leftjoin('pre_comision', 'solicitud.pre_comision_id', '=', 'pre_comision.id')
-                ->where([
-                    ['solicitud.id', '=', $idSol],
-                    ['seguimiento_solicitud.status_seguimiento_id', '=', 5]
-                ])->first();
-            /**
-             * se obtiene la comisión de la solicitud para que se pueda utilizar un switch
-             */
-            switch ($solicitud->es_comision) {
-                case true:
-                    # si hay comisión -  es comisión
-                    $bitacoraComision = BitacoraComision::where('solicitud_id', $idSol)->get();
-                    $recorridoComision = RecorridoComision::where('solicitud_id', $idSol)->get();
-                    $recorrido_bitacora = '';
-                    break;
-                case false:
-                    # no es una comisión
-                    $bitacoraComision = '';
-                    $recorridoComision = '';
-                    $recorrido_bitacora = Bitacora::where('solicitud_id', $idSol)->get();
-                    break;
-                default:
-                    # respuesta por defecto
-                    break;
-            }
+       $data = $this->reporteRepository->getReporte($id);
 
-        $pdf = PDF::loadView('theme.dashboard.reportes.reportebitacora', compact('solicitud', 'recorrido_bitacora', 'bitacoraComision', 'recorridoComision'));
-        // $pdf->setOptions(['isPhpEnabled' => true]);
-        $pdf->setPaper('A4', 'landscape');
-        // $pdf->setPaper('legal', 'Landscape');
-        return $pdf->stream('bitacora'.$solicitud->marca.'_'.$solicitud->periodo.'_'.$solicitud->anio_actual.'.pdf');
+        $pdf = PDF::setOptions(['isRemoteEnabled' => true, 'isHtml5ParserEnabled' => true]);
+        $pdf->loadView('theme.dashboard.reportes.reporte_test', compact('data'));
+        //Establecer el tamaño de hoja en DOMPDF
+        $pdf->setPaper('A4', 'Portrait');//x inicio, y inicio, ancho final, alto final
+        $pdf->getDomPDF()->setHttpContext(
+            stream_context_create([
+                'ssl' => [
+                    'allow_self_signed'=> TRUE,
+                    'verify_peer' => FALSE,
+                    'verify_peer_name' => FALSE,
+                ]
+            ])
+        );
+        return $pdf->stream('bitacora.pdf');
+        // return view('theme.dashboard.reportes.reportebitacora', compact('data'));
     }
 
     /**

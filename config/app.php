@@ -176,7 +176,11 @@ return [
         App\Providers\RouteServiceProvider::class,
         Spatie\Permission\PermissionServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
-
+        App\Providers\RepositoryServiceProvider::class,
+        App\Providers\ProveedoresServiceProvider::class,
+        App\Providers\FolioServiceProvider::class,
+        App\Providers\BitacoraServiceProvider::class,
+        App\Providers\ReporteServiceProvider::class,
     ],
 
     /*

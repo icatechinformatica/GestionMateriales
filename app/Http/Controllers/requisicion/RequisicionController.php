@@ -165,13 +165,13 @@ class RequisicionController extends Controller
         $data = Directorio::select("nombre")
                 ->where("nombre","LIKE","%{$termino}%")
                 ->get();
-                
+
         $array_name = array();
         foreach ($data as $hsl)
         {
             $array_name[] = $hsl->nombre;
         }
-   
+
         return response()->json($array_name);
     }
 
@@ -181,7 +181,7 @@ class RequisicionController extends Controller
         $data = Area::select("id","nombre")
                 ->where("nombre","LIKE","%{$termino}%")
                 ->get();
-                
+
         $array_name = [];
         foreach ($data as $hsl)
         {
@@ -190,7 +190,7 @@ class RequisicionController extends Controller
                 "id" => $hsl->id,
             );
         }
-   
+
         return response()->json($array_name);
     }
 
@@ -213,7 +213,7 @@ class RequisicionController extends Controller
             if (count($request->itemRequisicion) > 0) {
                 //borrar los registros previos guardados -  relacionados
                 $requisicionUpdate->requisicionunidad()->delete();
-    
+
                 $itemReqUpdate = [];
                 foreach ($request->itemRequisicion as $key => $value) {
                     # bucle para cargar los datos que vienen del formulario de captura
@@ -235,12 +235,12 @@ class RequisicionController extends Controller
                 unset($itemReqUpdate);
             }
             // redireccionamos
-            return redirect()->route('requisicion.index')->with('warning', sprintf('¡REGISTROS DE LA REQUISICIÓN ACTUALIZADOS!'));      
+            return redirect()->route('requisicion.index')->with('warning', sprintf('¡REGISTROS DE LA REQUISICIÓN ACTUALIZADOS!'));
         } catch (QueryException $ex) {
             //cachando excepcion y retornando a la vista
             return back()->with('error', $ex->getMessage());
         }
-        
+
     }
 
     public function getcatalogo(Request $request){
@@ -278,7 +278,7 @@ class RequisicionController extends Controller
                 "id" => $orgadmin->id,
             );
         }
-        
+
         return response()->json($arr_name); //enviamos el arreglo en un formato json como respuesta
     }
 

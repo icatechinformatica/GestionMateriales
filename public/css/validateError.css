@@ -2,22 +2,26 @@ label {
     width: 300px;
     font-weight: bold;
     display: inline-block;
-    margin-top: 20px;
+    margin-top: 15px;
   }
 
   label span {
-    font-size: 1rem;
+    font-size: 0.6rem;
   }
 
   label.error {
-      color: red;
-      font-size: 1rem;
-      display: block;
-      margin-top: 5px;
+    color: #c51244;
+    font-weight: bold;
+    padding-top: 0.5em;
+    font-size: 0.9em;
   }
 
   input.error {
-      border: 1px dashed red;
+      border: 1px solid #c51244;
       font-weight: 300;
-      color: red;
   }
+
+select.error {
+    border: 1px solid #c51244;
+    font-weight: 300;
+}

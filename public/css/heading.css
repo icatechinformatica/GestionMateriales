@@ -1,0 +1,44 @@
+.text-blk {
+    padding-top: 2px;
+    padding-right: 2px;
+    padding-bottom: 2px;
+    padding-left: 2px;
+    line-height: 18px;
+    font-size: 16px;
+    font-weight: 300;
+    margin-top: 0px;
+    margin-right: 0px;
+    margin-bottom: 0px;
+    margin-left: 0px;
+}
+.sub-heading-text {
+    line-height: 30px;
+    color: rgb(122, 122, 122);
+    margin-top: 0px;
+    margin-right: 0px;
+    margin-bottom: 0px;
+    margin-left: 0px;
+    padding-top: 0px;
+    padding-right: 0px;
+    padding-bottom: 0px;
+    padding-left: 0px;
+}
+.name {
+    font-size: 14px;
+    line-height: 24px;
+    font-weight: 800;
+    padding-top: 0px;
+    padding-right: 0px;
+    padding-bottom: 0px;
+    padding-left: 0px;
+    margin-top: 0px;
+    margin-right: 0px;
+    margin-bottom: 0px;
+    margin-left: 0px;
+}
+
+td.descripcion {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

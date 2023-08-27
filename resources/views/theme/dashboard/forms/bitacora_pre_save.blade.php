@@ -1,7 +1,6 @@
 {{-- DISEÑADO Y DESARROLLADO POR MIS. DANIEL MÉNDEZ CRUZ --}}
-@extends('theme.dashboard.main')
+@extends('theme.dashboard.main', ['breadcrum' => __(' Inicio /Bitácora / Generar'), 'titlePage' => __('SIRMAT | BITÁCORA DE RECORRIDO - GUARDADO')])
 
-@section('title', 'SOLICITUD BITÁCORA DE RECORRIDO - GUARDADO | SISCOM by ICATECH')
 
 @section('contenidoCss')
     <link rel="stylesheet" href="{{ asset('css/generalStyles.css') }}">
@@ -9,7 +8,6 @@
 @endsection
 
 @section('contenido')
-
 
 
 {{-- Content Row --}}

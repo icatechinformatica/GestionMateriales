@@ -14,10 +14,9 @@
                 <i class="fas fa-plus"></i> Agregar Factura
             </a>
         </div>
-        <div class="col-6">
+        <div class="col-10">
 
         </div>
-        <div class="col-4"></div>
     </div>
     <hr>
     <table>
@@ -25,9 +24,10 @@
         <thead>
           <tr>
             <th scope="col">Folio/Serie</th>
-            <th scope="col">Concepto</th>
+            <th scope="col">Proveedor</th>
             <th scope="col">Total</th>
-            <th scope="col">Detalles</th>
+            <th scope="col">Modificar</th>
+            <th scope="col">Agregar Folios</th>
           </tr>
         </thead>
         <tbody>
@@ -35,24 +35,27 @@
                @foreach ($factura as $k => $v)
                     <tr>
                         <td data-label="Folio/Serie">{{ $v->serie }}</td>
-                        <td data-label="Concepto">{{ $v->concepto }}</td>
+                        <td data-label="Proveedor">{{ $v->proveedores->nombre }}</td>
                         <td data-label="Total">@money($v->total)</td>
-                        <td data-label="Detalles">
-                            <a type="button" class="btn btn-danger btn-circle btn-lg" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Tooltip on top" href="{{ route('factura.getfile', ['filename' => $v->id]) }}" target="_blank">
-                                <i class="fas fa-file-pdf"></i>
+                        <td data-label="Modificar">
+                            <a type="button" class="btn btn-info btn-circle btn-lg" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Tooltip on top" href="{{ route('factura.edit', ['id' => base64_encode($v->id)]) }}">
+                                <i class="fas fa-wrench"></i>
+                            </a>
+                        </td>
+                        <td data-label="Agregar Folios">
+                            <a href="{{ route('factura.add.folio', ['id' => base64_encode($v->id)]) }}" rel="noopener noreferrer" class="btn btn-success btn-circle btn-lg">
+                                <i class="fas fa-plus"></i>
                             </a>
                         </td>
                     </tr>
                @endforeach
             @else
                 <tr>
-                    <td colspan="4"><center><h3> <b>NO HAY REGISTROS PARA MOSTRAR</b> </h3></center></td>
+                    <td colspan="5"><center><h3> <b>NO HAY REGISTROS PARA MOSTRAR</b> </h3></center></td>
                 </tr>
             @endif
         </tbody>
     </table>
-
-
 </div>
 {{-- tabla END --}}
 @endsection

@@ -15,32 +15,6 @@
         </div>
     @endif
 
-    <!-- Content Row -->
-    <div class="row">
-
-        {{-- nueva solicitud  sólo pueden accesar los que tienen el permiso de publicar bitacora--}}
-        @if (auth()->user()->can('publicar bitacora'))
-            <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card border-left-primary shadow h-100 py-2">
-                    <a href="{{ route('solicitud.bitacora.create') }}">
-                        <div class="card-body">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col mr-2">
-                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                        Nueva Solicitud
-                                    </div>
-                                </div>
-                                <div class="col-auto">
-                                    <i class="fas fa-plus-square fa-2x text-gray-300"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-            </div>
-        @endif
-    </div>
-
 {{-- Content Row --}}
     <div class="row">
         {{-- Columna de contenido --}}
@@ -51,7 +25,7 @@
                     <div class="card-header py-3">
                         <h6 class="m-0 font-weight-bold text-primary">
                             <i class="fas fa-layer-group"></i>
-                            solicitudes de bitácora guardadas previamente
+                            Solicitud de Bitácora
                         </h6>
                     </div>
                     <div class="card-body">
@@ -60,29 +34,29 @@
                             <caption>Bitácora de Recorrido pre-guardados</caption>
                             <thead>
                               <tr>
-                                <th scope="col">Periodo</th>
-                                <th scope="col">Placas</th>
-                                <th scope="col">Elaboró</th>
-                                <th scope="col">Seguir Escribiendo</th>
+                                <th scope="col">Placa</th>
+                                <th scope="col">Módelo</th>
+                                <th scope="col">Número de Serie</th>
+                                <th scope="col">Generar Bitácora</th>
                               </tr>
                             </thead>
                             <tbody>
                                 @if (count($solicitud) > 0)
                                     @foreach ($solicitud as $itemSolicitud => $v)
                                         <tr>
-                                            <td data-label="periodo">{{ $v->periodo }}</td>
-                                            <td data-label="Placas">{{ $v->placas }}</td>
-                                            <td data-label="elaboro">{{ $v->nombre_elabora }}</td>
-                                            <td data-label="Seguir Escribiendo">
-                                                <a href="{{ route('bitacora.detalle.pre.guardado', base64_encode($v->id)) }}" class="btn btn-warning btn-circle btn-sm">
-                                                    <i class="fas fa-pen"></i>
+                                            <td data-label="Placa"><i class="fas fa-tag"></i> {{ $v->placas }}</td>
+                                            <td data-label="Módelo">{{ $v->marca." ".$v->tipo." ".$v->modelo }}</td>
+                                            <td data-label="Número de Serie">{{ $v->numero_serie }}</td>
+                                            <td data-label="Generar Bitácora">
+                                                <a href="{{ route('bitacora.detalle.pre.guardado', base64_encode($v->id)) }}" class="btn btn-success">
+                                                    <i class="fas fa-route"></i>
                                                 </a>
                                             </td>
                                       </tr>
                                     @endforeach
                                 @else
                                     <tr>
-                                        <td colspan="3"><center><h3> <b>NO HAY REGISTROS PARA MOSTRAR</b> </h3></center></td>
+                                        <td colspan="4"><center><h3> <b>NO HAY REGISTROS PARA MOSTRAR</b> </h3></center></td>
                                     </tr>
                                 @endif
                             </tbody>

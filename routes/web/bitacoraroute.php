@@ -1,7 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\solicitud\SolicitudBitacoraController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -36,6 +37,9 @@ Route::middleware(['auth', 'role:revisor|capturista', 'permission:anular publica
     Route::get('/solicitud/bitacora/generar/documento', 'solicitud\SolicitudBitacoraController@archived')->name('solicitud.bitacora.generar_documento.firma')->middleware('can:ver-firma-bitacora');
     Route::get('/solicitud/bitacora/terminado/{id}', 'solicitud\SolicitudBitacoraController@solicitud_detalle_archived')->name('solicitud.bitacora.terminado');
     Route::post('/solicitud/fetch', 'solicitud\SolicitudBitacoraController@fetch')->name('autocomplete.fetch');
+    Route::get('/solicitud/reporte/bitacora/index', [SolicitudBitacoraController::class, 'reporteBitacora'])->name('reporte.solicitud.bitacora_recorrido');
+    Route::post('/solicitud/reporte/get/info', [SolicitudBitacoraController::class, 'reporteGetInfo'])->name('solicitud.reporte.bitacora.obtener.vinculados');
+    Route::get('/solicitud/reporte/filter/get/facturas', [SolicitudBitacoraController::class, 'getFilterFactura'])->name('filter.get.facturas');
 });
 
 

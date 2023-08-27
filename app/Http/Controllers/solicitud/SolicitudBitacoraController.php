@@ -20,10 +20,23 @@ use App\Models\Solicitud\Chofer;
 use Illuminate\Support\Str;
 use App\Models\solicitud\BitacoraComision;
 use App\Models\solicitud\RecorridoComision;
+use App\Interfaces\BitacoraRepositoryInterface;
+use App\Interfaces\FacturaRepositoryInterface;
+use App\Interfaces\FolioRepositoryInterface;
 
 class SolicitudBitacoraController extends Controller
 {
     use LogTrait;
+    private BitacoraRepositoryInterface $bitacoraRepository;
+    private FolioRepositoryInterface $folioRepository;
+    private FacturaRepositoryInterface $facturaRepository;
+    // crear un constructor
+    public function __construct(BitacoraRepositoryInterface $bitacoraRepository, FolioRepositoryInterface $folioRepository, FacturaRepositoryInterface $facturaRepository){
+        // getBitacora
+        $this->bitacoraRepository = $bitacoraRepository;
+        $this->folioRepository = $folioRepository;
+        $this->facturaRepository = $facturaRepository;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -70,8 +83,7 @@ class SolicitudBitacoraController extends Controller
          */
         $fecha = Carbon::now()->format('Y-m-d');
         $hora = Carbon::now()->format('H:i:s');
-        // $MAC = exec('getmac');
-        // $MAC = strtok($MAC, ' ');
+
         $tipo_peticion = 'GET';
         $path = '/solicitud/create';
         $peticion = ['operacion' => 'Agregar una nueva solicitud de bitácora de rendimiento', 'usuario' => Auth::user()->name, 'ip_request' => $request->ip(), 'sistem_path' => $path, 'fecha_ejecucion' => $fecha, 'hoarario_ejecucion' => $hora , 'tipo_interaccion' => 3, 'tipo_peticion' => $tipo_peticion];
@@ -385,15 +397,7 @@ class SolicitudBitacoraController extends Controller
          */
         $userId = auth()->id();
         $nombre_usuario = auth()->user()->name;
-        $solicitud = Temporal::select('temporal.fecha', 'temporal.periodo',
-        'temporal.numero_factura_compra', 'temporal.id',
-        'temporal.status_proceso', 'catalogo_vehiculo.marca', 'catalogo_vehiculo.modelo',
-        'catalogo_vehiculo.tipo', 'catalogo_vehiculo.placas', 'temporal.nombre_elabora')
-                ->leftjoin('catalogo_vehiculo', 'temporal.catalogo_vehiculo_id', '=', 'catalogo_vehiculo.id')
-                ->where([
-                    ['temporal.users_id', '=', $userId],
-                    ['temporal.enviado', '=', false]
-                ])->get();
+        $solicitud = $this->bitacoraRepository->getBitacora();
 
         return view('theme.dashboard.layouts.bitacora_pre_guardadas', compact('solicitud', 'nombre_usuario'));
     }
@@ -408,41 +412,32 @@ class SolicitudBitacoraController extends Controller
          */
         $fecha = Carbon::now()->format('Y-m-d');
         $hora = Carbon::now()->format('H:i:s');
-        // $MAC = exec('getmac');
-        // $MAC = strtok($MAC, ' ');
+
         $tipo_peticion = 'GET';
         $path = '/solicitud/detalle/pre-guardado/'.$id;
         $peticion = ['operacion' => 'Detalle de la solicitud pre-guardada', 'usuario' => Auth::user()->name, 'ip_request' => $request->ip(), 'sistem_path' => $path, 'fecha_ejecucion' => $fecha, 'hoarario_ejecucion' => $hora , 'tipo_interaccion' => 3, 'tipo_peticion' => $tipo_peticion];
         $this->storeLog($peticion);
 
         $idSolPre = base64_decode($id);
-        $solicitud_pre_id = Temporal::select('temporal.fecha',
-                'temporal.periodo',
-                'temporal.km_inicial',
-                'temporal.numero_factura_compra',
-                'temporal.periodo_actual',
-                'temporal.anio_actual', 'catalogo_vehiculo.color',
-                'temporal.conductor',
-                'catalogo_vehiculo.numero_motor',
-                'catalogo_vehiculo.marca',
-                'catalogo_vehiculo.modelo',
-                'catalogo_vehiculo.tipo', 'catalogo_vehiculo.placas', 'catalogo_vehiculo.numero_serie',
-                'catalogo_vehiculo.linea', 'catalogo_vehiculo.importe_combustible', 'resguardante.resguardante_unidad',
-                'resguardante.puesto_resguardante_unidad',
-                'temporal.litros_totales', 'temporal.importe_total',
-                'temporal.total_km_recorridos', 'temporal.id', 'temporal.catalogo_vehiculo_id')
-                ->leftjoin('catalogo_vehiculo', 'temporal.catalogo_vehiculo_id', '=', 'catalogo_vehiculo.id')
-                ->leftjoin('resguardante', 'catalogo_vehiculo.resguardante_id', '=', 'resguardante.id')
-                ->where([
-                    ['temporal.id', '=', $idSolPre],
-                    ['temporal.enviado', '=', false]
-                ])->first();
+        /**
+         * obtenemos la consulta para enviar la información
+        */
 
-                $bitacora_temporal = BitacoraTemporal::where([
-                    ['solicitud_id', '=' ,$idSolPre],
-                    ['enviado', '=', false]
-                ])->get();
-                return view('theme.dashboard.forms.bitacora_pre_save', compact('solicitud_pre_id', 'bitacora_temporal'));
+        $solDetalle = $this->bitacoraRepository->getBitacoraDetails($idSolPre);
+        $rendimientos = [
+           'Rendimiento Ciudad - '.$solDetalle->rendimiento_ciudad,
+           'Rendimiento Carretera - '.$solDetalle->rendimiento_carretera,
+           'Rendimiento Mixto - '.$solDetalle->rendimiento_mixto,
+           'Rendimiento Carga - '.$solDetalle->rendimiento_carga,
+        ];
+        $getTemp = $this->bitacoraRepository->getTemporal($idSolPre);
+        $getFolios = $this->folioRepository->getFolioByCatVehicle($idSolPre);
+        $datos = $this->folioRepository->getSumByFoliosUsed($idSolPre);
+        $getTemporalBitacora = $this->bitacoraRepository->getBitacoraTemp($idSolPre);
+        $esComision = $getTemp->es_comision;
+
+        return view('theme.dashboard.forms.bitacoraForm', compact('solDetalle', 'getFolios', 'idSolPre', 'getTemporalBitacora', 'rendimientos', 'datos', 'esComision'))->render();
+
     }
 
     /**
@@ -451,225 +446,243 @@ class SolicitudBitacoraController extends Controller
 
     protected function storeBitacora(Request $request)
     {
-        $request->validate([
-            // 'memo_comision' => 'required|max:255',
-            // 'fecha' => 'date',
-            'placas' => 'required|max:70',
-            '_kilometroInicial' => 'required'
-
-        ],[
-            // 'memo_comision.required' => 'El memo de comisión es requerido',
-            // 'fecha.date' => 'Se requiere una fecha valida',
-            'placas.required' => 'Las placas son requeridos',
-            '_kilometroInicial.required' => 'El kilometro incial es requerido'
-        ]);
-        // vamos a hacer un try catch
         try {
-
-            switch ($request->get('ejecutar')) {
-                case 'save':
-                        # guardar registros al momento de ejecutar el post
-                        $bitacora_id = base64_decode($request->get('bitacora_id'));
-                        /**
-                         * obtener el año de la solicitud de la bitácora
-                         */
-                        $fecha_solicitud = Carbon::parse($request->get('fecha'));
-                        $anio_solicitud = $fecha_solicitud->year;
-                        /**
-                         * petición de la solicitud
-                        */
-                        $fecha = Carbon::now()->format('Y-m-d');
-                        $hora = Carbon::now()->format('H:i:s');
-                        // $MAC = exec('getmac');
-                        // $MAC = strtok($MAC, ' ');
-                        $tipo_peticion = 'POST';
-                        $path = '/solicitud/pre/store';
-                        $peticion_parcial =  (array)$request->all();
-                        $solicitud_total = json_encode($peticion_parcial);
-                        $peticion = ['operacion' => 'Actualizar el registro de la bitácora temporal', 'usuario' => Auth::user()->name, 'ip_request' => $request->ip(), 'sistem_path' => $path, 'fecha_ejecucion' => $fecha, 'hoarario_ejecucion' => $hora , 'tipo_interaccion' => 6, 'tipo_peticion' => $tipo_peticion, 'httpRequest' => $solicitud_total];
-                        $this->storeLog($peticion);
-                        /**
-                         * se trabajará en la actualización de la tabla temporal ya que aún no se enviará hacía
-                         */
-                        Temporal::where('id', $bitacora_id)->update([
-                            'fecha' => $request->fecha,
-                            'periodo' => $request->periodo,
-                            'catalogo_vehiculo_id' => $request->idcatvehiculo,
-                            'km_inicial' => $request->_kilometroInicial,
-                            'numero_factura_compra' => $request->no_factura_compra,
-                            'conductor' => $request->nombreConductor,
-                            'nombre_elabora' => Auth::user()->name,
-                            'anio_actual' => $anio_solicitud,
-                            'periodo_actual' => $request->periodo_actual,
-                            'litros_totales' => $request->litros_totales,
-                            'total_km_recorridos' => $request->km_totales,
-                            'importe_total' => $request->importe_total,
-                            'puesto_elabora' => Auth::user()->puesto,
-                            'users_id' => Auth::user()->id,
-                        ]);
-                        /**
-                         * eliminar las bitácoras temporales - para poder cargar nuevamente en el bucle
-                         */
-
-                        /**
-                         * trabajaremos en un bucle para guardar información en otra tabla
-                        */
-                        BitacoraTemporal::where('solicitud_id', $bitacora_id)->delete();
-                        // se trabaja como un contador con la variable que contiene el arreglo de objetos
-                        $numItems = count($request->agregarItem);
-                        $k = 0;
-                        foreach ($request->agregarItem as $key => $value) {
-                            # entramos en el bucle
-                            $temporalbitacora = new BitacoraTemporal();
-                            $temporalbitacora->fecha = $value['fecha_bitacora'];
-                            $temporalbitacora->kilometraje_inicial = $value['kminicial'];
-                            $temporalbitacora->kilometraje_final = $value['kmfinal'];
-                            $temporalbitacora->litros = $value['litros'];
-                            $temporalbitacora->division_vale = $value['dv'];
-                            $temporalbitacora->importe = $value['importe'];
-                            $temporalbitacora->actividad_inicial = Str::upper($value['de']);
-                            $temporalbitacora->actividad_final = Str::upper($value['a']);
-                            $temporalbitacora->vales = $value['vales'];
-                            $temporalbitacora->solicitud_id = $bitacora_id;
-                            // guardar el registro
-                            $temporalbitacora->save();
-                        }
-
-                        /**
-                         * después dé insertar la información lo que hacemos será redireccionar
-                        */
-                        return redirect()->route('solicitud.bitacora.previo.guardado')->with('success', 'BITÁCORA DE RECORRIDO GUARDADA!');
-
-                    break;
-                case 'send':
-                    # enviar los registros al momento de enviar a la tabla de solicitud
-                        /**
-                         * petición de la solicitud
-                        */
-                        $fecha = Carbon::now()->format('Y-m-d');
-                        $hora = Carbon::now()->format('H:i:s');
-                        // $MAC = exec('getmac');
-                        // $MAC = strtok($MAC, ' ');
-                        $tipo_peticion = 'POST';
-                        $path = '/solicitud/pre/store';
-                        $peticion_parcial =  (array)$request->all();
-                        $solicitud_total = json_encode($peticion_parcial);
-                        $peticion = ['operacion' => 'Enviar registro de la bitacora de recorrido hacia la tabla solicitud', 'usuario' => Auth::user()->name, 'ip_request' => $request->ip(), 'sistem_path' => $path, 'fecha_ejecucion' => $fecha, 'hoarario_ejecucion' => $hora , 'tipo_interaccion' => 4, 'tipo_peticion' => $tipo_peticion, 'httpRequest' => $solicitud_total];
-                        $this->storeLog($peticion);
-                        /**
-                         * obtenemos la fecha actual con el método carbon
-                        */
-                        $fecha_actual = Carbon::now();
-                        $anio = $fecha_actual->year;
-                        /**
-                         * obtener el año de la solicitud de la bitácora
-                         */
-                        $fecha_solicitud = Carbon::parse($request->get('fecha'));
-                        $anio_solicitud = $fecha_solicitud->year;
-                        //parte de código dónde vamos a realizar el proceso de guardado en la base de datos
-                        /**
-                         * insertar a la base de datos
-                        */
-                        $solicitud_model = new Solicitud;
-                        $solicitud_model->catalogo_vehiculo_id = $request->get('idcatvehiculo');
-                        // $solicitud_model->directorio_id = $request->get('');
-                        $solicitud_model->fecha = $request->get('fecha');
-                        $solicitud_model->periodo = Str::upper($request->get('periodo'));
-                        $solicitud_model->km_inicial = $request->get('_kilometroInicial');
-                        $solicitud_model->numero_factura_compra = Str::upper($request->get('no_factura_compra'));
-                        $solicitud_model->nombre_elabora = Str::upper(Auth::user()->name);
-                        $solicitud_model->puesto_elabora = Str::upper(Auth::user()->puesto);
-                        $solicitud_model->conductor = Str::upper($request->get('nombreConductor'));
-                        $solicitud_model->anio_actual = $anio;
-                        $solicitud_model->periodo_actual = Str::upper($request->get('periodo_actual'));
-                        $solicitud_model->litros_totales = $request->get('litros_totales');
-                        $solicitud_model->anio_solicitud = $anio_solicitud;
-                        // $solicitud_model->km_final_antes_cargar_combustible = $request->get('');
-                        // $solicitud_model->km_inicial_cargar_combustible = $request->get('');
-                        $solicitud_model->total_km_recorridos = $request->get('km_totales');
-                        $solicitud_model->importe_total = $request->get('importe_total');
-                        // $solicitud_model->numero_economico = $request->get('');
-                        $solicitud_model->status_proceso = true;
-                        $solicitud_model->users_id = Auth::user()->id;
-                        // guardar registros y obteneer el último id
-                        $solicitud_model->observacion = Str::upper($request->get('observaciones'));
-                        $solicitud_model->save();
-                        $lastId = $solicitud_model->id;
-
-                        /**
-                         * actualizamos el registro en el sistema por generación de los temporales
-                        */
-                        Temporal::where('id', base64_decode($request->get('bitacora_id')))
-                        ->update(['enviado' => true]);
-                        /**
-                         * se guarda la información seguimiento_solicitud se guarda el registro
-                        */
-                        $seguimientoSolicitud = new SeguimientoSolicitud;
-                        $seguimientoSolicitud->solicitud_id = $lastId;
-                        $seguimientoSolicitud->status_seguimiento_id = 2;
-                        $seguimientoSolicitud->fecha_inicio = Carbon::now();
-                        $seguimientoSolicitud->save();
-                        /**
-                         * trabajaremos en un bucle para guardar información en otra tabla
-                        */
-                        // se trabaja como un contador con la variable que contiene el arreglo de objetos
-                        $numItems = count($request->agregarItem);
-                        $k = 0;
-                        foreach ($request->agregarItem as $key => $value) {
-                            # entramos en el bucle
-                            $bitacora = new Bitacora();
-                            $bitacora->fecha = $value['fecha_bitacora'];
-                            $bitacora->kilometraje_inicial = $value['kminicial'];
-                            $bitacora->kilometraje_final = $value['kmfinal'];
-                            $bitacora->litros = $value['litros'];
-                            $bitacora->division_vale = $value['dv'];
-                            $bitacora->importe = $value['importe'];
-                            $bitacora->actividad_inicial = Str::upper($value['de']);
-                            $bitacora->actividad_final = Str::upper($value['a']);
-                            $bitacora->vales = $value['vales'];
-                            $bitacora->solicitud_id = $lastId;
-                            // guardar el registro
-                            $bitacora->save();
-
-                            if (++$k === $numItems) {
-                                # último indice ahora vamos a actualizar un registro
-                                Solicitud::where('id', $lastId)
-                                ->update(['km_final_antes_cargar_combustible' => $value['kmfinal']]);
-                            }
-
-                            if (!empty($value['bitacora_temp_id'])) {
-                                # code...
-                                BitacoraTemporal::where('id', $value['bitacora_temp_id'])
-                                ->update(['enviado' => true]);
-                            }
-                        }
-                        /**
-                         * después del recorrido del bucle se necesita obtener el km_final_antes_cargar_combustible para la tabla catalogo_vehiculo
-                         */
-                        $catVehiculo = CatalogoVehiculo::where('id', $request->get('idcatvehiculo'))->first();
-                        if (is_null($catVehiculo->km_final)) {
-                            # si es nulo vamos a obtener los valores de los km iniciales
-                            $kmFinal = $catVehiculo->km_inicial + $request->get('km_totales');
-                            CatalogoVehiculo::where('id', $request->get('idcatvehiculo'))->update([ 'km_final' => $kmFinal ]);
-                        } else {
-                            # si no es nulo vamos a obtener el km final y agregar los km totales
-                            $kmFinal = $catVehiculo->km_final + $request->get('km_totales');
-                            CatalogoVehiculo::where('id', $request->get('idcatvehiculo'))->update([ 'km_final' => $kmFinal ]);
-                        }
-                        /**
-                         * después dé insertar la información lo que hacemos será redireccionar
-                         */
-                        return redirect()->route('solicitud.bitacora.index')->with('success', 'BITÁCORA DE RECORRIDO AGREGADA ÉXITOSAMENTE.');
-                    break;
-                default:
-                    # code...
-                    break;
-            }
-
-        } catch (QueryException $th) {
-            //cachando excepcion y retornando a la vista
-            return back()->with('error', $th->getMessage());
+            //iniciamos el proceso
+            $saveLog = $this->bitacoraRepository->storeRouteLog($request);
+            $doneArray = [
+                'res' => $saveLog['response'], // devolber valor booleano
+                'message' => $saveLog['message'], // debe devolver un mensaje
+                'data' => 'OK'
+            ];
+            return response()->json($doneArray, 200);
+        } catch (\Throwable $th) {
+            //enviar mensaje de excepción
+            $errorArray = [
+                'Error' => $th->getMessage(),
+            ];
+            return response()->json($errorArray, 500);
         }
+
+
+        // $request->validate([
+        //     // 'memo_comision' => 'required|max:255',
+        //     // 'fecha' => 'date',
+        //     'placas' => 'required|max:70',
+        //     '_kilometroInicial' => 'required'
+
+        // ],[
+        //     // 'memo_comision.required' => 'El memo de comisión es requerido',
+        //     // 'fecha.date' => 'Se requiere una fecha valida',
+        //     'placas.required' => 'Las placas son requeridos',
+        //     '_kilometroInicial.required' => 'El kilometro incial es requerido'
+        // ]);
+        // // vamos a hacer un try catch
+        // try {
+
+        //     switch ($request->get('ejecutar')) {
+        //         case 'save':
+        //                 # guardar registros al momento de ejecutar el post
+        //                 $bitacora_id = base64_decode($request->get('bitacora_id'));
+        //                 /**
+        //                  * obtener el año de la solicitud de la bitácora
+        //                  */
+        //                 $fecha_solicitud = Carbon::parse($request->get('fecha'));
+        //                 $anio_solicitud = $fecha_solicitud->year;
+        //                 /**
+        //                  * petición de la solicitud
+        //                 */
+        //                 $fecha = Carbon::now()->format('Y-m-d');
+        //                 $hora = Carbon::now()->format('H:i:s');
+        //                 // $MAC = exec('getmac');
+        //                 // $MAC = strtok($MAC, ' ');
+        //                 $tipo_peticion = 'POST';
+        //                 $path = '/solicitud/pre/store';
+        //                 $peticion_parcial =  (array)$request->all();
+        //                 $solicitud_total = json_encode($peticion_parcial);
+        //                 $peticion = ['operacion' => 'Actualizar el registro de la bitácora temporal', 'usuario' => Auth::user()->name, 'ip_request' => $request->ip(), 'sistem_path' => $path, 'fecha_ejecucion' => $fecha, 'hoarario_ejecucion' => $hora , 'tipo_interaccion' => 6, 'tipo_peticion' => $tipo_peticion, 'httpRequest' => $solicitud_total];
+        //                 $this->storeLog($peticion);
+        //                 /**
+        //                  * se trabajará en la actualización de la tabla temporal ya que aún no se enviará hacía
+        //                  */
+        //                 Temporal::where('id', $bitacora_id)->update([
+        //                     'fecha' => $request->fecha,
+        //                     'periodo' => $request->periodo,
+        //                     'catalogo_vehiculo_id' => $request->idcatvehiculo,
+        //                     'km_inicial' => $request->_kilometroInicial,
+        //                     'numero_factura_compra' => $request->no_factura_compra,
+        //                     'conductor' => $request->nombreConductor,
+        //                     'nombre_elabora' => Auth::user()->name,
+        //                     'anio_actual' => $anio_solicitud,
+        //                     'periodo_actual' => $request->periodo_actual,
+        //                     'litros_totales' => $request->litros_totales,
+        //                     'total_km_recorridos' => $request->km_totales,
+        //                     'importe_total' => $request->importe_total,
+        //                     'puesto_elabora' => Auth::user()->puesto,
+        //                     'users_id' => Auth::user()->id,
+        //                 ]);
+        //                 /**
+        //                  * eliminar las bitácoras temporales - para poder cargar nuevamente en el bucle
+        //                  */
+
+        //                 /**
+        //                  * trabajaremos en un bucle para guardar información en otra tabla
+        //                 */
+        //                 BitacoraTemporal::where('solicitud_id', $bitacora_id)->delete();
+        //                 // se trabaja como un contador con la variable que contiene el arreglo de objetos
+        //                 $numItems = count($request->agregarItem);
+        //                 $k = 0;
+        //                 foreach ($request->agregarItem as $key => $value) {
+        //                     # entramos en el bucle
+        //                     $temporalbitacora = new BitacoraTemporal();
+        //                     $temporalbitacora->fecha = $value['fecha_bitacora'];
+        //                     $temporalbitacora->kilometraje_inicial = $value['kminicial'];
+        //                     $temporalbitacora->kilometraje_final = $value['kmfinal'];
+        //                     $temporalbitacora->litros = $value['litros'];
+        //                     $temporalbitacora->division_vale = $value['dv'];
+        //                     $temporalbitacora->importe = $value['importe'];
+        //                     $temporalbitacora->actividad_inicial = Str::upper($value['de']);
+        //                     $temporalbitacora->actividad_final = Str::upper($value['a']);
+        //                     $temporalbitacora->vales = $value['vales'];
+        //                     $temporalbitacora->solicitud_id = $bitacora_id;
+        //                     // guardar el registro
+        //                     $temporalbitacora->save();
+        //                 }
+
+        //                 /**
+        //                  * después dé insertar la información lo que hacemos será redireccionar
+        //                 */
+        //                 return redirect()->route('solicitud.bitacora.previo.guardado')->with('success', 'BITÁCORA DE RECORRIDO GUARDADA!');
+
+        //             break;
+        //         case 'send':
+        //             # enviar los registros al momento de enviar a la tabla de solicitud
+        //                 /**
+        //                  * petición de la solicitud
+        //                 */
+        //                 $fecha = Carbon::now()->format('Y-m-d');
+        //                 $hora = Carbon::now()->format('H:i:s');
+        //                 // $MAC = exec('getmac');
+        //                 // $MAC = strtok($MAC, ' ');
+        //                 $tipo_peticion = 'POST';
+        //                 $path = '/solicitud/pre/store';
+        //                 $peticion_parcial =  (array)$request->all();
+        //                 $solicitud_total = json_encode($peticion_parcial);
+        //                 $peticion = ['operacion' => 'Enviar registro de la bitacora de recorrido hacia la tabla solicitud', 'usuario' => Auth::user()->name, 'ip_request' => $request->ip(), 'sistem_path' => $path, 'fecha_ejecucion' => $fecha, 'hoarario_ejecucion' => $hora , 'tipo_interaccion' => 4, 'tipo_peticion' => $tipo_peticion, 'httpRequest' => $solicitud_total];
+        //                 $this->storeLog($peticion);
+        //                 /**
+        //                  * obtenemos la fecha actual con el método carbon
+        //                 */
+        //                 $fecha_actual = Carbon::now();
+        //                 $anio = $fecha_actual->year;
+        //                 /**
+        //                  * obtener el año de la solicitud de la bitácora
+        //                  */
+        //                 $fecha_solicitud = Carbon::parse($request->get('fecha'));
+        //                 $anio_solicitud = $fecha_solicitud->year;
+        //                 //parte de código dónde vamos a realizar el proceso de guardado en la base de datos
+        //                 /**
+        //                  * insertar a la base de datos
+        //                 */
+        //                 $solicitud_model = new Solicitud;
+        //                 $solicitud_model->catalogo_vehiculo_id = $request->get('idcatvehiculo');
+        //                 // $solicitud_model->directorio_id = $request->get('');
+        //                 $solicitud_model->fecha = $request->get('fecha');
+        //                 $solicitud_model->periodo = Str::upper($request->get('periodo'));
+        //                 $solicitud_model->km_inicial = $request->get('_kilometroInicial');
+        //                 $solicitud_model->numero_factura_compra = Str::upper($request->get('no_factura_compra'));
+        //                 $solicitud_model->nombre_elabora = Str::upper(Auth::user()->name);
+        //                 $solicitud_model->puesto_elabora = Str::upper(Auth::user()->puesto);
+        //                 $solicitud_model->conductor = Str::upper($request->get('nombreConductor'));
+        //                 $solicitud_model->anio_actual = $anio;
+        //                 $solicitud_model->periodo_actual = Str::upper($request->get('periodo_actual'));
+        //                 $solicitud_model->litros_totales = $request->get('litros_totales');
+        //                 $solicitud_model->anio_solicitud = $anio_solicitud;
+        //                 // $solicitud_model->km_final_antes_cargar_combustible = $request->get('');
+        //                 // $solicitud_model->km_inicial_cargar_combustible = $request->get('');
+        //                 $solicitud_model->total_km_recorridos = $request->get('km_totales');
+        //                 $solicitud_model->importe_total = $request->get('importe_total');
+        //                 // $solicitud_model->numero_economico = $request->get('');
+        //                 $solicitud_model->status_proceso = true;
+        //                 $solicitud_model->users_id = Auth::user()->id;
+        //                 // guardar registros y obteneer el último id
+        //                 $solicitud_model->observacion = Str::upper($request->get('observaciones'));
+        //                 $solicitud_model->save();
+        //                 $lastId = $solicitud_model->id;
+
+        //                 /**
+        //                  * actualizamos el registro en el sistema por generación de los temporales
+        //                 */
+        //                 Temporal::where('id', base64_decode($request->get('bitacora_id')))
+        //                 ->update(['enviado' => true]);
+        //                 /**
+        //                  * se guarda la información seguimiento_solicitud se guarda el registro
+        //                 */
+        //                 $seguimientoSolicitud = new SeguimientoSolicitud;
+        //                 $seguimientoSolicitud->solicitud_id = $lastId;
+        //                 $seguimientoSolicitud->status_seguimiento_id = 2;
+        //                 $seguimientoSolicitud->fecha_inicio = Carbon::now();
+        //                 $seguimientoSolicitud->save();
+        //                 /**
+        //                  * trabajaremos en un bucle para guardar información en otra tabla
+        //                 */
+        //                 // se trabaja como un contador con la variable que contiene el arreglo de objetos
+        //                 $numItems = count($request->agregarItem);
+        //                 $k = 0;
+        //                 foreach ($request->agregarItem as $key => $value) {
+        //                     # entramos en el bucle
+        //                     $bitacora = new Bitacora();
+        //                     $bitacora->fecha = $value['fecha_bitacora'];
+        //                     $bitacora->kilometraje_inicial = $value['kminicial'];
+        //                     $bitacora->kilometraje_final = $value['kmfinal'];
+        //                     $bitacora->litros = $value['litros'];
+        //                     $bitacora->division_vale = $value['dv'];
+        //                     $bitacora->importe = $value['importe'];
+        //                     $bitacora->actividad_inicial = Str::upper($value['de']);
+        //                     $bitacora->actividad_final = Str::upper($value['a']);
+        //                     $bitacora->vales = $value['vales'];
+        //                     $bitacora->solicitud_id = $lastId;
+        //                     // guardar el registro
+        //                     $bitacora->save();
+
+        //                     if (++$k === $numItems) {
+        //                         # último indice ahora vamos a actualizar un registro
+        //                         Solicitud::where('id', $lastId)
+        //                         ->update(['km_final_antes_cargar_combustible' => $value['kmfinal']]);
+        //                     }
+
+        //                     if (!empty($value['bitacora_temp_id'])) {
+        //                         # code...
+        //                         BitacoraTemporal::where('id', $value['bitacora_temp_id'])
+        //                         ->update(['enviado' => true]);
+        //                     }
+        //                 }
+        //                 /**
+        //                  * después del recorrido del bucle se necesita obtener el km_final_antes_cargar_combustible para la tabla catalogo_vehiculo
+        //                  */
+        //                 $catVehiculo = CatalogoVehiculo::where('id', $request->get('idcatvehiculo'))->first();
+        //                 if (is_null($catVehiculo->km_final)) {
+        //                     # si es nulo vamos a obtener los valores de los km iniciales
+        //                     $kmFinal = $catVehiculo->km_inicial + $request->get('km_totales');
+        //                     CatalogoVehiculo::where('id', $request->get('idcatvehiculo'))->update([ 'km_final' => $kmFinal ]);
+        //                 } else {
+        //                     # si no es nulo vamos a obtener el km final y agregar los km totales
+        //                     $kmFinal = $catVehiculo->km_final + $request->get('km_totales');
+        //                     CatalogoVehiculo::where('id', $request->get('idcatvehiculo'))->update([ 'km_final' => $kmFinal ]);
+        //                 }
+        //                 /**
+        //                  * después dé insertar la información lo que hacemos será redireccionar
+        //                  */
+        //                 return redirect()->route('solicitud.bitacora.index')->with('success', 'BITÁCORA DE RECORRIDO AGREGADA ÉXITOSAMENTE.');
+        //             break;
+        //         default:
+        //             # code...
+        //             break;
+        //     }
+
+        // } catch (QueryException $th) {
+        //     //cachando excepcion y retornando a la vista
+        //     return back()->with('error', $th->getMessage());
+        // }
     }
 
     protected function getreview(Request $request, $review)
@@ -895,5 +908,48 @@ class SolicitudBitacoraController extends Controller
 
         return response()->json($array_name);
 
+    }
+
+    public function reporteBitacora(Request $request)
+    {
+        return view('theme.dashboard.layouts.reporte_bitacora');
+    }
+
+    public function reporteGetInfo(Request $request){
+        try {
+            $reqReport = $this->bitacoraRepository->getBitacoraReport($request);
+            //iniciamos el proceso
+            $doneArray = [
+                'success' => true,
+                'message' => $reqReport, // debe devolver un valor booleano
+                'data' => 'OK'
+            ];
+            return response()->json($doneArray, 200);
+        } catch (\Throwable $th) {
+            //enviar mensaje de excepción
+            $errorArray = [
+                'Error' => $th->getMessage(),
+            ];
+            return response()->json($errorArray, 500);
+        }
+    }
+
+    public function getFilterFactura(Request $request){
+        try {
+            //proceso
+            $response = $this->facturaRepository->getAllFacturas($request);
+            $doneArray = [
+                'success' => true,
+                'message' => $response, // debe devolver un valor booleano
+                'data' => 'OK'
+            ];
+            return response()->json($response, 200);
+        } catch (\Throwable $th) {
+            //enviar mensaje de excepcion
+            $errorArray = [
+                'Error' => $th->getMessage(),
+            ];
+            return response()->json($errorArray, 500);
+        }
     }
 }
