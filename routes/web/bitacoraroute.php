@@ -16,7 +16,7 @@ use App\Http\Controllers\solicitud\SolicitudBitacoraController;
 
 Auth::routes();
 
-Route::middleware(['auth', 'role:revisor|capturista', 'permission:anular publicacion bitacora|borrar bitacora|editar bitacora|publicar bitacora|revisar bitacora|ver bitacora|ver comision|ver-solicitud-bitacora-pre|ver-editar-bitacora'])->group(function () {
+Route::middleware(['auth', 'role:revisor|capturista', 'permission:anular publicacion bitacora|borrar bitacora|editar bitacora|publicar bitacora|revisar bitacora|ver bitacora|ver comision|ver-solicitud-bitacora-pre|ver-editar-bitacora', 'prevent-back-history'])->group(function () {
     /**
      * grupos de autenticación -
      */

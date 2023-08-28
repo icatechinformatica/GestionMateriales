@@ -37,7 +37,7 @@ trait VehiculoTrait {
             $vehiculo->save();
             return 'VALIDO';
         }
-        
+
     }
 
     public function getVehiculo()
@@ -48,7 +48,7 @@ trait VehiculoTrait {
     public function editVehiculo($id)
     {
         return CatalogoVehiculo::select('catalogo_vehiculo.id', 'catalogo_vehiculo.color', 'catalogo_vehiculo.numero_motor', 'catalogo_vehiculo.marca', 'catalogo_vehiculo.modelo',
-        'catalogo_vehiculo.tipo', 'catalogo_vehiculo.placas', 'catalogo_vehiculo.numero_serie', 'catalogo_vehiculo.linea', 'resguardante.resguardante_unidad', 'catalogo_vehiculo.resguardante_id', 
+        'catalogo_vehiculo.tipo', 'catalogo_vehiculo.placas', 'catalogo_vehiculo.numero_serie', 'catalogo_vehiculo.linea', 'resguardante.resguardante_unidad', 'catalogo_vehiculo.resguardante_id',
         'catalogo_vehiculo.numero_economico', 'catalogo_vehiculo.km_final', 'catalogo_vehiculo.rendimiento_ciudad', 'catalogo_vehiculo.rendimiento_carretera',
         'catalogo_vehiculo.rendimiento_mixto', 'catalogo_vehiculo.rendimiento_carga')->where('catalogo_vehiculo.id', '=', $id)->join('resguardante', 'catalogo_vehiculo.resguardante_id', '=', 'resguardante.id')->first();
     }
@@ -62,8 +62,8 @@ trait VehiculoTrait {
         $cat_vehiculo->numero_serie = Str::upper($request->get('numero_serie_editar'));
         $cat_vehiculo->resguardante_id = $request->get('resguardante_editar');
         $cat_vehiculo->modelo = Str::upper($request->get('modelo_editar'));
-        $car_vehiculo->numero_economico = Str::upper($request->get('numero_economico_editar'));
-        $car_vehiculo->km_final = $request->get('km_recorrido_editar');
+        $cat_vehiculo->numero_economico = Str::upper($request->get('numero_economico_editar'));
+        $cat_vehiculo->km_final = $request->get('km_recorrido_editar');
         $cat_vehiculo->rendimiento_ciudad = $request->get('rendimiento_ciudad');
         $cat_vehiculo->rendimiento_carreteta = $request->get('rendimiento_carretera');
         $cat_vehiculo->rendimiento_mixto = $request->get('rendimiento_mixto');

@@ -6,6 +6,8 @@ use App\Http\Controllers\AutomovilController;
 use App\Http\Controllers\solicitud\ResguardanteController;
 use App\Http\Controllers\cat\ChoferController;
 use App\Http\Controllers\cat\DirectorioController;
+use Illuminate\Support\Facades\Auth;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes

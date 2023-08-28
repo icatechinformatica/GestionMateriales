@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CatalogoVehiculoRequest;
 use Illuminate\Http\Request;
 use App\Http\Traits\VehiculoTrait;
 use Illuminate\Database\QueryException;
@@ -125,28 +126,8 @@ class AutomovilController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(CatalogoVehiculoRequest $request, $id)
     {
-        // se valida los campos del formulario antes de realizar la actualización
-        $request->validate([
-            'marca_editar' => 'required',
-            'placas_editar' => 'required',
-            'color_editar' => 'required',
-            'numero_motor_editar' => 'required',
-            'tipo_editar' => 'required',
-            'numero_serie_editar' => 'required',
-            'resguardante_editar' => 'required',
-            'numero_economico_editar' => 'required'
-        ],[
-            'marca_editar.required' => 'LA MARCA ES REQUERIDA',
-            'placas_editar.required' => 'LA PLACA ES REQUERIDA',
-            'color_editar.required' => 'EL COLOR ES REQUERIDO',
-            'numero_motor_editar.required' => 'EL NÚMERO DE MOTOR ES REQUERIDO',
-            'tipo_editar.required' => 'EL TIPO ES REQUERIDO',
-            'numero_serie_editar.required' => 'EL NÚMERO DE SERIE ES REQUERIDO',
-            'resguardante_editar.requiered' => 'EL RESGUARDANTE ES REQUERIDO',
-            'numero_economico_editar' => 'El NÚMERO ECONÓMICO ES REQUERIDO'
-        ]);
 
         try {
             // actualizar registros a partiir de un id con la petición

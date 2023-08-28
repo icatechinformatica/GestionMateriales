@@ -51,7 +51,7 @@
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="text-center">
-                                <h5 class="font-weight-bold">{{  strtoupper(auth()->user()->name) }}</h5>
+                                <h6 class="font-weight-bold">{{  mb_strtoupper(Auth::user()->name, 'utf-8') }}</h6>
                                 <p>Perfil</p>
                             </div>
                         </div>
@@ -125,7 +125,7 @@
                             </div>
                         </div>
                         <input type="hidden" name="idUser" id="idUser" value="{{ base64_encode($idUser) }}">
-
+                        <br>
                         <!-- Button -->
                         <div class="pl-lg-4">
                             <div class="row">

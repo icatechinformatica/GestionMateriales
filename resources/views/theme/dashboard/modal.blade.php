@@ -10,10 +10,12 @@ aria-hidden="true">
                     <span aria-hidden="true">×</span>
                 </button>
             </div>
-            <div class="modal-body">Seleccione "Cerrar sesión" a continuación si está listo para finalizar su sesión actual.</div>
+            <div class="modal-body">
+               <b>Seleccione "Cerrar sesión" a continuación si está listo para finalizar su sesión actual en el sistema.</b>
+            </div>
             <div class="modal-footer">
                 <button class="btn btn-danger" type="button" data-dismiss="modal">Cancelar</button>
-                <a class="btn btn-primary" href="{{ route('signout') }}">Salir</a>
+                <a class="btn btn-info" href="{{ route('signout') }}">Salir</a>
             </div>
         </div>
     </div>

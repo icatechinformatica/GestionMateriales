@@ -5,6 +5,7 @@
 
 @section('contenidoCss')
     <link href="{{ asset('css/generalStyles.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/folioStyle.css') }}" rel="stylesheet">
 @endsection
 
 @section('contenido')
@@ -47,37 +48,49 @@
             <div class="col-lg-12 mb-4">
                 <!-- Illustrations -->
                 <div class="card shadow mb-4">
-                    <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">
-                            <i class="fas fa-car-alt"></i>
-                            Catálogo de Vehículos
-                        </h6>
-                    </div>
+                    <div class="card-header text-white" style="background-color: #621132;"><b>Catálogo de Vehículos</b></div>
                     <div class="card-body">
                         {{--  --}}
                         <div class="form-row">
-                            @if (count($catalogo) > 0)
-                                @foreach ($catalogo as $itemCat => $v)
-                                    <div class="col-md-4">
-                                        <div class="card text-black bg-light bg-gradient mb-3" style="max-width: 18rem;">
-                                            <div class="card-body">
-                                                <h4 class="card-title">PLACAS: {{ $v->placas }}</h4>
-                                                <p class="card-text">VEHÍCULO: {{ $v->modelo }}</p>
-                                                <p class="card-text">MARCA: {{ $v->marca }}</p>
+                            <table>
+                                <caption>Lista de Asignaciones</caption>
+                                <thead>
+                                  <tr>
+                                    <th scope="col">Vehículos</th>
+                                    <th scope="col">Placas</th>
+                                    <th scope="col">Marca</th>
+                                    <th scope="col">Modelo</th>
+                                    <th scope="col">Editar</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                   @if (count($catalogo) > 0)
+                                    @foreach ($catalogo as $itemCat => $v)
+                                        <tr>
+                                            <td>
+                                                <a rel="noopener noreferrer" class="btn btn-success btnModalShow">
+                                                    <i class="fas fa-car-alt"></i>
+                                                </a>
+                                            </td>
+                                            <td>{{ $v->placas }}</td>
+                                            <td>{{ $v->marca }}</td>
+                                            <td>{{ $v->tipo." ".$v->modelo }}</td>
+                                            <td>
                                                 @can('revisar bitacora')
-                                                    <a href="{{ route('solicitud.cat.automovil.edit', base64_encode($v->id)) }}" class="btn btn-info btn-circle btn-md" data-toggle="tooltip" data-placement="top" title="CHECAR DETALLE DE LA SOLICITUD">
-                                                        <i class="fas fa-car-alt"></i>
+                                                    <a rel="noopener noreferrer" href="{{ route('solicitud.cat.automovil.edit', base64_encode($v->id)) }}" class="btn btn-warning btnModalShow" data-toggle="tooltip" data-placement="top" title="CHECAR DETALLE DE LA SOLICITUD">
+                                                        <i class="fas fa-edit"></i>
                                                     </a>
                                                 @endcan
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            @else
-                                <tr>
-                                    <td colspan="4"><h3> <b>NO HAY REGISTROS PARA MOSTRAR</b> </h3></td>
-                                </tr>
-                            @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                   @else
+                                        <tr>
+                                            <td colspan="5"><center><h3> <b>NO HAY REGISTROS</b> </h3></center></td>
+                                        </tr>
+                                   @endif
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>

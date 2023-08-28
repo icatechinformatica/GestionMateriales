@@ -3,7 +3,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\factura_folio\FacturaController;
 use App\Http\Controllers\factura_folio\FolioController;
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'prevent-back-history'])->group(function () {
     /**
      * grupos autenticados
      */

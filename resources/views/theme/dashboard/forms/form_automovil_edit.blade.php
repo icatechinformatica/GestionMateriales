@@ -4,116 +4,7 @@
 @section('title', 'Formulario de Vehiculos | SISCOM by ICATECH')
 
 @section('contenidoCss')
- <style>
-    .custom-file-label::after { content: "Seleccionar";}
-    table {
-        border: 1px solid #ccc;
-        border-collapse: collapse;
-        margin: 0;
-        padding: 0;
-        width: 100%;
-        table-layout: fixed;
-    }
-
-    table caption {
-        font-size: 1.5em;
-        margin: .5em 0 .75em;
-    }
-
-    table tr {
-        background-color: #f8f8f8;
-        border: 1px solid #ddd;
-        padding: .35em;
-    }
-
-    table th,
-    table td {
-        padding: .625em;
-        text-align: center;
-    }
-
-    table th {
-        font-size: .70em;
-        letter-spacing: .09em;
-        text-transform: uppercase;
-    }
-    /*
-    * square buttons effects
-    */
-    .btn-squared-default
-    {
-        width: 100px !important;
-        height: 100px !important;
-        font-size: 10px;
-    }
-
-    .btn-squared-default:hover
-    {
-        border: 3px solid white;
-        font-weight: 700;
-    }
-
-    .btn-squared-default-plain
-    {
-        width: 100px !important;
-        height: 100px !important;
-        font-size: 10px;
-    }
-
-    .btn-squared-default-plain:hover
-    {
-        border: 0px solid white;
-    }
-
-    @media screen and (max-width: 600px) {
-        table {
-                border: 0;
-        }
-
-        table caption {
-                font-size: 1.3em;
-        }
-            
-        table thead {
-            border: none;
-            clip: rect(0 0 0 0);
-            height: 1px;
-            margin: -1px;
-            overflow: hidden;
-            padding: 0;
-            position: absolute;
-            width: 1px;
-        }
-            
-        table tr {
-            border-bottom: 3px solid #ddd;
-            display: block;
-            margin-bottom: .625em;
-        }
-            
-        table td {
-            border-bottom: 1px solid #ddd;
-            display: block;
-            font-size: .8em;
-            text-align: right;
-        }
-            
-        table td::before {
-            /*
-            * aria-label has no advantage, it won't be read inside a table
-            content: attr(aria-label);
-            */
-            content: attr(data-label);
-            float: left;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-            
-        table td:last-child {
-            border-bottom: 0;
-        }
-    }
- </style>
+ <link rel="stylesheet" href="{{ asset('css/cat.css') }}">
 @endsection
 
 @section('contenido')
@@ -249,14 +140,14 @@
                                 <div class="col-md-4 mb-3">
                                     <label for="km_recorrido_editar">Kilometros Recorridos</label>
                                     <div class="custom-file">
-                                        <input type="text" class="@error('km_recorrido_editar') is-invalid @enderror typeahead form-control" id="km_recorrido_editar" name="km_recorrido_editar" autocomplete="off" onkeypress="return valideKey(event);" value="{{ $getvehiculo->km_final }}">
+                                        <input type="text" class="@error('km_recorrido_editar') is-invalid @enderror typeahead form-control" id="km_recorrido_editar" name="km_recorrido_editar" autocomplete="off" onkeypress="return valideKey(event, this);" value="{{ $getvehiculo->km_final }}">
                                         @error('km_recorrido_editar')
                                             <div class="alert alert-danger mt-1 mb-1">
                                                 {{ $message }}
                                             </div>
                                         @enderror
                                     </div>
-                                </div> 
+                                </div>
                             </div>
                            {{-- kilomentros recorridos END --}}
                             <span class="d-block g-mb-3 g-font-size-22 g-color-gray-dark-v1 g-font-secondary">
@@ -267,7 +158,7 @@
                                 <div class="col-md-3 mb-3">
                                     <label for="rendimiento_ciudad">Rendimiento de la ciudad</label>
                                     <div class="custom-file">
-                                        <input type="text" name="rendimiento_ciudad" id="rendimiento_ciudad" class="form-control" autocomplete="off" onkeypress="return valideKey(event);">
+                                        <input type="text" name="rendimiento_ciudad" id="rendimiento_ciudad" class="form-control" autocomplete="off" onkeypress="return valideKey(event, this);">
 
                                     </div>
                                 </div>
@@ -275,7 +166,7 @@
                                 <div class="col-md-3 mb-3">
                                     <label for="rendimiento_carretera">Rendimiento en Carretera</label>
                                     <div class="custom-file">
-                                        <input type="text" name="rendimiento_carretera" id="rendimiento_carretera" class="form-control" autocomplete="off" onkeypress="return valideKey(event);" value="{{ $getvehiculo->rendimiento_carretera }}">
+                                        <input type="text" name="rendimiento_carretera" id="rendimiento_carretera" class="form-control" autocomplete="off" onkeypress="return valideKey(event, this);" value="{{ $getvehiculo->rendimiento_carretera }}">
                                     </div>
                                 </div>
                                 {{-- rendimiento en carretera END --}}
@@ -283,7 +174,7 @@
                                 <div class="col-md-3 mb-3">
                                     <label for="rendimiento_mixto">Rendimiento en Mixto</label>
                                     <div class="custom-file">
-                                        <input type="text" name="rendimiento_mixto" id="rendimiento_mixto" class="form-control" autocomplete="off" onkeypress="return valideKey(event);" value="{{ $getvehiculo->rendimiento_mixto }}">
+                                        <input type="text" name="rendimiento_mixto" id="rendimiento_mixto" class="form-control" autocomplete="off" onkeypress="return valideKey(event, this);" value="{{ $getvehiculo->rendimiento_mixto }}">
                                     </div>
                                 </div>
                                 {{-- rendimiento Mixto END --}}
@@ -291,7 +182,7 @@
                                 <div class="col-md-3 mb-3">
                                     <label for="rendimiento_carga">Rendimiento de Carga</label>
                                     <div class="custom-file">
-                                        <input type="text" name="rendimiento_carga" id="rendimiento_carga" class="form-control" autocomplete="off" onkeypress="return valideKey(event);" value="{{ $getvehiculo->rendimiento_carga }}">
+                                        <input type="text" name="rendimiento_carga" id="rendimiento_carga" class="form-control" autocomplete="off" onkeypress="return valideKey(event, this);" value="{{ $getvehiculo->rendimiento_carga }}">
                                     </div>
                                 </div>
                                 {{-- rendimiento carga END --}}
@@ -318,18 +209,25 @@
 
 @section('contenidoJavaScript')
 <script type="text/javascript">
-    function valideKey(evt){
 
-        // code is the decimal ASCII representation of the pressed key.
-        var code = (evt.which) ? evt.which : evt.keyCode;
-        
-        if(code==8) { // backspace.
+    function valideKey(evt, element){
+            let charCode = (evt.wich) ? evt.wich : event.keyCode
+            if (charCode > 31 && (charCode < 48 || charCode > 57) && !(charCode == 46 || charCode == 8)) {
+                return false;
+            } else {
+                let len = $(element).val().length;
+                let index = $(element).val().indexOf('.');
+                if (index > 0 && charCode == 46) {
+                    return false;
+                }
+                if (index > 0) {
+                    let CharAfterdot = (len + 1) - index;
+                    if (CharAfterdot > 2) {
+                        return false;
+                    }
+                }
+            }
             return true;
-        } else if(code>=48 && code<=57) { // is a number.
-            return true;
-        } else{ // other keys.
-            return false;
-        }
     }
 </script>
 @endsection

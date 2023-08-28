@@ -5,15 +5,15 @@ use App\Http\Controllers\requisicion\MemoController;
 use App\Http\Controllers\requisicion\ValidacionRequisicionController;
 use App\Http\Controllers\requisicion\ExistenciaController;
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'prevent-back-history'])->group(function () {
     Route::get('/requisicion/create', [RequisicionController::class, 'create'])->name('requisicion.create');
     Route::get('/requisicion/index', [RequisicionController::class, 'index'])->name('requisicion.index');
     Route::post('/requisicion/store', [RequisicionController::class, 'store'])->name('requisicion.store');
     Route::get('/requisicion/update/{id}', [RequisicionController::class, 'update'])->name('requisicion.update');
     Route::get('/requisicion/show/{id}', [RequisicionController::class, 'show'])->name('requisicion.show');
     Route::put('/requisicion/modify/{id}', [RequisicionController::class, 'modify'])->name('requisicion.modify'); // update
- 
- 
+
+
     /**
      * nueva ruta para memorandum
      */
@@ -22,10 +22,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/requisicion/memo/edit/{id}', [MemoController::class, 'edit'])->name('requisicion.memo.edit');
     Route::put('/requisicion/memo/update/{id}', [MemoController::class, 'update'])->name('requisicion.memo.update');
     Route::get('/requisicion/memo/download/{idmemo}', [MemoController::class, 'download'])->name('document.download');
- 
 
- 
- 
+
+
+
 
     /**
      * rutas para funciones ajax
@@ -35,8 +35,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/requisicion/partida/catalogo', [RequisicionController::class, 'getcatalogo'])->name('requisicion.partida.catalogo');
     Route::get('/requisicion/partida/getadministrativebody', [RequisicionController::class, 'getArea'])->name('requisicion.partida.administrativo');
     Route::get('/requisicion/partida/getdepto/{iddepto}', [RequisicionController::class, 'getDeptos'])->name('requisicion.partida.getdeptos');
- 
-    
+
+
     /**
      * validación de requisición
      */
@@ -47,6 +47,6 @@ Route::middleware(['auth'])->group(function () {
     // requisición existencia
     Route::get('/requisicion/existencia/index', [ExistenciaController::class, 'index'])->name('requisiciones.revision.existencia');
     Route::get('/requisicion/existencia/check/{id}', [ExistenciaController::class, 'edit'])->name('requisiciones.revision.existencia.edit');
- 
+
 });
 
