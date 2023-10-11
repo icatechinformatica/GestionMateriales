@@ -3,6 +3,7 @@ namespace App\Http\Traits;
 use App\Models\solicitud\PreComision;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 
 trait UploadFileTrait {
@@ -14,7 +15,7 @@ trait UploadFileTrait {
         //obtenemos el path
         $path = storage_path('app/facturas/'.$requestId."/".$fileName);
         // checamos si exite el archivo que estoy retornando
-        if (!\File::exists($path)) {
+        if (!File::exists($path)) {
             # si no existe retornamos un false
             $requestDocument = NULL;
         } else {

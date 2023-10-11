@@ -88,6 +88,12 @@
                     Reporte de la Bitácora
                 </a>
            {{-- reporte de la bitácora END --}}
+           {{-- devolución de los vales --}}
+                <a href="{{ route('devoluciones.index') }}" class="collapse-item">
+                    <i class="fas fa-exchange-alt"></i>
+                    Devolución de Vales
+                </a>
+           {{-- devolución de los vales END --}}
           </div>
       </div>
   </li>

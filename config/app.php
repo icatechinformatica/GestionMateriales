@@ -1,5 +1,6 @@
 <?php
 
+
 return [
 
     /*
@@ -181,6 +182,8 @@ return [
         App\Providers\FolioServiceProvider::class,
         App\Providers\BitacoraServiceProvider::class,
         App\Providers\ReporteServiceProvider::class,
+        App\Providers\DevolucionFolioServiceProvider::class,
+        App\Providers\DriverServiceProvider::class,
     ],
 
     /*

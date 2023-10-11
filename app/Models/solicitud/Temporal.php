@@ -24,7 +24,7 @@ class Temporal extends Model
         'km_final_antes_cargar_combustible',
         'km_inicial_cargar_combustible', 'total_km_recorridos', 'numero_economico', 'status_proceso', 'periodo_actual',
         'anio_actual', 'litros_totales', 'importe_total', 'tipo_solicitud', 'rendimiento_litros', 'es_comision', 'observacion',
-        'pre_comision_id', 'users_id'
+        'pre_comision_id', 'users_id', 'comentario'
     ];
 
     protected $hidden = ['created_at', 'updated_at'];

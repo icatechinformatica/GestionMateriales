@@ -3,14 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Hash;
-use Session;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Traits\LogTrait;
 use Carbon\Carbon;
-
-
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session as FacadesSession;
 
 class CustomAuthController extends Controller
 {
@@ -53,7 +51,7 @@ class CustomAuthController extends Controller
     }
 
     public function signOut() {
-        Session::flush();
+        FacadesSession::flush();
         Auth::logout();
 
         return Redirect('login');
@@ -84,7 +82,7 @@ class CustomAuthController extends Controller
         $path = '/logout';
         $peticion = ['operacion' => 'Cerrar sesión', 'usuario' => Auth::user()->name, 'ip_request' => $request->ip(), 'sistem_path' => $path, 'fecha_ejecucion' => $fecha, 'hoarario_ejecucion' => $hora , 'tipo_interaccion' => 5, 'tipo_peticion' => $tipo_peticion];
         $this->storeLog($peticion);
-        Session::flush();
+        FacadesSession::flush();
         Auth::logout();
 
         return redirect()->route('dashboard');

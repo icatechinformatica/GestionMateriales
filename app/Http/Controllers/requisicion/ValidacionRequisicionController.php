@@ -44,7 +44,7 @@ class ValidacionRequisicionController extends Controller
          * obtenemos la información de la solicitud
          * vamos a actualizar sólo las observaciones y también obtener el id_requisición!!!
          * la variable de observación puede o no tener valores!!!
-         * 
+         *
          */
         try {
             //parte del código para cargar la información hacer una modificación
@@ -70,7 +70,7 @@ class ValidacionRequisicionController extends Controller
     public function show($id)
     {
         /**
-         * mostramos el chequeo de la requisición el cuál sólo tiene observaciones, las cuales se enviaran ya 
+         * mostramos el chequeo de la requisición el cuál sólo tiene observaciones, las cuales se enviaran ya
          * sea a los usuarios que enviaron a revisión su requisición o al departamento de al que se enviará para la revisión
          * final antes de iniciar el proceso de requisición.
          */
@@ -137,7 +137,7 @@ class ValidacionRequisicionController extends Controller
                         return redirect()->route('requisicion.index')->with('success', sprintf('¡TURNADO A DIRECCIÓN ADMINISTRATIVA PARA SU SEGUIMIENTO!'));
                     } catch (QueryException $th) {
                         //throw SQL EXCEPTION $th;
-                        return back()->with('error', $ex->getMessage());
+                        return back()->with('error', $th->getMessage());
                     }
                     break;
                 default:
@@ -145,6 +145,6 @@ class ValidacionRequisicionController extends Controller
                     break;
             }
         }
-        
+
     }
 }

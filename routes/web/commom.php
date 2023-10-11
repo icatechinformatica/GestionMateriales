@@ -20,14 +20,13 @@ use Illuminate\Support\Facades\Auth;
 */
 
 // agregar nuevo middleware que evita el ir hacia atrás desde el navegador después de un logout
-Route::group(['middleware' => 'prevent-back-history'], function(){
+Route::group(['middleware' => 'prevent-back-history'], function () {
     Auth::routes();
     Route::get('/login', [CustomAuthController::class, 'index'])->name('login');
     Route::post('/customlogin', [CustomAuthController::class, 'customLogin'])->name('login.custom');
     Route::get('/signout', [CustomAuthController::class, 'singout'])->name('signout');
     Route::get('/register', [CustomAuthController::class, 'register'])->name('register');
     Route::post('/custom-register', [CustomAuthController::class, 'customRegister'])->name('register.custom');
-
 });
 
 
@@ -79,4 +78,8 @@ editar catalogo resguardante|eliminar catalogo resguardante|ver comision', 'prev
     Route::get('/solicitud/catalogo/directorio/create', [DirectorioController::class, 'create'])->name('cat.directorio.create');
     Route::post('/solicitud/catalogo/directorio/store', [DirectorioController::class, 'store'])->name('cat.directorio.store');
 
+    /**
+     * nueva tura de choferes --search
+     */
+    Route::get('/solicitud/catalogo/chofer/search', [ChoferController::class, 'search'])->name('solicitud.search.driver');
 });

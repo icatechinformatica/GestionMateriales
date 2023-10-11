@@ -40,6 +40,8 @@ Route::middleware(['auth', 'role:revisor|capturista', 'permission:anular publica
     Route::get('/solicitud/reporte/bitacora/index', [SolicitudBitacoraController::class, 'reporteBitacora'])->name('reporte.solicitud.bitacora_recorrido');
     Route::post('/solicitud/reporte/get/info', [SolicitudBitacoraController::class, 'reporteGetInfo'])->name('solicitud.reporte.bitacora.obtener.vinculados');
     Route::get('/solicitud/reporte/filter/get/facturas', [SolicitudBitacoraController::class, 'getFilterFactura'])->name('filter.get.facturas');
+    Route::post('/solicitud/reporte/save', [SolicitudBitacoraController::class, 'saveDataReporte'])->name('reporte.solicitud.bitacora.save');
+
 });
 
 

@@ -10,10 +10,18 @@ use App\Models\solicitud\Chofer;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Traits\ChoferTrait;
+use App\Interfaces\DriverRepositoryInterface;
 
 class ChoferController extends Controller
 {
     use LogTrait, ChoferTrait;
+
+    private DriverRepositoryInterface $driverRepository;
+
+    public function __construct(DriverRepositoryInterface $driverRepository)
+    {
+        $this->driverRepository = $driverRepository;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -30,7 +38,7 @@ class ChoferController extends Controller
         // $MAC = strtok($MAC, ' ');
         $tipo_peticion = 'GET';
         $path = '/solicitud/catalogo/chofer/index';
-        $peticion = ['operacion' => 'Inicio del indice del catálogo del chofer', 'usuario' => Auth::user()->name, 'ip_request' => $request->ip(), 'sistem_path' => $path, 'fecha_ejecucion' => $fecha, 'hoarario_ejecucion' => $hora , 'tipo_interaccion' => 2, 'tipo_peticion' => $tipo_peticion];
+        $peticion = ['operacion' => 'Inicio del indice del catálogo del chofer', 'usuario' => Auth::user()->name, 'ip_request' => $request->ip(), 'sistem_path' => $path, 'fecha_ejecucion' => $fecha, 'hoarario_ejecucion' => $hora, 'tipo_interaccion' => 2, 'tipo_peticion' => $tipo_peticion];
         $this->storeLog($peticion);
 
         $getAllChoferes = $this->getChofer();
@@ -54,7 +62,7 @@ class ChoferController extends Controller
         // $MAC = strtok($MAC, ' ');
         $tipo_peticion = 'GET';
         $path = '/solicitud/catalogo/chofer/create';
-        $peticion = ['operacion' => 'Agregar una nueva solicitud de Choferes', 'usuario' => Auth::user()->name, 'ip_request' => $request->ip(), 'sistem_path' => $path, 'fecha_ejecucion' => $fecha, 'hoarario_ejecucion' => $hora , 'tipo_interaccion' => 3, 'tipo_peticion' => $tipo_peticion];
+        $peticion = ['operacion' => 'Agregar una nueva solicitud de Choferes', 'usuario' => Auth::user()->name, 'ip_request' => $request->ip(), 'sistem_path' => $path, 'fecha_ejecucion' => $fecha, 'hoarario_ejecucion' => $hora, 'tipo_interaccion' => 3, 'tipo_peticion' => $tipo_peticion];
         $this->storeLog($peticion);
 
         return view('theme.dashboard.forms.form_choferes');
@@ -71,7 +79,7 @@ class ChoferController extends Controller
         //
         $request->validate([
             'nombre' => 'required',
-        ],[
+        ], [
             'nombre.required' => 'EL NOMBRE ES REQUERIDO',
         ]);
         try {
@@ -86,7 +94,7 @@ class ChoferController extends Controller
             $path = '/solicitud/store';
             $peticion_parcial =  (array)$request->all();
             $solicitud_total = json_encode($peticion_parcial);
-            $peticion = ['operacion' => 'Agregar Un nuevo Chofer', 'usuario' => Auth::user()->name, 'ip_request' => $request->ip(), 'sistem_path' => $path, 'fecha_ejecucion' => $fecha, 'hoarario_ejecucion' => $hora , 'tipo_interaccion' => 4, 'tipo_peticion' => $tipo_peticion, 'httpRequest' => $solicitud_total];
+            $peticion = ['operacion' => 'Agregar Un nuevo Chofer', 'usuario' => Auth::user()->name, 'ip_request' => $request->ip(), 'sistem_path' => $path, 'fecha_ejecucion' => $fecha, 'hoarario_ejecucion' => $hora, 'tipo_interaccion' => 4, 'tipo_peticion' => $tipo_peticion, 'httpRequest' => $solicitud_total];
             $this->storeLog($peticion);
             // llamamos al método que nos ejecutará la operación de guardado en el modulo
             $insertar_chofer = $this->savechofer($request);
@@ -138,21 +146,21 @@ class ChoferController extends Controller
         //
         $request->validate([
             'nombre_editar' => 'required',
-        ],[
+        ], [
             'nombre_editar.required' => 'EL NOMBRE ES REQUERIDO',
         ]);
 
         try {
             // actualizar registros a partiir de un id con la petición
-           $idChofer =  base64_decode($id);
-           $update_chofer = $this->updateChofer($idChofer, $request);
-           if ($update_chofer == true) {
-               # si es verdadero vamos a enviar 
-               return redirect()->route('solicitud.cat.chofer')->with('success', sprintf('¡REGISTRO ACTUALIZADO EXÍTOSAMENTE!'));
-           }
+            $idChofer =  base64_decode($id);
+            $update_chofer = $this->updateChofer($idChofer, $request);
+            if ($update_chofer == true) {
+                # si es verdadero vamos a enviar
+                return redirect()->route('solicitud.cat.chofer')->with('success', sprintf('¡REGISTRO ACTUALIZADO EXÍTOSAMENTE!'));
+            }
         } catch (QueryException $r) {
-            //lanzar excepcion de sql 
-            return back()->with('error', $th->getMessage());
+            //lanzar excepcion de sql
+            return back()->with('error', $r->getMessage());
         }
     }
 
@@ -165,5 +173,11 @@ class ChoferController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function search(Request $request)
+    {
+        $array = $this->driverRepository->searchDriver($request);
+        return response()->json($array);
     }
 }
