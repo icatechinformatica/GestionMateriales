@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\requisicion\RequisicionController;
 use App\Http\Controllers\requisicion\MemoController;
@@ -48,5 +49,6 @@ Route::middleware(['auth', 'prevent-back-history'])->group(function () {
     Route::get('/requisicion/existencia/index', [ExistenciaController::class, 'index'])->name('requisiciones.revision.existencia');
     Route::get('/requisicion/existencia/check/{id}', [ExistenciaController::class, 'edit'])->name('requisiciones.revision.existencia.edit');
 
+    // buscar áreas
+    Route::get('/requisicion/solicita/area', [RequisicionController::class, 'search'])->name('area.solicita.requisicion');
 });
-

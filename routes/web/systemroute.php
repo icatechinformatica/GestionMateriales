@@ -14,9 +14,10 @@ use App\Http\Controllers\dashboard\SystemController;
 |
 */
 
-Route::middleware(['auth', 'prevent-back-history'])->group(function(){
+Route::middleware(['auth'])->group(function(){
 
     Route::get('profile/index/{idUser}', [SystemController::class, 'index'])->name('perfil.indice');
-    Route::put('profile/user/update/{id}', [SystemController::class, 'update'])->name('perfil.update');
+    Route::put('profile/user/update/{id}', [SystemController::class, 'update'])->name('perfil.update.info');
+    Route::put('profile/user/update/password/{id}', [SystemController::class, 'update_password'])->name('perfil.update.password');
 
 });

@@ -3,10 +3,14 @@
 namespace App\Http\Controllers\dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ProfileRequest;
+use App\Http\Requests\UpdatePasswordRequest;
+use App\Http\Requests\UpdateProfileRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class SystemController extends Controller
 {
@@ -81,35 +85,51 @@ class SystemController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateProfileRequest $request, $id)
     {
         // edición del perfil
         try {
-            //actualización de la contraseña
-            $request->validate([
-                'name' => 'required',
-                'new_password' => 'required',
-                'confirm_password' => 'required|confirmed'
-            ]);
 
             #concidir con la contraseña anterior
-            if (!Hash::check($request->new_password, auth()->user()->password)) {
-                # condicional - si no coinciden
-                return back()->with('error', '¡La contraseña anterior no coincide!');
-            }
+            // if (!Hash::check($request->new_password, $request->password_confirmation)) {
+            //     # condicional - si no coinciden
+            //     return back()->with('error', '¡La contraseña anterior no coincide!');
+            // }
+
+            $idUser = base64_decode($id);
 
             #Actualizar la nueva contraseña
             User::whereId(
-                auth()->user()->id
+                $idUser
             )->update([
-                'password' => Hash::make($request->new_password)
+                'name' => Str::upper($request->name)
             ]);
 
             // redireccionar
-            return back()->with('status', '¡Contraseña cambiada con éxito!');
+            return back()->with('success', 'Datos del Usuario Actualizado!');
         } catch (QueryException $q) {
             //cachando excepcion y retornando a la vista
             return back()->with('error', $q->getMessage());
+        }
+    }
+
+    public function update_password(UpdatePasswordRequest $req, $id)
+    {
+        try {
+            $idUser = base64_decode($id);
+
+            #Actualizar la nueva contraseña
+            User::whereId(
+                $idUser
+            )->update([
+                'password' => Hash::make($req->password)
+            ]);
+
+            // redireccionar
+            return back()->with('success', 'Contraseña Actualizada!');
+        } catch (QueryException $th) {
+            //throw $th;
+            return back()->with('error', $th->getMessage());
         }
     }
 

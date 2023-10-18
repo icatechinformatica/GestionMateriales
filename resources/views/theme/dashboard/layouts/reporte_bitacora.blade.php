@@ -91,12 +91,12 @@
 @endsection
 
 @section('modals')
-{{-- incluir modal --}}
-{{-- modal success --}}
-@include('modals.modalsuccess')
-{{-- modal success END --}}
+    {{-- incluir modal --}}
+    {{-- modal success --}}
+    @include('modals.modalsuccess')
+    {{-- modal success END --}}
 
-@include('modals.modalcomments')
+    @include('modals.modalcomments')
 @endsection
 {{-- seccion javascript --}}
 @section('contenidoJavaScript')

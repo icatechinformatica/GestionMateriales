@@ -1,0 +1,31 @@
+.avatar{
+    background:#4e73df;
+    border-radius:50%;
+    color:#fff;
+    display:inline-block;
+    font-size:16px;
+    font-weight:300;
+    margin:0;
+    position:relative;
+    vertical-align:middle;
+    line-height:1.28;
+    height:45px;
+    width:45px
+}
+.avatar.avatar-xs{
+    font-size:6px;height:15px;width:15px
+}
+.avatar.avatar-sm{
+    font-size:12px;height:30px;width:30px
+}
+.avatar.avatar-lg{font-size:23px;height:60px;width:60px}
+.avatar.avatar-xl{font-size:30px;height:75px;width:75px}
+.avatar img{border-radius:50%;height:100%;position:relative;width:100%;z-index:1}
+.avatar .avatar-icon{background:#fff;bottom:14.64%;height:50%;padding:.1rem;position:absolute;right:14.64%;transform:translate(50%,50%);width:50%;z-index:2}
+.avatar .avatar-presence{bottom:14.64%;padding:.1rem;position:absolute;right:14.64%;transform:translate(50%,50%);z-index:2;background:#bcc3ce;border-radius:50%;box-shadow:0 0 0 .1rem #fff;height:.5em;width:.5em}
+.avatar .avatar-presence.online{background:#1cc88a}
+.avatar .avatar-presence.busy{background:#e74a3b}
+.avatar .avatar-presence.away{background:#f6c23e}
+.avatar[data-initial]::before{color:currentColor;content:attr(data-initial);left:50%;position:absolute;top:50%;transform:translate(-50%,-50%);z-index:1}
+.rounded-circle{border-radius:50%!important}
+.card-profile-image{text-align:center}.card-profile-image img{margin:8px 0;max-width:180px;border-radius:.35rem;transition:all .2s ease-in-out}

@@ -24,9 +24,9 @@ class RequisicionController extends Controller
      */
     public function index()
     {
-         // obtener todas las requisiciones
-         $requisiciones = Requisicion::with(['memorandum', 'area', 'partidapresupuestal'])->where('id_estado', 6)->get();
-         return view('theme.dashboard.layouts.requesicion.requesicion_create')->with('requisiciones', $requisiciones);
+        // obtener todas las requisiciones
+        $requisiciones = Requisicion::with(['memorandum', 'area', 'partidapresupuestal'])->where('id_estado', 6)->get();
+        return view('theme.dashboard.layouts.requesicion.requesicion_create')->with('requisiciones', $requisiciones);
     }
 
     /**
@@ -36,8 +36,8 @@ class RequisicionController extends Controller
      */
     public function create()
     {
-       //
-       return view('theme.dashboard.forms.requisiciones.nueva_requisicion');
+        //
+        return view('theme.dashboard.forms.requisiciones.nueva_requisicion');
     }
 
     /**
@@ -67,7 +67,7 @@ class RequisicionController extends Controller
             if (count($request->itemPartida) > 0) {
                 # checamos que la condición se cumpla para ingresar a los bucles
                 $array_counter = count($request->itemPartida);
-                for ($j=1; $j <= $array_counter; $j++) {
+                for ($j = 1; $j <= $array_counter; $j++) {
                     // vamos a insertar el registro y obtenemos el id
                     $getIdPartida = PartidaPresupuestal::insertGetId([
                         'partida_presupuestal' => $request->itemPartida[$j]['partida_presupuestal'],
@@ -94,7 +94,6 @@ class RequisicionController extends Controller
 
             // redireccionamiento
             return redirect()->route('requisicion.index')->with('success', sprintf('REQUISICIÓN DE MATERIAL AGREGADO EXÍTOSAMENTE!'));
-
         } catch (QueryException $th) {
             //cachando excepcion y retornando a la vista
             return back()->with('error', $th->getMessage());
@@ -139,7 +138,7 @@ class RequisicionController extends Controller
         try {
             $idReq = base64_decode($id);
             Requisicion::WHERE('id', $idReq)
-            ->update(['id_estado' => 1]);
+                ->update(['id_estado' => 1]);
             //enviar al indice
             return redirect()->route('requisicion.index')->with('info', sprintf('¡REQUISICIÓN ENVIADA CON ÉXITO!'));
         } catch (QueryException $ex) {
@@ -159,32 +158,32 @@ class RequisicionController extends Controller
         //
     }
 
-    public function getsolicita(Request $request){
+    public function getsolicita(Request $request)
+    {
         $termino = Str::upper($request->term);
 
         $data = Directorio::select("nombre")
-                ->where("nombre","LIKE","%{$termino}%")
-                ->get();
+            ->where("nombre", "LIKE", "%{$termino}%")
+            ->get();
 
         $array_name = array();
-        foreach ($data as $hsl)
-        {
+        foreach ($data as $hsl) {
             $array_name[] = $hsl->nombre;
         }
 
         return response()->json($array_name);
     }
 
-    public function getdepto(Request $request){
+    public function getdepto(Request $request)
+    {
         $termino = Str::upper($request->term);
 
-        $data = Area::select("id","nombre")
-                ->where("nombre","LIKE","%{$termino}%")
-                ->get();
+        $data = Area::select("id", "nombre")
+            ->where("nombre", "LIKE", "%{$termino}%")
+            ->get();
 
         $array_name = [];
-        foreach ($data as $hsl)
-        {
+        foreach ($data as $hsl) {
             $array_name[] = array(
                 "value" => $hsl->nombre,
                 "id" => $hsl->id,
@@ -240,14 +239,14 @@ class RequisicionController extends Controller
             //cachando excepcion y retornando a la vista
             return back()->with('error', $ex->getMessage());
         }
-
     }
 
-    public function getcatalogo(Request $request){
+    public function getcatalogo(Request $request)
+    {
         $busqueda = Str::upper($request->term);
         $datos = Partida::select('id', 'descripcion', 'clave_partida')
-                    ->where("clave_partida", $busqueda)
-                    ->get();
+            ->where("clave_partida", $busqueda)
+            ->get();
 
         $array_result = [];
 
@@ -263,11 +262,12 @@ class RequisicionController extends Controller
         return response()->json($array_result);
     }
 
-    protected function getArea(Request $request){
+    protected function getArea(Request $request)
+    {
         $Qry = Str::upper($request->term);
-        $data = OrganoAdministrativo::select("id","nombre", "descripcion")
-                ->where("nombre","LIKE","%{$Qry}%")
-                ->get();
+        $data = OrganoAdministrativo::select("id", "nombre", "descripcion")
+            ->where("nombre", "LIKE", "%{$Qry}%")
+            ->get();
 
         $arr_name = [];
 
@@ -282,8 +282,23 @@ class RequisicionController extends Controller
         return response()->json($arr_name); //enviamos el arreglo en un formato json como respuesta
     }
 
-    protected function getDeptos($iddepto){
+    protected function getDeptos($iddepto)
+    {
         $deptos = Area::where('organo_administrativo_id', '=', $iddepto)->get();
         return response()->json($deptos);
+    }
+
+    public function search(Request $request)
+    {
+        $data = Area::select("nombre")
+            ->where("nombre", "LIKE", "%{$request->term}%")
+            ->get();
+
+        $array_ = array();
+        foreach ($data as $hsl) {
+            $array_[] = $hsl->nombre;
+        }
+
+        return response()->json($array_);
     }
 }
