@@ -188,7 +188,7 @@
                                 <label for="rendimiento_ciudad">Rendimiento de la ciudad</label>
                                 <div class="custom-file">
                                     <input type="text" name="rendimiento_ciudad" id="rendimiento_ciudad"
-                                        class="form-control" autocomplete="off"
+                                        class="form-control" autocomplete="off" value="{{ $getvehiculo->rendimiento_ciudad }}"
                                         onkeypress="return valideKey(event, this);">
 
                                 </div>
