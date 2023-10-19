@@ -65,7 +65,7 @@ trait VehiculoTrait {
         $cat_vehiculo->numero_economico = Str::upper($request->get('numero_economico_editar'));
         $cat_vehiculo->km_final = $request->get('km_recorrido_editar');
         $cat_vehiculo->rendimiento_ciudad = $request->get('rendimiento_ciudad');
-        $cat_vehiculo->rendimiento_carreteta = $request->get('rendimiento_carretera');
+        $cat_vehiculo->rendimiento_carretera = $request->get('rendimiento_carretera');
         $cat_vehiculo->rendimiento_mixto = $request->get('rendimiento_mixto');
         $cat_vehiculo->rendimiento_carga = $request->get('rendimiento_carga');
         $cat_vehiculo->save();

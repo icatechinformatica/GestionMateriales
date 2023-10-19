@@ -20,7 +20,8 @@ class CatalogoVehiculo extends Model
         'id', 'color', 'numero_motor', 'marca', 'modelo', 'tipo', 'placas',
         'numero_serie', 'resguardante_id', 'numero_economico', 'km_final',
         'importe_combustible', 'rendimiento_ciudad', 'rendimiento_carreteta', 'rendimiento_mixto',
-        'rendimiento_carga'
+        'rendimiento_carga',
+        'km_inicial'
     ];
 
     protected $hidden = ['created_at', 'updated_at'];
