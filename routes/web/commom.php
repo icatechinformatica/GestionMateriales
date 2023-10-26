@@ -47,7 +47,7 @@ editar catalogo resguardante|eliminar catalogo resguardante|ver comision', 'prev
      * rutas catalogo vehiculo
      */
     Route::get('/solicitud/catalogo/vehiculo', [AutomovilController::class, 'create'])->name('solicitud.catalogo.vehiculo')->middleware('can:crear catalogo vehiculo');
-    Route::post('/solicitud/catalogo/store', 'AutomovilController@store')->name('solicitud.catalogo.store')->middleware('can:crear catalogo vehiculo');
+    Route::post('/solicitud/catalogo/store', [AutomovilController::class, 'store'])->name('solicitud.catalogo.store')->middleware('can:crear catalogo vehiculo');
     Route::get('/solicitud/catalogo/index', 'AutomovilController@index')->name('solicitud.cat.indice')->middleware('can:leer catalogo vehiculo');
     Route::get('/solicitud/catalogo/automovil/edit/{id}', [AutomovilController::class, 'edit'])->name('solicitud.cat.automovil.edit')->middleware('can:editar catalogo vehiculo');
     Route::put('/solicitud/catalogo/automovil/{id}/actualizar', [AutomovilController::class, 'update'])->name('solicitud.cat.automovil.update')->middleware('can:editar catalogo vehiculo');

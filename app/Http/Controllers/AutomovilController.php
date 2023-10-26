@@ -73,11 +73,11 @@ class AutomovilController extends Controller
             switch ($this->savecatvehiculo($request)) {
                 case 'REP':
                     # se encuentra repetido y mandamos un mensaje con el error
-                    return Redirect::back()->withErrors('EL REGISTRO DE ESTE VEHÍCULO YA SE ENCUENTRA EN LA BASE DE DATOS');
+                    return redirect()->back()->withErrors('EL REGISTRO DE ESTE VEHÍCULO YA SE ENCUENTRA EN LA BASE DE DATOS');
                     break;
                 case 'VALIDO':
                     # direccionamos y mandamos un mensaje de éxito
-                    return redirect()->route('alumnos.valid')->with('success', sprintf('¡REGISTRO AGREGADO EXÍTOSAMENTE!'));
+                    return redirect()->route('solicitud.cat.indice')->with('success', sprintf('¡VEHÍCULO AGREGADO EXÍTOSAMENTE!'));
                     break;
                 default:
                     # code...
