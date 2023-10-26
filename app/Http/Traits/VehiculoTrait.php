@@ -33,7 +33,7 @@ trait VehiculoTrait
             $vehiculo->numero_economico = Str::upper($index->get('numero_economico'));
             $vehiculo->km_final = $index->get('km_recorrido');
             $vehiculo->rendimiento_ciudad = $index->get('rendimiento_ciudad');
-            $vehiculo->rendimiento_carreteta = $index->get('rendimiento_carretera');
+            $vehiculo->rendimiento_carretera = $index->get('rendimiento_carretera');
             $vehiculo->rendimiento_mixto = $index->get('rendimiento_mixto');
             $vehiculo->rendimiento_carga = $index->get('rendimiento_carga');
             $vehiculo->save();

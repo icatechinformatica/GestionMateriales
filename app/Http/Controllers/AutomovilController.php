@@ -88,7 +88,7 @@ class AutomovilController extends Controller
 
         } catch (QueryException $th) {
             //cachando excepcion y retornando a la vista
-            return back()->with('error', $th->getMessage());
+            return redirect()->back()->withErrors($th->getMessage());
         }
     }
 

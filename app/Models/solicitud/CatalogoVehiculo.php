@@ -19,7 +19,7 @@ class CatalogoVehiculo extends Model
     protected $fillable = [
         'id', 'color', 'numero_motor', 'marca', 'modelo', 'tipo', 'placas',
         'numero_serie', 'resguardante_id', 'numero_economico', 'km_final',
-        'importe_combustible', 'rendimiento_ciudad', 'rendimiento_carreteta', 'rendimiento_mixto',
+        'importe_combustible', 'rendimiento_ciudad', 'rendimiento_carretera', 'rendimiento_mixto',
         'rendimiento_carga',
         'km_inicial'
     ];
