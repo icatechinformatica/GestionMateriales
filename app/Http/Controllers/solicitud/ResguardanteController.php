@@ -44,14 +44,14 @@ class ResguardanteController extends Controller
     public function store(Request $request)
     {
         // storeResguardante
-         //
-         $request->validate([
+        //
+        $request->validate([
             // 'memo_comision' => 'required|max:255',
             // 'fecha' => 'date',
             'resguardante' => 'required',
             'puesto' => 'required',
 
-        ],[
+        ], [
             // 'memo_comision.required' => 'El memo de comisión es requerido',
             // 'fecha.date' => 'Se requiere una fecha valida',
             'resguardante.required' => 'El resguardante es requerido',
@@ -69,7 +69,7 @@ class ResguardanteController extends Controller
                     break;
             }
 
-                # si es verdadero tenemos que enviarlo al index del catálogo
+            # si es verdadero tenemos que enviarlo al index del catálogo
         } catch (QueryException $th) {
             //cachando excepcion y retornando a la vista
             return back()->with('error', $th->getMessage());
@@ -114,22 +114,22 @@ class ResguardanteController extends Controller
         $request->validate([
             'resguardante_editar' => 'required',
             'puesto_editar' => 'required'
-        ],[
+        ], [
             'resguardante_editar.required' => 'EL NOMBRE ES REQUERIDO',
             'puesto_editar.required' => 'EL PUESTO ES REQUERIDO'
         ]);
 
         try {
             // actualizar registros a partiir de un id con la petición
-           $idResguard =  base64_decode($id);
-           $update_resguardante = $this->editResguardante($idResguard, $request);
-           if ($update_resguardante == true) {
-               # si es verdadero vamos a enviar 
-               return redirect()->route('solicitud.resguardante.indice')->with('success', sprintf('¡REGISTRO ACTUALIZADO EXÍTOSAMENTE!'));
-           }
+            $idResguard =  base64_decode($id);
+            $update_resguardante = $this->editResguardante($idResguard, $request);
+            if ($update_resguardante == true) {
+                # si es verdadero vamos a enviar
+                return redirect()->route('solicitud.resguardante.indice')->with('success', sprintf('¡REGISTRO ACTUALIZADO EXÍTOSAMENTE!'));
+            }
         } catch (QueryException $r) {
-            //lanzar excepcion de sql 
-            return back()->with('error', $th->getMessage());
+            //lanzar excepcion de sql
+            return back()->with('error', $r->getMessage());
         }
     }
 
@@ -142,5 +142,17 @@ class ResguardanteController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function searchResguardante(Request $resq)
+    {
+        $resguardanteSearch  = $this->SearchRes($resq);
+        return response()->json($resguardanteSearch);
+    }
+
+    public function loadData(Request $request)
+    {
+        $datos = $this->loadDataBase($request);
+        return response()->json($datos);
     }
 }

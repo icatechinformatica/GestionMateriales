@@ -1,17 +1,20 @@
 <?php
 
 namespace App\Http\Traits;
+
 use App\Models\solicitud\Resguardante;
 use Illuminate\Support\Str;
 
-trait ResguardanteTrait {
+trait ResguardanteTrait
+{
 
     public function getResguardante()
     {
-        return  Resguardante::select('resguardante_unidad', 'puesto_resguardante_unidad', 'area_adscripcion_id', 'id')->orderBy('id','DESC')->get();
+        return  Resguardante::select('resguardante_unidad', 'puesto_resguardante_unidad', 'area_adscripcion_id', 'id')->orderBy('id', 'DESC')->get();
     }
 
-    protected function storeResguardante($request){
+    protected function storeResguardante($request)
+    {
         $resguardante = new Resguardante();
         $resguardante->resguardante_unidad = $request->get('resguardante');
         $resguardante->puesto_resguardante_unidad = $request->get('puesto');
@@ -29,7 +32,29 @@ trait ResguardanteTrait {
         return true;
     }
 
-    protected function resguardanteById($id){
+    protected function resguardanteById($id)
+    {
         return Resguardante::select('resguardante_unidad', 'puesto_resguardante_unidad', 'area_adscripcion_id', 'id')->where('id', '=', $id)->first();
+    }
+
+    protected function SearchRes($res)
+    {
+        $data = Resguardante::select("resguardante_unidad", "puesto_resguardante_unidad", 'id')
+            ->where("resguardante_unidad", "LIKE", "%{$res->term}%")
+            ->get();
+
+        $resguardante = [];
+        foreach ($data as $hsl) {
+            $resguardante[] = $hsl->resguardante_unidad;
+        }
+
+        return $resguardante;
+    }
+
+    protected function loadDataBase($res)
+    {
+        $termino = trim($res->type);
+        // retornamos la consulta
+        return  Resguardante::where('resguardante_unidad', "LIKE", "%{$termino}%")->first();
     }
 }

@@ -29,7 +29,7 @@ trait VehiculoTrait
             $vehiculo->tipo = Str::upper($index->get('tipo'));
             $vehiculo->placas = Str::upper($index->get('placas'));
             $vehiculo->numero_serie = Str::upper($index->get('numero_serie'));
-            $vehiculo->resguardante_id = $index->get('resguardante');
+            $vehiculo->resguardante_id = $index->get('resguardante_id');
             $vehiculo->numero_economico = Str::upper($index->get('numero_economico'));
             $vehiculo->km_final = $index->get('km_recorrido');
             $vehiculo->rendimiento_ciudad = $index->get('rendimiento_ciudad');

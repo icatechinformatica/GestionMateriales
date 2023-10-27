@@ -60,6 +60,8 @@ editar catalogo resguardante|eliminar catalogo resguardante|ver comision', 'prev
     Route::post('/solicitud/resguardante/store', [ResguardanteController::class, 'store'])->name('solicitud.resguardante.store')->middleware('can:crear catalogo resguardante');
     Route::get('/solicitud/resguardante/edit/{id}', [ResguardanteController::class, 'edit'])->name('solicitud.resguardante.edit')->middleware('can:editar catalogo resguardante');
     Route::put('/solicitud/resguardante/update/{id}', [ResguardanteController::class, 'update'])->name('solicitud.resguardante.update')->middleware('can:editar catalogo resguardante');
+    Route::get('/solicitud/resguardante/search', [ResguardanteController::class, 'searchResguardante'])->name('search.resguardante');
+    Route::post('/solicitud/resguardante/assign/load', [ResguardanteController::class, 'loadData'])->name('assign.resguardante.load');
 
     /**
      * rutas catalogo choferes
