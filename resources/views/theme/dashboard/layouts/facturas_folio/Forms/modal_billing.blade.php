@@ -4,7 +4,7 @@
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header text-white" style="background-color: #621132;">
-                <h5 class="modal-title" id="exampleModalFullscreenLabel">Agregar Detalle de Factura</h5>
+                <h5 class="modal-title" id="exampleModalFullscreenLabel">Agregar Detalle de la Factura</h5>
             </div>
             <div class="modal-body">
                 <form id="FormBilling" name="FormBilling">
