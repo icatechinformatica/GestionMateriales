@@ -209,7 +209,7 @@
     {{-- FORM END --}}
     </div>
     {{-- incluir modal de inserción de datos --}}
-    @include('theme.dashboard.layouts.facturas_folio.forms.modal_billing')
+    @include('theme.dashboard.layouts.facturas_folio.Forms.modal_billing')
 
 
     {{-- modal success --}}
